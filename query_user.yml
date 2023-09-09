@@ -1,0 +1,13 @@
+---
+- name: Query a custom user in Active Directory
+  hosts: domain_controllers
+  gather_facts: yes  # We don't need facts gathering.
+  vars:
+    user: Administrator 
+
+  tasks:
+    - name: Ensure {{user}} user is present
+      community.windows.win_domain_user:
+        name: {{user}}
+        identity: CN={{user}},CN=Users,DC=contoso,DC=mx
+        state: query
