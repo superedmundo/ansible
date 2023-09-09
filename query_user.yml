@@ -11,3 +11,8 @@
         name: {{user}}
         identity: CN={{user}},CN=Users,DC=contoso,DC=mx
         state: query
+        register: result
+    
+    - name: Print return information
+      ansible.builtin.debug:
+        var: result
