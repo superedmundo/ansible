@@ -1,0 +1,26 @@
+
+---
+- name: Query a user in Active Directory
+  hosts: domain_controllers
+  gather_facts: no  # We don't need facts gathering.
+
+  tasks:
+    - name: Ensure user bob is present with address information
+      microsoft.ad.user:
+        name: bob
+        firstname: Bob
+        surname: Smith
+        company: BobCo
+        password: B0bP4ssw0rd
+        state: present
+        groups:
+          set:
+          - Domain Admins
+        street: 123 4th St.
+        city: Sometown
+        state_province: IN
+        postal_code: 12345
+        country: US
+        attributes:
+          set:
+            telephoneNumber: 555-123456
