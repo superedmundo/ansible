@@ -17,25 +17,46 @@
         #upn: bob@contoso.mx
         #password_expired: false
         #password_never_expires: true
-        sam_account_name: boby1
+        #sam_account_name: boby1
         user_cannot_change_password: no
-        name: boby1
-        firstname: Bob
-        surname: Smith
+        name: Pedro
+        firstname: Pedro
+        #surname: Smith
         company: BobCo
         password: B0bP4ssw0rd
         state: present
         groups:
           set:
           - Domain Admins
-        street: 123 4th St.
-        city: Sometown
-        state_province: IN
-        postal_code: 12345
+          - Domain Users
         country: MX
         attributes:
           set:
+            #accountExpires: 
+            department: Contabilidad
+            description: Esta cuenta fue creada con Ansible
+            displayName: Nombre_a_Desplegar
+            facsimile TelephoneNumber: 4
+            givenName: Pedro
+            homePhone: 1
+            info: Notas en telefonos
+            initials: PPP
+            ipPhone: 5
+            l: Ciudad
+            mail: pedro@gmail.com
+            mobile: 3
+            pager: 2
+            physicalDeliveryOfficeName: Oficina
+            postalCode: 44600
+            postOfficeBox: pobox_
+            sAMAccountName: Pedro
+            sn: Paramo
+            st: Gdl
+            streetAddress: 123 Av. Pedro
             telephoneNumber: 555-123456
+            title: Ing
+            userPrincipalName: pedro@contoso.mx
+            wWWWHomepage: http://www.contoso.mx
       register: resultado_add_user
 
     - name: Mostrar el resultado del add user
