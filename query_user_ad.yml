@@ -2,73 +2,100 @@
 - name: Query a user in Active Directory
   hosts: domain_controllers
   gather_facts: no  # We don't need facts gathering.
+  vars:
+    enabled: true
+    user_cannot_change_password: no
+    name: Pedros
+    password: B0bP4ssw0rd
+    state: present
+    #accountExpires: 
+    c: MX
+    codePage: 0
+    comment: Comentario ldap comment
+    company: BobCo
+    department: Contabilidad
+    departmentNumber: 123456789
+    description: Esta cuenta fue creada con Ansible
+    displayName: Nombre_a_Desplegar
+    division: division
+    employeeID: 1
+    employeeNumber: 1
+    employeeType: Normal
+    facsimileTelephoneNumber: 4
+    givenName: Pedro
+    homePhone: 1
+    info: Notas en telefonos
+    initials: PPP
+    ipPhone: 5
+    l: Ciudad
+    mail: pedros@gmail.com
+    middleName: middleName
+    mobile: 3
+    pager: 2
+    personalTitle: Mr.
+    physicalDeliveryOfficeName: Oficina
+    postalAddress: Av. 1 300
+    postalCode: 44600
+    postOfficeBox: pobox_
+    sn: Paramo
+    st: Gdl
+    street: calle
+    streetAddress: 123 Av. Pedro
+    telephoneNumber: 555-123456
+    title: Ing
+    userPrincipalName: pedros@contoso.mx
+    wWWHomePage: http://www.contoso.mx
 
   tasks:
     - name: Ensure user bob is present with address information
       microsoft.ad.user:
-        #account_locked: false
-        #description: Esta cuenta fue creada con ansible
-        #display_name: Nombre_a_Desplegar
-        #domain_password: B0bP4ssw0rd
-        #domain_username: bob
-        #email: bob@contoso.mx
-        enabled: true
-        #update_password: always
-        #upn: bob@contoso.mx
-        #password_expired: false
-        #password_never_expires: true
-        #sam_account_name: boby1
-        user_cannot_change_password: no
-        name: Pedros
-        #firstname: Pedro
-        #surname: Smith 
-        password: B0bP4ssw0rd
-        state: present
+        enabled: {{enabled}}
+        user_cannot_change_password: {{user_cannot_change_password}}
+        name: {{name}}
+        password: {{password}}
+        state: {{state}}
         groups:
           set:
-          - Domain Admins
           - Domain Users
         attributes:
           set:
             #accountExpires: 
-            c: MX
-            #cn: Pedro
-            codePage: 0
-            comment: Comentario ldap comment
-            company: BobCo
-            department: Contabilidad
-            departmentNumber: 123456789
-            description: Esta cuenta fue creada con Ansible
-            displayName: Nombre_a_Desplegar
-            division: division
-            employeeID: 1
-            employeeNumber: 1
-            employeeType: Normal
-            facsimileTelephoneNumber: 4
-            givenName: Pedro
-            homePhone: 1
-            info: Notas en telefonos
-            initials: PPP
-            ipPhone: 5
-            l: Ciudad
-            mail: pedros@gmail.com
-            middleName: middleName
-            mobile: 3
-            pager: 2
-            personalTitle: Mr.
-            physicalDeliveryOfficeName: Oficina
-            postalAddress: Av. 1 300
-            postalCode: 44600
-            postOfficeBox: pobox_
-            #sAMAccountName: Pedro
-            sn: Paramo
-            st: Gdl
-            #street: calle
-            streetAddress: 123 Av. Pedro
-            telephoneNumber: 555-123456
-            title: Ing
-            userPrincipalName: pedros@contoso.mx
-            wWWHomePage: http://www.contoso.mx
+            c: {{c}}
+            codePage: {{codePage}}
+            comment: {{comment}}
+            company: {{company}}
+            department: {{department}}
+            departmentNumber: {{departmentNumber}}
+            description: {{description}}
+            displayName: {{displayName}}
+            division: {{division}}
+            employeeID: {{employeeID}}
+            employeeNumber: {{employeeNumber}}
+            employeeType: {{employeeType}}
+            facsimileTelephoneNumber: {{facsimileTelephoneNumber}}
+            givenName: {{givenName}}
+            homePhone: {{homePhone}}
+            info: {{info}}
+            initials: {{initials}}
+            ipPhone: {{ipPhone}}
+            l: {{l}}
+            mail: {{mail}}
+            middleName: {{middleName}}
+            mobile: {{mobile}}
+            pager: {{pager}}
+            personalTitle: {{personalTitle}}
+            physicalDeliveryOfficeName: {{physicalDeliveryOfficeName}}
+            postalAddress: {{postalAddress}}
+            postalCode: {{postalCode}}
+            postOfficeBox: {{postOfficeBox}}
+            sn: {{sn}}
+            st: {{st}}
+            street: {{street}}
+            streetAddress: {{streetAddress}}
+            telephoneNumber: {{telephoneNumber}}
+            title: {{title}}
+            userPrincipalName: {{userPrincipalName}}
+            wWWHomePage: {{wWWHomePage}}
       register: resultado_add_user
 
     - name: Mostrar el resultado del add user
