@@ -8,7 +8,7 @@
     nombre: Pedros
     password: B0bP4ssw0rd
     state: present
-    groups: ["Domain Users","Domain Admins"]
+    #groups: ["Domain Users","Domain Admins"]
     #  - Domain Users
     #  - Domain Admins
     #accountExpires: 
@@ -59,9 +59,8 @@
         state: "{{ state }}"
         groups:
           set: 
-            "{{ groups }}"
           #- Domain Admins
-          #- Domain Users
+          - Domain Users
         attributes:
           set:
             #accountExpires: 
