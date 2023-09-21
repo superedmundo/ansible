@@ -9,17 +9,17 @@
         account_locked: false
         description: Esta cuenta fue creada con ansible
         display_name: Nombre_a_Desplegar
-        domain_password: B0bP4ssw0rd
-        domain_username: bob
+        #domain_password: B0bP4ssw0rd
+        #domain_username: bob
         email: bob@contoso.mx
         enabled: true
-        update_password: always
-        upn: bob@contoso.mx
-        password_expired: false
-        password_never_expires: true
-        sam_account_name: boby
+        #update_password: always
+        #upn: bob@contoso.mx
+        #password_expired: false
+        #password_never_expires: true
+        sam_account_name: boby1
         user_cannot_change_password: no
-        name: bob
+        name: boby1
         firstname: Bob
         surname: Smith
         company: BobCo
@@ -36,7 +36,6 @@
         attributes:
           set:
             telephoneNumber: 555-123456
-      
       register: resultado_add_user
 
     - name: Mostrar el resultado del add user
