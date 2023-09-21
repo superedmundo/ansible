@@ -19,7 +19,7 @@
         #password_never_expires: true
         #sam_account_name: boby1
         user_cannot_change_password: no
-        name: Pedro
+        name: Pedros
         #firstname: Pedro
         #surname: Smith 
         password: B0bP4ssw0rd
@@ -32,7 +32,7 @@
           set:
             #accountExpires: 
             c: MX
-            cn: Pedro
+            #cn: Pedro
             codePage: 0
             comment: Comentario ldap comment
             company: BobCo
@@ -63,7 +63,7 @@
             #sAMAccountName: Pedro
             sn: Paramo
             st: Gdl
-            street: calle
+            #street: calle
             streetAddress: 123 Av. Pedro
             telephoneNumber: 555-123456
             title: Ing
