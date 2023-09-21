@@ -4,11 +4,23 @@
   gather_facts: no  # We don't need facts gathering.
 
   tasks:
-    - name: Verificar conectividad con la máquina Windows
-      win_ping:
-      register: resultado_ping
-
-    - name: Mostrar el resultado del ping
-      debug:
-        var: resultado_ping
+    - name: Ensure user bob is present with address information
+      microsoft.ad.user:
+        name: bob
+        firstname: Bob
+        surname: Smith
+        company: BobCo
+        password: B0bP4ssw0rd
+        state: present
+        groups:
+          set:
+          - Domain Admins
+        street: 123 4th St.
+        city: Sometown
+        state_province: IN
+        postal_code: 12345
+        country: US
+        attributes:
+          set:
+            telephoneNumber: 555-123456
 
