@@ -36,7 +36,7 @@
             department: Contabilidad
             description: Esta cuenta fue creada con Ansible
             displayName: Nombre_a_Desplegar
-            facsimile TelephoneNumber: 4
+            #facsimile TelephoneNumber: 4
             givenName: Pedro
             homePhone: 1
             info: Notas en telefonos
