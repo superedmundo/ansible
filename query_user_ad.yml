@@ -51,7 +51,7 @@
             initials: PPP
             ipPhone: 5
             l: Ciudad
-            mail: pedro@gmail.com
+            mail: pedros@gmail.com
             middleName: middleName
             mobile: 3
             pager: 2
@@ -67,7 +67,7 @@
             streetAddress: 123 Av. Pedro
             telephoneNumber: 555-123456
             title: Ing
-            userPrincipalName: pedro@contoso.mx
+            userPrincipalName: pedros@contoso.mx
             wWWHomePage: http://www.contoso.mx
       register: resultado_add_user
 
