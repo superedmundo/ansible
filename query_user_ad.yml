@@ -56,7 +56,7 @@
         name: "{{ nombre }}"
         password: "{{ password }}"
         state: "{{ state }}"
-        groups:
+        groups: 
           - Domain Users
         attributes:
           set:
