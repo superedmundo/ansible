@@ -60,7 +60,7 @@
             postalAddress: Av. 1 300
             postalCode: 44600
             postOfficeBox: pobox_
-            #sAMAccountName: Pedro
+            sAMAccountName: Pedro
             sn: Paramo
             st: Gdl
             street: calle
