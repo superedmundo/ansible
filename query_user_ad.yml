@@ -7,11 +7,11 @@
     - name: Ensure user bob is present with address information
       microsoft.ad.user:
         #account_locked: false
-        description: Esta cuenta fue creada con ansible
-        display_name: Nombre_a_Desplegar
+        #description: Esta cuenta fue creada con ansible
+        #display_name: Nombre_a_Desplegar
         #domain_password: B0bP4ssw0rd
         #domain_username: bob
-        email: bob@contoso.mx
+        #email: bob@contoso.mx
         enabled: true
         #update_password: always
         #upn: bob@contoso.mx
@@ -20,7 +20,7 @@
         #sam_account_name: boby1
         user_cannot_change_password: no
         name: Pedro
-        firstname: Pedro
+        #firstname: Pedro
         #surname: Smith
         company: BobCo
         password: B0bP4ssw0rd
