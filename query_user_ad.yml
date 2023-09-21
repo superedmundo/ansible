@@ -6,6 +6,19 @@
   tasks:
     - name: Ensure user bob is present with address information
       microsoft.ad.user:
+        account_locked: false
+        description: Esta cuenta fue creada con ansible
+        display_name: Nombre_a_Desplegar
+        domain_password: B0bP4ssw0rd
+        domain_username: bob
+        email: bob@contoso.mx
+        enabled: true
+        update_password: always
+        upn: bob@contoso.mx
+        password_expired: false
+        password_never_expires: true
+        sam_account_name: boby
+        user_cannot_change_password: no
         name: bob
         firstname: Bob
         surname: Smith
@@ -19,8 +32,14 @@
         city: Sometown
         state_province: IN
         postal_code: 12345
-        country: US
+        country: MX
         attributes:
           set:
             telephoneNumber: 555-123456
+      
+      register: resultado_add_user
+
+    - name: Mostrar el resultado del add user
+      debug:
+        var: resultado_add_user
 
