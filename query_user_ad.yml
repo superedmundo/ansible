@@ -58,7 +58,8 @@
         password: "{{ password }}"
         state: "{{ state }}"
         groups:
-          set: "{{ groups }}"
+          set: 
+            "{{ groups }}"
           #- Domain Admins
           #- Domain Users
         attributes:
