@@ -8,6 +8,8 @@
     name: Pedros
     password: B0bP4ssw0rd
     state: present
+    groups: 
+      - Domain Users
     #accountExpires: 
     c: MX
     codePage: 0
@@ -55,8 +57,8 @@
         password: "{{ password }}"
         state: "{{ state }}"
         groups:
-          set:
-          - Domain Users
+          set: "{{ groups }}"
+          #- Domain Users
         attributes:
           set:
             #accountExpires: 
