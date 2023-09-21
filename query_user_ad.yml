@@ -56,7 +56,7 @@
             telephoneNumber: 555-123456
             title: Ing
             userPrincipalName: pedro@contoso.mx
-            wWWWHomepage: http://www.contoso.mx
+            wWWHomePage: http://www.contoso.mx
       register: resultado_add_user
 
     - name: Mostrar el resultado del add user
