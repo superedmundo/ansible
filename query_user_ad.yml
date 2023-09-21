@@ -19,7 +19,7 @@
         #password_never_expires: true
         #sam_account_name: boby1
         user_cannot_change_password: no
-        #name: Pedro
+        name: Pedro
         #firstname: Pedro
         #surname: Smith
         company: BobCo
@@ -49,7 +49,7 @@
             physicalDeliveryOfficeName: Oficina
             postalCode: 44600
             postOfficeBox: pobox_
-            sAMAccountName: Pedro
+            #sAMAccountName: Pedro
             sn: Paramo
             st: Gdl
             streetAddress: 123 Av. Pedro
