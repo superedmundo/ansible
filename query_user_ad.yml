@@ -5,7 +5,7 @@
   vars:
     enabled: true
     user_cannot_change_password: no
-    name: Pedros
+    nombre: Pedros
     password: B0bP4ssw0rd
     state: present
     #groups: 
@@ -53,7 +53,7 @@
       microsoft.ad.user:
         enabled: "{{ enabled }}"
         user_cannot_change_password: "{{ user_cannot_change_password }}"
-        name: "{{ name }}"
+        name: "{{ nombre }}"
         password: "{{ password }}"
         state: "{{ state }}"
         groups:
