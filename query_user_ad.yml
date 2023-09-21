@@ -6,7 +6,7 @@
   tasks:
     - name: Ensure user bob is present with address information
       microsoft.ad.user:
-        account_locked: false
+        #account_locked: false
         description: Esta cuenta fue creada con ansible
         display_name: Nombre_a_Desplegar
         #domain_password: B0bP4ssw0rd
