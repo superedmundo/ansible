@@ -8,8 +8,8 @@
     name: Pedros
     password: B0bP4ssw0rd
     state: present
-    groups: 
-      - Domain Users
+    #groups: 
+    #  - Domain Users
     #accountExpires: 
     c: MX
     codePage: 0
