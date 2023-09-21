@@ -57,8 +57,9 @@
         password: "{{ password }}"
         state: "{{ state }}"
         groups:
-          set: 
-          - Domain Users
+          set: "{{ item }}"
+        loop: "{{ groups }}"
+          #- Domain Users
         attributes:
           set:
             #accountExpires: 
