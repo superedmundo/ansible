@@ -1,3 +1,4 @@
 ---
 collections:
   - community.windows
+  - microsoft.ad
