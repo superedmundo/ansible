@@ -2,6 +2,53 @@
 - name: Query a user in Active Directory
   hosts: domain_controllers
   gather_facts: no  # We don't need facts gathering.
+  vars:
+    enabled: true
+    user_cannot_change_password: no
+    nombre: nadie
+    password: B0bP4ssw0rd
+    state: present
+    #groups: ["Domain Users","Domain Admins"]
+    #  - Domain Users
+    #  - Domain Admins
+    #accountExpires: 
+    groups_to_add: ["Domain Users"]
+    c: MX
+    codePage: 0
+    comment: Comentario ldap comment
+    company: BobCo
+    department: Contabilidad
+    departmentNumber: 123456789
+    description: Esta cuenta fue creada con Ansible
+    displayName: Nombre_a_Desplegar
+    division: division
+    employeeID: 1
+    employeeNumber: 1
+    employeeType: Normal
+    facsimileTelephoneNumber: 4
+    givenName: Pedro
+    homePhone: 1
+    info: Notas en telefonos
+    initials: PPP
+    ipPhone: 5
+    l: Ciudad
+    mail: nadie@gmail.com
+    middleName: middleName
+    mobile: 3
+    pager: 2
+    personalTitle: Mr.
+    physicalDeliveryOfficeName: Oficina
+    postalAddress: Av. 1 300
+    postalCode: 44600
+    postOfficeBox: pobox_
+    sn: Paramo
+    st: Gdl
+    street: calle
+    streetAddress: 123 Av. Pedro
+    telephoneNumber: 555-123456
+    title: Ing
+    userPrincipalName: nadie@contoso.mx
+    wWWHomePage: http://www.contoso.mx
 
   tasks:
     - name: Ensure user nadie is present with address information
