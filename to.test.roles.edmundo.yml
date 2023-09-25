@@ -1,14 +1,19 @@
 ---
-- name: Test notifications
-  hosts: all
-  gather_facts: false
+- name: Ejemplo de playbook para hacer ping a una máquina Windows
+  hosts: domain_controllers
+  gather_facts: no  # We don't need facts gathering.
   collections:
     - ditra.cisco
+
   tasks:
-    - name: Ejecutar en localhost
-      ansible.builtin.delegate_to: localhost
-      ansible.builtin.debug:
-        msg: "Esta tarea se ejecuta en localhost"
+    - name: Verificar conectividad con la máquina Windows
+      win_ping:
+      register: resultado_ping
+
+    - name: Mostrar el resultado del ping
+      debug:
+        var: resultado_ping
+
     - name: Send email
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
