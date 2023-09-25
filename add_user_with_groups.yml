@@ -12,6 +12,7 @@
     #  - Domain Users
     #  - Domain Admins
     #accountExpires: 
+    groups_to_add: ["Domain Users"]
     c: MX
     codePage: 0
     comment: Comentario ldap comment
