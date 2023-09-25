@@ -5,9 +5,16 @@
   collections:
     - ditra.cisco
   tasks:
+    - name: Ejecutar en localhost
+      ansible.builtin.delegate_to: localhost
+      ansible.builtin.debug:
+        msg: "Esta tarea se ejecuta en localhost"
     - name: Send email
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+
       vars:
         subject: Prueba de notificaciones
         body: |
@@ -15,4 +22,3 @@
 
         to_email: oorg08@gmail.com
         alert: true
-      delegate_to: localhost
