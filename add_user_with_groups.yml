@@ -5,7 +5,7 @@
   vars:
     enabled: true
     user_cannot_change_password: no
-    nombre: Pedros
+    nombre: nadie
     password: B0bP4ssw0rd
     state: present
     #groups: ["Domain Users","Domain Admins"]
@@ -32,7 +32,7 @@
     initials: PPP
     ipPhone: 5
     l: Ciudad
-    mail: pedros@gmail.com
+    mail: nadie@gmail.com
     middleName: middleName
     mobile: 3
     pager: 2
@@ -47,16 +47,11 @@
     streetAddress: 123 Av. Pedro
     telephoneNumber: 555-123456
     title: Ing
-    userPrincipalName: pedros@contoso.mx
+    userPrincipalName: nadie@contoso.mx
     wWWHomePage: http://www.contoso.mx
 
   tasks:
-    # - name: Definir los grupos
-    #   set_fact:
-    #     groups_to_add:
-    #       - Domain Users
-    #       - Domain Admins
-    - name: Ensure user bob is present with address information
+    - name: Ensure user nadie is present with address information
       microsoft.ad.user:
         enabled: "{{ enabled }}"
         user_cannot_change_password: "{{ user_cannot_change_password }}"
