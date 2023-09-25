@@ -126,6 +126,7 @@
             response: "{{ resultado_add_user }}"      
 
     - name: Notificar resultado de la creación del usuario
+      hosts: localhost
       when: response.failed is defined
       block:
         - name: Notificación de creación de usuario con éxito
@@ -139,7 +140,7 @@
               ansible.builtin.include_role:
                 name: ditra.cisco.send_email
                 apply:
-                  delegate_to: 10.100.1.120
+                  delegate_to: localhost
               vars:
                 subject: "{{ credentials_email_subject }}"
                 body: |
@@ -153,41 +154,10 @@
               ansible.builtin.include_role:
                 name: ditra.cisco.send_sms
                 apply:
-                  delegate_to: 10.100.1.120
+                  delegate_to: localhost
               vars:
                 message: "El usuario {{ user_email }} se creó con éxito"
                 number: "{{ cell_admin }}"
                 alert: "{{ send_sms_alert }}"
                 urlencode_sms: true
                 no_log: true
-
-        - name: Notificación de error en la creación de usuario
-          when: response.status != 200
-          block:
-            - name: Mensaje de error en la creación de usuario
-              ansible.builtin.debug:
-                var: response.msg
-            - name: Envío de notificación email con detalles del error
-              ansible.builtin.include_role:
-                name: ditra.cisco.send_email
-                apply:
-                  delegate_to: 10.100.1.120
-              vars:
-                subject: Error en la creación de usuario
-                body: |
-                  Ocurrió un problema en la creación del usuario.
-                  Usuario: {{ user_email }}
-                  Detalles: {{ response|to_json(indent=2) }}
-                to_email: "{{ email_to_notify_on_fail }}"
-                alert: "{{ email_notify_on_fail }}"
-            - name: Envío de notificación sms para notificar error al crear usuario
-              ansible.builtin.include_role:
-                name: ditra.cisco.send_sms
-                apply:
-                  delegate_to: 10.100.1.120
-              vars:
-                message: "Ocurrió un problema en la creación del usuario {{ user_email }}"
-                number: "{{ cell_admin }}" 
-                alert: "{{ send_sms_alert }}"
-                urlencode_sms: true
-
