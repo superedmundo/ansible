@@ -5,18 +5,6 @@
   collections:
     - ditra.cisco
 
-  # sms notifications vars
-  send_sms_alert: true
-  cell_admin: "3314693845"
-  # email notifications vars on SUCCESS
-  send_user_credentials_by_email: true
-  email_to_receive_credentials: edmundo.sanchez@gmail.com # todo: setear "{{ user_email }}" para que el user reciba las credenciales
-  credentials_email_subject: "Resultado de add"
-  credentials_email_body: "resultado:"
-  # email notifications vars on ERROR
-  email_notify_on_fail: true
-  email_to_notify_on_fail: edmundo.sanchez@gmail.com
-
   vars:
     enabled: true
     user_cannot_change_password: no
@@ -60,6 +48,18 @@
     title: Ing
     userPrincipalName: nadie@contoso.mx
     wWWHomePage: http://www.contoso.mx
+
+    # sms notifications vars
+    send_sms_alert: true
+    cell_admin: "3314693845"
+    # email notifications vars on SUCCESS
+    send_user_credentials_by_email: true
+    email_to_receive_credentials: edmundo.sanchez@gmail.com # todo: setear "{{ user_email }}" para que el user reciba las credenciales
+    credentials_email_subject: "Resultado de add"
+    credentials_email_body: "resultado:"
+    # email notifications vars on ERROR
+    email_notify_on_fail: true
+    email_to_notify_on_fail: edmundo.sanchez@gmail.com
 
   tasks:
     - name: Ensure user nadie is present with address information
