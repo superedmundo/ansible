@@ -139,7 +139,7 @@
               ansible.builtin.include_role:
                 name: ditra.cisco.send_email
                 apply:
-                  delegate_to: localhost
+                  delegate_to: 10.100.1.120
               vars:
                 subject: "{{ credentials_email_subject }}"
                 body: |
@@ -153,7 +153,7 @@
               ansible.builtin.include_role:
                 name: ditra.cisco.send_sms
                 apply:
-                  delegate_to: localhost
+                  delegate_to: 10.100.1.120
               vars:
                 message: "El usuario {{ user_email }} se creó con éxito"
                 number: "{{ cell_admin }}"
@@ -171,7 +171,7 @@
               ansible.builtin.include_role:
                 name: ditra.cisco.send_email
                 apply:
-                  delegate_to: localhost
+                  delegate_to: 10.100.1.120
               vars:
                 subject: Error en la creación de usuario
                 body: |
@@ -184,7 +184,7 @@
               ansible.builtin.include_role:
                 name: ditra.cisco.send_sms
                 apply:
-                  delegate_to: localhost
+                  delegate_to: 10.100.1.120
               vars:
                 message: "Ocurrió un problema en la creación del usuario {{ user_email }}"
                 number: "{{ cell_admin }}" 
