@@ -2,16 +2,27 @@
 - name: Query a user in Active Directory
   hosts: domain_controllers
   gather_facts: no  # We don't need facts gathering.
+  collections:
+    - ditra.cisco
+
+  # sms notifications vars
+  send_sms_alert: true
+  cell_admin: "3314693845"
+  # email notifications vars on SUCCESS
+  send_user_credentials_by_email: true
+  email_to_receive_credentials: edmundo.sanchez@gmail.com # todo: setear "{{ user_email }}" para que el user reciba las credenciales
+  credentials_email_subject: "Resultado de add"
+  credentials_email_body: "resultado:"
+  # email notifications vars on ERROR
+  email_notify_on_fail: true
+  email_to_notify_on_fail: edmundo.sanchez@gmail.com
+
   vars:
     enabled: true
     user_cannot_change_password: no
     nombre: nadie
     password: B0bP4ssw0rd
     state: present
-    #groups: ["Domain Users","Domain Admins"]
-    #  - Domain Users
-    #  - Domain Admins
-    #accountExpires: 
     groups_to_add: ["Domain Users"]
     c: MX
     codePage: 0
@@ -104,3 +115,79 @@
     - name: Mostrar el resultado del add user
       debug:
         var: resultado_add_user
+
+    - name: Procesar la respuesta del create
+      block:
+        - name: Mostrar resultado create
+          ansible.builtin.debug:
+            var: resultado_add_user
+        - name: Establecer el valor de resultado_add_user como response
+          ansible.builtin.set_fact:
+            response: "{{ resultado_add_user }}"      
+
+    - name: Notificar resultado de la creación del usuario
+      when: response.failed is defined
+      block:
+        - name: Notificación de creación de usuario con éxito
+          when: response.failed == false
+          block:
+            - name: Mensaje de éxito en la creación de usuario
+              ansible.builtin.debug:
+                var: response.distinguished_name
+            - name: Envío de notificación email con las credenciales del usuario creado
+              no_log: true # se tiene que configurar en la collection
+              ansible.builtin.include_role:
+                name: ditra.cisco.send_email
+                apply:
+                  delegate_to: localhost
+              vars:
+                subject: "{{ credentials_email_subject }}"
+                body: |
+                  {{ credentials_email_body }}
+
+                  Usuario: {{ nombre }}
+                  Contraseña: {{ password }}
+                to_email: "{{ email_to_receive_credentials }}"
+                alert: "{{ send_user_credentials_by_email }}"
+            - name: Envío de notificación sms de usuario creado
+              ansible.builtin.include_role:
+                name: ditra.cisco.send_sms
+                apply:
+                  delegate_to: localhost
+              vars:
+                message: "El usuario {{ user_email }} se creó con éxito"
+                number: "{{ cell_admin }}"
+                alert: "{{ send_sms_alert }}"
+                urlencode_sms: true
+                no_log: true
+
+        - name: Notificación de error en la creación de usuario
+          when: response.status != 200
+          block:
+            - name: Mensaje de error en la creación de usuario
+              ansible.builtin.debug:
+                var: response.msg
+            - name: Envío de notificación email con detalles del error
+              ansible.builtin.include_role:
+                name: ditra.cisco.send_email
+                apply:
+                  delegate_to: localhost
+              vars:
+                subject: Error en la creación de usuario
+                body: |
+                  Ocurrió un problema en la creación del usuario.
+                  Usuario: {{ user_email }}
+                  Detalles: {{ response|to_json(indent=2) }}
+                to_email: "{{ email_to_notify_on_fail }}"
+                alert: "{{ email_notify_on_fail }}"
+            - name: Envío de notificación sms para notificar error al crear usuario
+              ansible.builtin.include_role:
+                name: ditra.cisco.send_sms
+                apply:
+                  delegate_to: localhost
+              vars:
+                message: "Ocurrió un problema en la creación del usuario {{ user_email }}"
+                number: "{{ cell_admin }}" 
+                alert: "{{ send_sms_alert }}"
+                urlencode_sms: true
+
