@@ -1,0 +1,19 @@
+---
+- name: Test notifications
+  hosts: all
+  gather_facts: false
+  collections:
+    - ditra.cisco
+  tasks:
+    - name: Send email
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: Prueba de notificaciones
+        body: |
+          Desdel el proyecto de Edmundo
+
+        to_email: oorg08@gmail.com
+        alert: true
