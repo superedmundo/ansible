@@ -50,11 +50,11 @@
     wWWHomePage: http://www.contoso.mx
 
   tasks:
-    - name: Definir los grupos
-      set_fact:
-        groups_to_add:
-          - Domain Users
-          - Domain Admins
+    # - name: Definir los grupos
+    #   set_fact:
+    #     groups_to_add:
+    #       - Domain Users
+    #       - Domain Admins
     - name: Ensure user bob is present with address information
       microsoft.ad.user:
         enabled: "{{ enabled }}"
