@@ -6,6 +6,7 @@
     - ditra.cisco
   tasks:
     - name: Send email
+      delegate_to: localhost
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
