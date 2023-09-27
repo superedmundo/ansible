@@ -43,7 +43,7 @@
         to_email: edmundo.sanchez@gmail.com
         alert: true
         body: |
-          algo + "{{ response.distinguished_name }}""
+          algo + "{{ response.distinguished_name }}"
 
     - name: Envío de notificación email con las credenciales del usuario creado
       no_log: false # se tiene que configurar en la collection
@@ -54,6 +54,6 @@
       vars:
         subject: tema
         body: |
-          "{{ response|to_json(indent=2) }}""
+          "{{ response|to_json(indent=2) }}"
         to_email: edmundo.sanchez@gmail.com
         alert: true
