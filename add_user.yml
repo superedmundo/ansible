@@ -151,5 +151,5 @@
             state: "present"
             attributes:
               set:
-                company: "{{ company | result.company }}"
+                company: "{{ (company is defined) | ternary(company, result.company) }}"
           register: resultado_add_user
