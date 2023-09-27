@@ -4,16 +4,16 @@
   gather_facts: no  # We don't need facts gathering.
   vars:
     user: Administrator 
-    
+
     # email notifications vars on SUCCESS
-    send_user_credentials_by_email: false
-    email_to_receive_credentials: "{{ user_email }}" # el user recibe las credenciales
+    send_user_credentials_by_email: true
+    email_to_receive_credentials: "edmundo.sanchez@gmail.com" # el user recibe las credenciales
     credentials_email_subject: "Bienvenido a la red"
     credentials_email_body: "Sus credenciales son:"
     # email notifications vars on ERROR
     
     # email notifications vars on ERROR
-    email_notify_on_fail: false
+    email_notify_on_fail: true
     email_to_notify_on_fail: edmundo.sanchez@gmail.com
     no_log_in_sensitive_data: true
 
@@ -39,7 +39,5 @@
         body: |
           {{ result }}
 
-          Usuario: {{ user_email }}
-          Contraseña: {{ user_password }}
           to_email: "{{ email_to_receive_credentials }}"
           alert: "{{ send_user_credentials_by_email }}"
