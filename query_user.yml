@@ -9,17 +9,17 @@
     # NOTIFICACIONES
     # Sms 
     # On Success
-    notification_sms_on_success: ""
-    notification_sms_send_user_credentials: ""
+    notification_sms_on_success: null
+    notification_sms_send_user_credentials: null
     # on ERROR
-    notification_sms_on_fail: ""
+    notification_sms_on_fail: null
 
     # Email
     # On Success
-    notification_email_on_success: ""
-    notification_email_send_user_credentials: ""
+    notification_email_on_success: null
+    notification_email_send_user_credentials: null
     # on ERROR
-    notification_email_on_fail: ""
+    notification_email_on_fail: null
 
   tasks:
     - name: Queryng "{{ user }}" 
