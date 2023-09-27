@@ -29,7 +29,6 @@
         var: result
 
     - name: Envío de notificación email con las credenciales del usuario creado
-      hosts: localhost
       no_log: false # se tiene que configurar en la collection
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
