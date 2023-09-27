@@ -39,19 +39,9 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: tema
-        to_email: oorg08@gmail.com
+        subject: "Resultado de la búsqueda del usuario: {{ user }}"
+        to_email: edmundo.sanchez@gmail.com
         alert: true
-        body: SDFsadfasdfa asd fasdf asdf asdfasdf sadf asdf sadf
+        body: |
+          algo + "{{ response|to_json(indent=2) }}""
 
-    - name: Envío de notificación email con las credenciales del usuario creado
-      no_log: false # se tiene que configurar en la collection
-      ansible.builtin.include_role:
-        name: ditra.cisco.send_email
-        apply:
-          delegate_to: localhost
-      vars:
-        subject: tema
-        body: "sdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf"
-        to_email: oorg08@gmail.com
-        alert: true
