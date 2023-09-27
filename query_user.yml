@@ -36,8 +36,7 @@
           delegate_to: localhost
       vars:
         subject: tema
+        to_email: "{{ email_to_receive_credentials }}"
+        alert: "{{ send_user_credentials_by_email }}"
         body: |
           algo
-
-          to_email: "{{ email_to_receive_credentials }}"
-          alert: "{{ send_user_credentials_by_email }}"
