@@ -147,6 +147,7 @@
             msg: Modifying
         - name: Modify user in AD
           microsoft.ad.user:
+            name: "{{ nombre }}"
             enabled: "{{ enabled }}"
             state: "present"
             attributes:
