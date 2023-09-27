@@ -1,0 +1,136 @@
+---
+- name: Add a user in Active Directory
+  hosts: 10.100.1.116
+  gather_facts: no  
+  collections:
+    - ditra.cisco
+
+  vars:
+    enabled: true
+    user_cannot_change_password: no
+    nombre: nadie
+    password: B0bP4ssw0rd
+    state: present
+    groups_to_add: ["Domain Users"]
+    c: MX
+    codePage: 0
+    comment: Comentario ldap comment
+    company: BobCo
+    department: Contabilidad
+    departmentNumber: 123456789
+    description: Esta cuenta fue creada con Ansible
+    displayName: Nombre_a_Desplegar
+    division: division
+    employeeID: 1
+    employeeNumber: 1
+    employeeType: Normal
+    facsimileTelephoneNumber: 4
+    givenName: Pedro
+    homePhone: 1
+    info: Notas en telefonos
+    initials: PPP
+    ipPhone: 5
+    l: Ciudad
+    mail: nadie@gmail.com
+    middleName: middleName
+    mobile: 3
+    pager: 2
+    personalTitle: Mr.
+    physicalDeliveryOfficeName: Oficina
+    postalAddress: Av. 1 300
+    postalCode: 44600
+    postOfficeBox: pobox_
+    sn: Paramo
+    st: Gdl
+    street: calle
+    streetAddress: 123 Av. Pedro
+    telephoneNumber: 555-123456
+    title: Ing
+    userPrincipalName: nadie@contoso.mx
+    wWWHomePage: http://www.contoso.mx
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms_on_success: ""
+    notification_sms_send_user_credentials: ""
+    # on ERROR
+    notification_sms_on_fail: ""
+
+    # Email
+    # On Success
+    notification_email_on_success: ""
+    notification_email_send_user_credentials: ""
+    # on ERROR
+    notification_email_on_fail: ""
+
+  tasks:
+    - name: Queryng "{{ nombre }}" 
+      community.windows.win_domain_user:
+        name: "{{ nombre }}"
+        state: query
+      register: result
+    
+    - name: Print return information
+      ansible.builtin.debug:
+        var: result
+
+    - name: Add User because is absent
+      when: result.state == "absent"
+      block:
+        - name: log msg
+          ansible.builtin.debug:
+            msg: Adding
+        - name: Add user in AD
+          microsoft.ad.user:
+            enabled: "{{ enabled }}"
+            user_cannot_change_password: "{{ user_cannot_change_password }}"
+            name: "{{ nombre }}"
+            password: "{{ password }}"
+            state: "{{ state }}"
+            groups:
+              set: "{{ groups_to_add }}"
+            attributes:
+              set:
+                #accountExpires: 
+                c: "{{ c }}"
+                codePage: "{{ codePage }}"
+                comment: "{{ comment }}"
+                company: "{{ company }}"
+                department: "{{ department }}"
+                departmentNumber: "{{ departmentNumber }}"
+                description: "{{ description }}"
+                displayName: "{{ displayName }}"
+                division: "{{ division }}"
+                employeeID: "{{ employeeID }}"
+                employeeNumber: "{{ employeeNumber }}"
+                employeeType: "{{ employeeType }}"
+                facsimileTelephoneNumber: "{{ facsimileTelephoneNumber }}"
+                givenName: "{{ givenName }}"
+                homePhone: "{{ homePhone }}"
+                info: "{{ info }}"
+                initials: "{{ initials }}"
+                ipPhone: "{{ ipPhone }}"
+                l: "{{ l }}"
+                mail: "{{ mail }}"
+                middleName: "{{ middleName }}"
+                mobile: "{{ mobile }}"
+                pager: "{{ pager }}"
+                personalTitle: "{{ personalTitle }}"
+                physicalDeliveryOfficeName: "{{ physicalDeliveryOfficeName }}"
+                postalAddress: "{{ postalAddress }}"
+                postalCode: "{{ postalCode }}"
+                postOfficeBox: "{{ postOfficeBox }}"
+                sn: "{{ sn }}"
+                st: "{{ st }}"
+                street: "{{ street }}"
+                streetAddress: "{{ streetAddress }}"
+                telephoneNumber: "{{ telephoneNumber }}"
+                title: "{{ title }}"
+                userPrincipalName: "{{ userPrincipalName }}"
+                wWWHomePage: "{{ wWWHomePage }}"
+          register: resultado_add_user
+
+        - name: Mostrar el resultado del add user
+          debug:
+            var: resultado_add_user

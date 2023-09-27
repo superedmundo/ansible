@@ -1,6 +1,6 @@
 ---
-- name: Query a user in Active Directory
-  hosts: domain_controllers
+- name: Add a user in Active Directory
+  hosts: 10.100.1.116
   gather_facts: no  # We don't need facts gathering.
   collections:
     - ditra.cisco
