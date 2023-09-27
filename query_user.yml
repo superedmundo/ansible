@@ -40,7 +40,7 @@
           delegate_to: localhost
       vars:
         subject: tema
-        to_email: edmundo.sanchez@gmail.com
+        to_email: oorg08@gmail.com
         alert: true
         body: SDFsadfasdfa asd fasdf asdf asdfasdf sadf asdf sadf
 
@@ -53,5 +53,5 @@
       vars:
         subject: tema
         body: "sdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf"
-        to_email: edmundo.sanchez@gmail.com
+        to_email: oorg08@gmail.com
         alert: true
