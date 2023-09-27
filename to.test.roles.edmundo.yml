@@ -19,7 +19,6 @@
         name: ditra.cisco.send_email
         apply:
           delegate_to: localhost
-          connection: local
 
       vars:
         subject: Prueba de notificaciones
