@@ -6,10 +6,10 @@
     user: Administrator 
 
   tasks:
-    - name: Ensure "{{ user }}" user is present
+    - name: Queryng "{{ user }}" 
       community.windows.win_domain_user:
         name: "{{ user }}"
-        identity: CN="{{ user }}",CN=Users,DC=contoso,DC=mx
+        #identity: CN="{{ user }}",CN=Users,DC=contoso,DC=mx
         state: query
       register: result
     
