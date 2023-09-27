@@ -151,5 +151,5 @@
             state: "present"
             attributes:
               set:
-                company: "{{ company | respuesta.company }}"
+                company: "{{ company | result.company }}"
           register: resultado_add_user
