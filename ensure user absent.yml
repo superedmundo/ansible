@@ -1,0 +1,17 @@
+---
+- name: Ensure user bob is absent
+  hosts: domain_controllers
+  gather_facts: no  # We don't need facts gathering.
+  vars:
+    user: Juanito 
+
+  tasks:
+    - name: Ensure user bob is absent
+      community.windows.win_domain_user:
+        name: bob
+        state: absent
+        register: result
+    
+    - name: Print return information
+      ansible.builtin.debug:
+        var: result
