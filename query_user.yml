@@ -4,6 +4,11 @@
   gather_facts: no  # We don't need facts gathering.
   vars:
     user: Administrator 
+    
+    # email notifications vars on ERROR
+    email_notify_on_fail: false
+    email_to_notify_on_fail: edmundo.sanchez@gmail.com
+    no_log_in_sensitive_data: true
 
   tasks:
     - name: Queryng "{{ user }}" 
@@ -15,3 +20,19 @@
     - name: Print return information
       ansible.builtin.debug:
         var: result
+
+    - name: Envío de notificación email con las credenciales del usuario creado
+      no_log: "{{ no_log_in_sensitive_data }}" # se tiene que configurar en la collection
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: "{{ credentials_email_subject }}"
+        body: |
+          {{ result }}
+
+          Usuario: {{ user_email }}
+          Contraseña: {{ user_password }}
+          to_email: "{{ email_to_receive_credentials }}"
+          alert: "{{ send_user_credentials_by_email }}"
