@@ -7,7 +7,7 @@
 
     # email notifications vars on SUCCESS
     send_user_credentials_by_email: true
-    email_to_receive_credentials: "edmundo.sanchez@gmail.com" # el user recibe las credenciales
+    email_to_receive_credentials: edmundo.sanchez@gmail.com # el user recibe las credenciales
     credentials_email_subject: "Bienvenido a la red"
     credentials_email_body: "Sus credenciales son:"
     # email notifications vars on ERROR
@@ -36,7 +36,6 @@
           delegate_to: localhost
       vars:
         subject: tema
-        to_email: "{{ email_to_receive_credentials }}"
-        alert: "{{ send_user_credentials_by_email }}"
-        body: |
-          algo
+        to_email: edmundo.sanchez@gmail.com
+        alert: true
+        body: algo
