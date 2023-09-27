@@ -28,6 +28,10 @@
       ansible.builtin.debug:
         var: result
 
+    - name: Establecer el valor de result como response
+      ansible.builtin.set_fact:
+        response: "{{ result }}"        
+
     - name: Envío de notificación email con las credenciales del usuario creado
       no_log: false # se tiene que configurar en la collection
       ansible.builtin.include_role:
@@ -39,7 +43,7 @@
         to_email: edmundo.sanchez@gmail.com
         alert: true
         body: |
-          algo + "{{ result.distinguished_name }}""
+          algo + "{{ response.distinguished_name }}""
 
     - name: Envío de notificación email con las credenciales del usuario creado
       no_log: false # se tiene que configurar en la collection
@@ -50,6 +54,6 @@
       vars:
         subject: tema
         body: |
-          "{{ result.name }}""
+          "{{ response|to_json(indent=2) }}""
         to_email: edmundo.sanchez@gmail.com
         alert: true
