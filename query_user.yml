@@ -6,7 +6,7 @@
     user: Administrator 
 
   tasks:
-    - name: Ensure "{{user}}" user is present
+    - name: Ensure Administrator user is present
       community.windows.win_domain_user:
         name: Administrator
         state: query
