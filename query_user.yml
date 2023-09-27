@@ -38,4 +38,5 @@
         subject: tema
         to_email: edmundo.sanchez@gmail.com
         alert: true
-        body: algo
+        body: |
+          {{ result }}
