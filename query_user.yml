@@ -8,8 +8,7 @@
   tasks:
     - name: Ensure "{{user}}" user is present
       community.windows.win_domain_user:
-        name: "{{user}}"
-        identity: CN="{{user}}",CN=Users,DC=contoso,DC=mx
+        name: Administrator
         state: query
         register: result
     
