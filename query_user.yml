@@ -6,11 +6,12 @@
     user: Administrator 
 
   tasks:
-    - name: Ensure Administrator user is present
+    - name: Ensure {{user}} user is present
       community.windows.win_domain_user:
-        name: Administrator
+        name: {{user}}
+        identity: CN={{user}},CN=Users,DC=contoso,DC=mx
         state: query
-        register: result
+      register: result
     
     - name: Print return information
       ansible.builtin.debug:
