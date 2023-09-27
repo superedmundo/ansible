@@ -5,15 +5,21 @@
   vars:
     user: Administrator 
 
-    # email notifications vars on SUCCESS
-    send_user_credentials_by_email: true
-    email_to_receive_credentials: edmundo.sanchez@gmail.com # el user recibe las credenciales
-    credentials_email_subject: "Bienvenido a la red"
-    credentials_email_body: "Sus credenciales son:"
-    # email notifications vars on ERROR
-    email_notify_on_fail: true
-    email_to_notify_on_fail: edmundo.sanchez@gmail.com
-    no_log_in_sensitive_data: true
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms_on_success: ""
+    notification_sms_send_user_credentials: ""
+    # on ERROR
+    notification_sms_on_fail: ""
+
+    # Email
+    # On Success
+    notification_email_on_success: ""
+    notification_email_send_user_credentials: ""
+    # on ERROR
+    notification_email_on_fail: ""
 
   tasks:
     - name: Queryng "{{ user }}" 
