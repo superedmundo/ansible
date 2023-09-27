@@ -1,14 +1,14 @@
 ---
-- name: Ensure user bob is absent
+- name: Ensure user is absent
   hosts: domain_controllers
   gather_facts: no  # We don't need facts gathering.
   vars:
-    user: Juanito 
+    user: Administrator 
 
   tasks:
-    - name: Ensure user bob is absent
+    - name: Ensure user "{{ user }}" is absent
       community.windows.win_domain_user:
-        name: bob
+        name: "{{ user }}"
         state: absent
       register: result
     
