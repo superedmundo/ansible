@@ -10,7 +10,7 @@
       community.windows.win_domain_user:
         name: bob
         state: absent
-        register: result
+      register: result
     
     - name: Print return information
       ansible.builtin.debug:
