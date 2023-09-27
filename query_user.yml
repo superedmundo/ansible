@@ -40,3 +40,16 @@
         alert: true
         body: |
           {{ result }}
+
+    - name: Envío de notificación email con las credenciales del usuario creado
+      no_log: false # se tiene que configurar en la collection
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: tema
+        body: |
+          {{ result }}
+        to_email: edmundo.sanchez@gmail.com
+        alert: true
