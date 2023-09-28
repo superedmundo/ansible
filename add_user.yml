@@ -153,4 +153,5 @@
             attributes:
               set:
                 company: "{{ (company is defined) | ternary(company, result.company) }}"
+                userPrincipalName: "{{ (userPrincipalName is defined) | ternary(userPrincipalName, result.sam_account_name)  }}"
           register: resultado_add_user
