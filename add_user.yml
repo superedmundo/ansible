@@ -148,10 +148,14 @@
         - name: Modify user in AD
           microsoft.ad.user:
             name: "{{ nombre }}"
-            enabled: "{{ enabled }}"
-            state: "present"
+            password: "D1tr4.2o22"
+            state: present
             attributes:
               set:
                 company: "{{ (company is defined) | ternary(company, result.company) }}"
-                userPrincipalName: "{{ (userPrincipalName is defined) | ternary(userPrincipalName, result.sam_account_name)  }}"
+                #userPrincipalName: "{{ (userPrincipalName is defined) | ternary(userPrincipalName, result.sam_account_name)  }}"
           register: resultado_add_user
+
+        - name: Mostrar el resultado del add user
+          debug:
+            var: resultado_add_user
