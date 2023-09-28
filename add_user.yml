@@ -192,7 +192,7 @@
                 streetAddress: "{{ (streetAddress) | ternary(streetAddress, '') }}"  #  "{{ streetAddress }}"
                 telephoneNumber: "{{ (telephoneNumber) | ternary(telephoneNumber, '') }}"  #  "{{ telephoneNumber }}"
                 title: "{{ (title) | ternary(title, '') }}"  #  "{{ title }}"
-                userPrincipalName: "{{ (userPrincipalName) | ternary(userPrincipalName, result.upn) }}"  #  "{{ userPrincipalName }}"
+                #userPrincipalName: "{{ (userPrincipalName) | ternary(userPrincipalName, result.upn) }}"  #  "{{ userPrincipalName }}"
                 wWWHomePage: "{{ (wWWHomePage) | ternary(wWWHomePage, '') }}"  #  "{{ wWWHomePage }}"
           register: resultado_add_user
 
