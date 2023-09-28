@@ -87,11 +87,11 @@
             attributes:
               set:
                 userPrincipalName: "{{ userPrincipalName }}"
-          register: result
+          register: result_add_user
 
         - name: Mostrar el resultado del add user
           debug:
-            var: result
+            var: result_add_user
 
     - name: Modify User because is present
       when: result.state == "present"
