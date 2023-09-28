@@ -171,7 +171,7 @@
                 employeeNumber: "{{ (employeeNumber) | ternary(employeeNumber, '') }}"  #  "{{ employeeNumber }}"
                 employeeType: "{{ (employeeType) | ternary(employeeType, '') }}"  #  "{{ employeeType }}"
                 facsimileTelephoneNumber: "{{ (facsimileTelephoneNumber) | ternary(facsimileTelephoneNumber, '') }}"  #  "{{ facsimileTelephoneNumber }}"
-                givenName: "{{ (givenName) | givenName(company, result.firstname) }}"  #  "{{ givenName }}"
+                givenName: "{{ (givenName) | ternary(givenName, result.firstname) }}"  #  "{{ givenName }}"
                 homePhone: "{{ (homePhone) | ternary(homePhone, '') }}"  #  "{{ homePhone }}"
                 info: "{{ (info) | ternary(info, '') }}"  #  "{{ info }}"
                 initials: "{{ (initials) | ternary(initials, '') }}"  #  "{{ initials }}"
