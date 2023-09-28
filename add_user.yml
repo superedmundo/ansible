@@ -78,6 +78,7 @@
         - name: Add user in AD
           microsoft.ad.user:
             name: "{{ nombre }}"
+            password: "{{ password }}"
             state: present
             attributes:
               set:
