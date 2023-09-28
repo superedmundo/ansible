@@ -161,7 +161,7 @@
                 c: "{{ c }}"
                 codePage: "{{ codePage }}"
                 comment: "{{ comment }}"
-                company: "{{ company }}"
+                company: "{{ (company) | ternary(company, result.company) }}"
                 department: "{{ department }}"
                 departmentNumber: "{{ departmentNumber }}"
                 description: "{{ description }}"
