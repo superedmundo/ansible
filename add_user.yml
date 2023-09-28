@@ -519,15 +519,15 @@
               set:
                 title: "{{ title }}"
 
-        - name: Modify userPrincipalName user in AD
-          when: userPrincipalName is defined
-          microsoft.ad.user:
-            name:     "{{ result.name }}"
-            identity: "{{ result.distinguished_name }}"
-            state:    present
-            attributes:
-              set:
-                userPrincipalName: "{{ userPrincipalName }}"
+        #- name: Modify userPrincipalName user in AD
+        #  when: userPrincipalName is defined
+        #  microsoft.ad.user:
+        #    name:     "{{ result.name }}"
+        #    identity: "{{ result.distinguished_name }}"
+        #    state:    present
+        #    attributes:
+        #      set:
+        #        userPrincipalName: "{{ userPrincipalName }}"
 
         - name: Modify wWWHomePage user in AD
           when: wWWHomePage is defined
