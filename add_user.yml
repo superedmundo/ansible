@@ -147,13 +147,52 @@
             msg: Modifying
         - name: Modify user in AD
           microsoft.ad.user:
+            enabled: "{{ enabled }}"
+            user_cannot_change_password: "{{ user_cannot_change_password }}"
             name: "{{ nombre }}"
-            password: "D1tr4.2o22"
-            state: present
+            password: "{{ password }}"
+            state: "{{ state }}"
+            groups:
+              set: "{{ groups_to_add }}"
             attributes:
               set:
-                company: "{{ (company is defined) | ternary(company, result.company) }}"
-                #userPrincipalName: "{{ (userPrincipalName is defined) | ternary(userPrincipalName, result.sam_account_name)  }}"
+                #accountExpires: 
+                c: "{{ c }}"
+                codePage: "{{ codePage }}"
+                comment: "{{ comment }}"
+                company: "{{ company }}"
+                department: "{{ department }}"
+                departmentNumber: "{{ departmentNumber }}"
+                description: "{{ description }}"
+                displayName: "{{ displayName }}"
+                division: "{{ division }}"
+                employeeID: "{{ employeeID }}"
+                employeeNumber: "{{ employeeNumber }}"
+                employeeType: "{{ employeeType }}"
+                facsimileTelephoneNumber: "{{ facsimileTelephoneNumber }}"
+                givenName: "{{ givenName }}"
+                homePhone: "{{ homePhone }}"
+                info: "{{ info }}"
+                initials: "{{ initials }}"
+                ipPhone: "{{ ipPhone }}"
+                l: "{{ l }}"
+                mail: "{{ mail }}"
+                middleName: "{{ middleName }}"
+                mobile: "{{ mobile }}"
+                pager: "{{ pager }}"
+                personalTitle: "{{ personalTitle }}"
+                physicalDeliveryOfficeName: "{{ physicalDeliveryOfficeName }}"
+                postalAddress: "{{ postalAddress }}"
+                postalCode: "{{ postalCode }}"
+                postOfficeBox: "{{ postOfficeBox }}"
+                sn: "{{ sn }}"
+                st: "{{ st }}"
+                street: "{{ street }}"
+                streetAddress: "{{ streetAddress }}"
+                telephoneNumber: "{{ telephoneNumber }}"
+                title: "{{ title }}"
+                userPrincipalName: "{{ userPrincipalName }}"
+                wWWHomePage: "{{ wWWHomePage }}"
           register: resultado_add_user
 
         - name: Mostrar el resultado del add user
