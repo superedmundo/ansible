@@ -538,3 +538,33 @@
             attributes:
               set:
                 wWWHomePage: "{{ wWWHomePage }}"
+
+    # NOTIFICACIONES
+    - name: Send notification_email_on_success
+      when: notification_email_on_success is defined
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La alta/modificación del usuario fue exitosa
+        body: |
+          Todo super bien
+
+        to_email: "{{ notification_email_on_success }}"
+        alert: true
+        
+    - name: Send notification_email_on_fail
+      when: notification_email_on_fail is defined
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La alta/modificación del usuario fue fallida
+        body: |
+          Todo super mal
+
+        to_email: "{{ notification_email_on_fail }}"
+        alert: true
+        
