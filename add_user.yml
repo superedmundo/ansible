@@ -145,23 +145,24 @@
         - name: log msg
           ansible.builtin.debug:
             msg: Modifying
-        - name: Modify user in AD
+        - name: Modify user_cannot_change_password user in AD
+          when: user_cannot_change_password is defined
           microsoft.ad.user:
-            enabled: "{{ (enabled) | ternary(enabled, result.enabled) }}" # "{{ enabled }}"
-            user_cannot_change_password: "{{ (user_cannot_change_password) | ternary(user_cannot_change_password, result.user_cannot_change_password) }}"  #"{{ user_cannot_change_password }}"
+            #enabled: "{{ (enabled) | ternary(enabled, result.enabled) }}" # "{{ enabled }}"
+            user_cannot_change_password: "{{ user_cannot_change_password }}"
             name: "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
-            password:  "{{ (password) | ternary(password, 'D1tr4.2o22') }}" #"{{ password }}"
-            state:  "{{ (state) | ternary(state, result.state) }}" #"{{ state }}"
-            groups:
-              set:  "{{ (groups_to_add) | ternary(groups_to_add, result.groups_to_add) }}" #"{{ groups_to_add }}"
-            attributes:
-              set:
+            #password:  "{{ (password) | ternary(password, 'D1tr4.2o22') }}" #"{{ password }}"
+            state:  present
+            #groups:
+              #set:  "{{ (groups_to_add) | ternary(groups_to_add, result.groups_to_add) }}" #"{{ groups_to_add }}"
+            #attributes:
+              #set:
                 #accountExpires:  "{{ (accountExpires) | ternary(accountExpires, '') }}"
                 #c: "{{ (c) | ternary(c, result.country) }}"  #"{{ c }}"
                 #codePage: "{{ (codePage) | ternary(codePage, '') }}"  #  "{{ codePage }}"
                 #comment: "{{ (comment) | ternary(comment, '') }}"  #  "{{ comment }}"
-                company: "{{ (company) | ternary(company, result.company) }}"  # 
+                #company: "{{ (company) | ternary(company, result.company) }}"  # 
                 #department: "{{ (department) | ternary(department, '') }}"  #  "{{ department }}"
                 #departmentNumber: "{{ (departmentNumber) | ternary(departmentNumber, '') }}"  #  "{{ departmentNumber }}"
                 #description: "{{ (description) | ternary(description, result.description) }}"  #  "{{ description }}"
@@ -194,6 +195,61 @@
                 #title: "{{ (title) | ternary(title, '') }}"  #  "{{ title }}"
                 #userPrincipalName: "{{ (userPrincipalName) | ternary(userPrincipalName, result.upn) }}"  #  "{{ userPrincipalName }}"
                 #wWWHomePage: "{{ (wWWHomePage) | ternary(wWWHomePage, '') }}"  #  "{{ wWWHomePage }}"
+          register: resultado_add_user
+
+        - name: Mostrar el resultado del add user
+          debug:
+            var: resultado_add_user
+
+        - name: Modify groups_to_add user in AD
+          when: groups_to_add is defined
+          microsoft.ad.user:
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:  present
+            groups:
+              set:  "{{ groups_to_add }}" 
+          register: resultado_add_user
+
+        - name: Mostrar el resultado del add user
+          debug:
+            var: resultado_add_user
+
+        - name: Modify password user in AD
+          when: password is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            password: "{{ password }}"
+          register: resultado_add_user
+
+        - name: Mostrar el resultado del add user
+          debug:
+            var: resultado_add_user
+
+        - name: Modify company user in AD
+          when: company is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                company: "{{ company }}"
+          register: resultado_add_user
+
+        - name: Mostrar el resultado del add user
+          debug:
+            var: resultado_add_user
+
+        - name: Modify enabled user in AD
+          when: enabled is defined
+          microsoft.ad.user:
+            enabled: "{{ enabled }}"
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
           register: resultado_add_user
 
         - name: Mostrar el resultado del add user
