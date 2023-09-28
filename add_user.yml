@@ -161,7 +161,7 @@
                 #c: "{{ (c) | ternary(c, result.country) }}"  #"{{ c }}"
                 #codePage: "{{ (codePage) | ternary(codePage, '') }}"  #  "{{ codePage }}"
                 #comment: "{{ (comment) | ternary(comment, '') }}"  #  "{{ comment }}"
-                #company: "{{ (company) | ternary(company, result.company) }}"  # 
+                company: "{{ (company) | ternary(company, result.company) }}"  # 
                 #department: "{{ (department) | ternary(department, '') }}"  #  "{{ department }}"
                 #departmentNumber: "{{ (departmentNumber) | ternary(departmentNumber, '') }}"  #  "{{ departmentNumber }}"
                 #description: "{{ (description) | ternary(description, result.description) }}"  #  "{{ description }}"
