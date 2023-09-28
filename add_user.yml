@@ -70,7 +70,11 @@
       community.windows.win_domain_user:
         name: "{{ nombre }}"
         state: query
-      register: result
+      register: result_query 
+
+    - name: Establecer el valor de result_query como result
+      ansible.builtin.set_fact:
+        result: "{{ result_query }}"   
 
     - name: Add User because is absent
       when: result.state == "absent"
