@@ -97,6 +97,21 @@
           debug:
             var: result_add_user
 
+    - name: Queryng Again "{{ nombre }}" 
+      when: nombre is defined
+      community.windows.win_domain_user:
+        name: "{{ nombre }}"
+        state: query
+      register: result_query 
+
+    - name: Establecer el valor de result_query como result
+      ansible.builtin.set_fact:
+        result: "{{ result_query }}"   
+
+    - name: Mostrar el resultado del result_query
+      debug:
+        var: result
+
     - name: Modify User because is present
       block:
         - name: Modify enabled user in AD
