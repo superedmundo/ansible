@@ -149,10 +149,10 @@
           microsoft.ad.user:
             enabled: "{{ (enabled) | ternary(enabled, result.enabled) }}" # "{{ enabled }}"
             user_cannot_change_password: "{{ (user_cannot_change_password) | ternary(user_cannot_change_password, result.user_cannot_change_password) }}"  #"{{ user_cannot_change_password }}"
-            name: "{{ (nombre) | ternary(nombre, result.name) }}"
+            name: "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             password:  "{{ (password) | ternary(password, '') }}" #"{{ password }}"
-            state:  "{{ (state) | ternary(state, result.state) }}" #"{{ state }}"
+            #state:  "{{ (state) | ternary(state, result.state) }}" #"{{ state }}"
             groups:
               set:  "{{ (groups_to_add) | ternary(groups_to_add, result.groups_to_add) }}" #"{{ groups_to_add }}"
             attributes:
