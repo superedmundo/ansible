@@ -76,10 +76,6 @@
       ansible.builtin.set_fact:
         result: "{{ result_query }}"   
 
-    - name: Mostrar el resultado del result_query
-      debug:
-        var: result
-
     - name: Add User because is absent
       when: result.state == "absent"
       block:
@@ -93,26 +89,19 @@
                 userPrincipalName: "{{ userPrincipalName }}"
           register: result_add_user
 
-        - name: Mostrar el resultado del add user
-          debug:
-            var: result_add_user
+        - name: Queryng Again "{{ nombre }}" 
+          when: nombre is defined
+          community.windows.win_domain_user:
+            name: "{{ nombre }}"
+            state: query
+          register: result_query 
 
-    - name: Queryng Again "{{ nombre }}" 
-      when: nombre is defined
-      community.windows.win_domain_user:
-        name: "{{ nombre }}"
-        state: query
-      register: result_query 
-
-    - name: Establecer el valor de result_query como result
-      ansible.builtin.set_fact:
-        result: "{{ result_query }}"   
-
-    - name: Mostrar el resultado del result_query
-      debug:
-        var: result
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
 
     - name: Modify User because is present
+      when: result.state == "present"
       block:
         - name: Modify enabled user in AD
           when: enabled is defined
