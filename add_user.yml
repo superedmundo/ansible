@@ -76,6 +76,10 @@
       ansible.builtin.set_fact:
         result: "{{ result_query }}"   
 
+    - name: Mostrar el resultado del result_query
+      debug:
+        var: result
+
     - name: Add User because is absent
       when: result.state == "absent"
       block:
