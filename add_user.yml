@@ -98,7 +98,6 @@
             var: result_add_user
 
     - name: Modify User because is present
-      when: result.state == "present"
       block:
         - name: Modify enabled user in AD
           when: enabled is defined
