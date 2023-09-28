@@ -150,6 +150,7 @@
             enabled: "{{ enabled }}"
             user_cannot_change_password: "{{ user_cannot_change_password }}"
             name: "{{ nombre }}"
+            identity: "{{ result.distinguished_name }}"
             password: "{{ password }}"
             state: "{{ state }}"
             groups:
