@@ -15,7 +15,7 @@
     c: MX
     codePage: 0
     comment: Comentario ldap comment
-    company: BobCo
+    company: null
     department: Contabilidad
     departmentNumber: 123456789
     description: Esta cuenta fue creada con Ansible
