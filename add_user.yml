@@ -81,7 +81,7 @@
       block:
         - name: Add user in AD
           microsoft.ad.user:
-            name: "{{ nombre }}"
+            #name: "{{ nombre }}"
             password: "{{ password }}"
             state: present
             attributes:
