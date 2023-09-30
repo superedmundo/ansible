@@ -64,5 +64,7 @@
               result_add_user_is_defined: "{{ result_add_user is defined }}"
               result_add_user_is_defined.changed: "{{ result_add_user.changed is defined }}"
               result_add_user_is_defined.failed: "{{ result_add_user.failed is defined }}"
+              result_add_user.changed: "{{ result_add_user.changed }}"
+              result_add_user.failed: "{{ result_add_user.failed }}"
               #result_add_user.changed: "{{ result_add_user.changed }}"
               #result_add_user.failed: "{{ result_add_user.failed }}"
