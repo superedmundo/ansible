@@ -29,7 +29,8 @@
       block:
         - name: Mostrar Contraseña Generada
           ansible.builtin.debug:
-            var:
+            var: {{ item }}
+            loop:
               - sAMAccountName 
               - generated_password
 
