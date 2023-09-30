@@ -44,5 +44,4 @@
             attributes:
               set:
                 userprincipalname: "{{ userprincipalname }}"
-                samaccountname: "{{ samaccountname }}"
           register: result_add_user
