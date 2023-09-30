@@ -18,8 +18,7 @@
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
         msg: 
-          sAMAccountName: "{{ sAMAccountName }}"
-          userPrincipalName: "{{ userPrincipalName }}"
+          sAMAccountName: "{{ sAMAccountName }}" 
           password: "{{ password }}"
           generated_password: "{{ generated_password }}"
 
