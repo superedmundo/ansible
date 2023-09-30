@@ -31,6 +31,10 @@
         state: query
       register: result   
 
+    - name: Desplegando el resultado del query.
+      ansible.builtin.debug:
+      var:  result
+
   # Agregando al usuario por que no existe
 
     - name: Add User because is absent
