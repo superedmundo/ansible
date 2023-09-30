@@ -9,10 +9,9 @@
   vars:
 
     sAMAccountName: null
-    userPrincipalName: null
     password: null
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
-    dominio: 'Contoso.mx'
+    dominio: Contoso.mx
 
   tasks:
 
@@ -47,6 +46,10 @@
               set:
                 userPrincipalName: "{{ sAMAccountName }}{{ dominio }}"
           register: result_add_user
+
+        - name: Desplegando el resultado del Add.
+          ansible.builtin.debug:
+            var:  result_add_user
           
         - name: Queryng Again "{{ sAMAccountName }}" 
           when: sAMAccountName is defined
@@ -54,6 +57,10 @@
             name: "{{ sAMAccountName }}"
             state: query
           register: result_query 
+
+        - name: Desplegando el resultado del query.
+          ansible.builtin.debug:
+            var:  result_query
 
         - name: Establecer el valor de result_query como result
           ansible.builtin.set_fact:
