@@ -12,6 +12,22 @@
     password: null
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
     dominio: Contoso.mx
+    user_cannot_change_password: false
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms_on_success: null
+    notification_sms_send_user_credentials: null
+    # on ERROR
+    notification_sms_on_fail: null
+
+    # Email
+    # On Success
+    notification_email_on_success: edmundo.sanchez@gmail.com
+    notification_email_send_user_credentials: null
+    # on ERROR
+    notification_email_on_fail: null
 
   tasks:
 
@@ -77,8 +93,8 @@
               result.state: "{{ result.state }}" 
               result_add_user: "{{ result_add_user }}"
               result_add_user_is_defined: "{{ result_add_user is defined }}"
-              result_add_user_is_defined.changed: "{{ result_add_user.changed is defined }}"
-              result_add_user_is_defined.failed: "{{ result_add_user.failed is defined }}"
+              result_add_user.changed_is_defined: "{{ result_add_user.changed is defined }}"
+              result_add_user.failed_is_defined: "{{ result_add_user.failed is defined }}"
               result_add_user.changed: "{{ result_add_user.changed }}"
               
         - name: Modify enabled user in AD
@@ -89,3 +105,48 @@
             identity: "{{ result.distinguished_name }}"
             state:    present
 
+        - name: Modify user_cannot_change_password user in AD
+          when: user_cannot_change_password is defined and result.user_cannot_change_password != user_cannot_change_password
+          microsoft.ad.user:
+            user_cannot_change_password: "{{ user_cannot_change_password }}"
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:  present
+
+        - name: Modify password user in AD
+          when: password is defined or generated_password is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            password: "{{ (password) | ternary(password, generated_password) }}"
+
+    # NOTIFICACIONES
+    - name: Send notification_email_on_success
+      when: notification_email_on_success is defined and result_add_user.changed == true and result_add_user.failed == false
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La alta/modificación del usuario fue exitosa
+        body: |
+          Todo super bien
+
+        to_email: "{{ notification_email_on_success }}"
+        alert: true
+        
+    - name: Send notification_email_on_fail
+      when: notification_email_on_fail is defined
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La alta/modificación del usuario fue fallida
+        body: |
+          Todo super mal
+
+        to_email: "{{ notification_email_on_fail }}"
+        alert: true
+        
