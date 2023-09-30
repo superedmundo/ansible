@@ -47,10 +47,10 @@
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
           register: result_add_user
 
-        # - name: Desplegando el resultado del Add.
-        #   when: result_add_user is defined
-        #   ansible.builtin.debug:
-        #     var:  result_add_user
+        - name: Desplegando el resultado del Add.
+          when: result.state == "absent" #result_add_user is defined
+          ansible.builtin.debug:
+            var:  result_add_user
 
   # Modificando al usuario por que ya existe o por que ya fue creado
 
@@ -61,6 +61,7 @@
           ansible.builtin.debug:
             msg: 
               result.state: "{{ result.state }}" 
+              result_add_user: "{{ result_add_user }}"
               result_add_user_is_defined: "{{ result_add_user is defined }}"
               result_add_user_is_defined.changed: "{{ result_add_user.changed is defined }}"
               result_add_user_is_defined.failed: "{{ result_add_user.failed is defined }}"
