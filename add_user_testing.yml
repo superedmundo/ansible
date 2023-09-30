@@ -74,7 +74,7 @@
               result_add_user.changed: "{{ result_add_user.changed }}"
               
         - name: Modify enabled user in AD
-          when: enabled is defined ans result.enabled != enabled
+          when: enabled is defined and result.enabled != enabled
           microsoft.ad.user:
             enabled: "{{ enabled }}"
             name: "{{ result.name }}"
