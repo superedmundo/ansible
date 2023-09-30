@@ -37,6 +37,7 @@
       when: result.state == "absent"
       block:
         - name: add user in ad
+          when: result.state == "absent"
           microsoft.ad.user:
             name: "{{ sAMAccountName }}"
             password: "{{ (password) | ternary(password, generated_password) }}"
@@ -44,7 +45,7 @@
             attributes:
               set:
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
-          # register: result_add_user
+          register: result_add_user
 
         # - name: Desplegando el resultado del Add.
         #   when: result_add_user is defined
