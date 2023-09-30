@@ -30,7 +30,7 @@
         state: query
       register: result   
 
-    # - name: Mostrar el resultado del Queryng
+    # - name: Mostrar el resultado del Queryng 
     #   ansible.builtin.debug:
     #     var: result 
 
