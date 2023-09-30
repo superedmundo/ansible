@@ -58,6 +58,10 @@
             state: query
           register: result
 
+        - name: Desplegando el resultado del query.
+          ansible.builtin.debug:
+            var:  result
+
   # Modificando al usuario por que ya existe o por que ya fue creado
 
     - name: Modify User because is present
