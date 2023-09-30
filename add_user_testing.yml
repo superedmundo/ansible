@@ -33,7 +33,7 @@
 
     - name: Desplegando el resultado del query.
       ansible.builtin.debug:
-      var:  result
+        var:  result
 
   # Agregando al usuario por que no existe
 
