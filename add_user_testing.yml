@@ -6,7 +6,6 @@
     - ditra.cisco
 
   vars:
-
     sAMAccountName: PatoAventuras
 
   tasks:
