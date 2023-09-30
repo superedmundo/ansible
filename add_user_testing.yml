@@ -22,12 +22,16 @@
           password: "{{ password }}"
           generated_password: "{{ generated_password }}"
 
+  # Revisando si ya existe o no el ususario en el AD
+
     - name: Queryng "{{ sAMAccountName }}" 
       when: sAMAccountName is defined
       community.windows.win_domain_user:
         name: "{{ sAMAccountName }}"
         state: query
       register: result   
+
+  # Agregando al usuario por que no existe
 
     - name: Add User because is absent
       when: result.state == "absent"
@@ -45,27 +49,15 @@
         - name: Desplegando el resultado del Add.
           ansible.builtin.debug:
             var:  result_add_user
-          
-        # - name: Queryng Again "{{ sAMAccountName }}" 
-        #   when: sAMAccountName is defined
-        #   community.windows.win_domain_user:
-        #     name: "{{ sAMAccountName }}"
-        #     state: query
-        #   register: result_query 
 
-        # - name: Desplegando el resultado del query.
-        #   ansible.builtin.debug:
-        #     var:  result_query
-
-        # - name: Establecer el valor de result_query como result
-        #   ansible.builtin.set_fact:
-        #     result: "{{ result_query }}"  
+  # Modificando al usuario por que ya existe o por que ya fue creado
 
     - name: Modify User because is present
-      when: result.state == "present" or (result_add_user.changed == true and result_add_user.failed == "false")
+      when: result.state == "present" or (result_add_user.changed == true and result_add_user.failed == false)
       block:
-
-        - name: Desplegando las variables que llegaron.
+        - name: Entrando al bloque de Modificación
           ansible.builtin.debug:
             msg: 
-              Resultado: entró
+              result.state: "{{ result.state }}" 
+              result_add_user.changed: "{{ result_add_user.changed }}"
+              result_add_user.failed: "{{ result_add_user.failed }}"
