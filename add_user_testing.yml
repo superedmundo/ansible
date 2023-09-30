@@ -46,6 +46,7 @@
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
           register: result_add_user
         - name: Desplegando el resultado del Add.
+          when: result_add_user is defined
           ansible.builtin.debug:
             var:  result_add_user
 
