@@ -45,7 +45,6 @@
               set:
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
           register: result_add_user
-
         - name: Desplegando el resultado del Add.
           ansible.builtin.debug:
             var:  result_add_user
@@ -54,7 +53,6 @@
 
     - name: Modify User because is present
       when: result.state == "present" or (result_add_user is defined and (result_add_user.changed == true and result_add_user.failed == false))
-      
       block:
         - name: Entrando al bloque de Modificación
           ansible.builtin.debug:
