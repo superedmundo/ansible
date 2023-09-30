@@ -29,11 +29,11 @@
       community.windows.win_domain_user:
         name: "{{ sAMAccountName }}"
         state: query
-      register: result   
+      register: result_query 
 
-    - name: Desplegando el resultado del query.
-      ansible.builtin.debug:
-        var:  result
+    - name: Establecer el valor de result_query como result
+      ansible.builtin.set_fact:
+        result: "{{ result_query }}"   
 
   # Agregando al usuario por que no existe
 
@@ -60,11 +60,11 @@
           community.windows.win_domain_user:
             name: "{{ sAMAccountName }}"
             state: query
-          register: result
+          register: result_query 
 
-        - name: Desplegando el resultado del query.
-          ansible.builtin.debug:
-            var:  result
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
 
   # Modificando al usuario por que ya existe o por que ya fue creado
 
