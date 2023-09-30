@@ -12,7 +12,7 @@
     password: null
 
     length_password: 12
-    generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', length={{length_password}}, chars=['ascii_letters', 'ascii_uppercase', 'digits', 'punctuation']) }}"
+    generated_password: "{{ lookup('password', '/dev/null', length={{length_password}}, chars=['ascii_letters', 'ascii_uppercase', 'digits', 'punctuation']) }}"
 
   tasks:
     - name: Queryng "{{ sAMAccountName }}" 
