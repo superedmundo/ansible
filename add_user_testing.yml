@@ -7,7 +7,7 @@
     - ansible.builtin.password
 
   vars:
-
+    enabled: true
     sAMAccountName: null
     password: null
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
@@ -51,10 +51,17 @@
           ansible.builtin.debug:
             var:  result_add_user
 
+        - name: Queryng Again "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result
+
   # Modificando al usuario por que ya existe o por que ya fue creado
 
     - name: Modify User because is present
-      when: result.state == "present" or (result_add_user.changed == true and result_add_user.failed == false)
+      when: result.state == "present"
       block:
         - name: Entrando al bloque de Modificación
           ansible.builtin.debug:
@@ -65,6 +72,12 @@
               result_add_user_is_defined.changed: "{{ result_add_user.changed is defined }}"
               result_add_user_is_defined.failed: "{{ result_add_user.failed is defined }}"
               result_add_user.changed: "{{ result_add_user.changed }}"
-              #result_add_user.failed: "{{ result_add_user.failed }}"
-              #result_add_user.changed: "{{ result_add_user.changed }}"
-              #result_add_user.failed: "{{ result_add_user.failed }}"
+              
+        - name: Modify enabled user in AD
+          when: enabled is defined ans result.enabled != enabled
+          microsoft.ad.user:
+            enabled: "{{ enabled }}"
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+
