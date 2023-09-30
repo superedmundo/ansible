@@ -6,6 +6,8 @@
     - ditra.cisco
 
   vars:
+
+    sAMAccountName: PatoAventuras
     enabled: null
     user_cannot_change_password: null
     nombre: null
@@ -41,6 +43,7 @@
     postalAddress:  null
     postalCode:  null
     postOfficeBox:  null
+    #sAMAccountName: null
     sn:  null
     st:  null
     street:  null
@@ -66,13 +69,17 @@
     notification_email_on_fail: null
 
   tasks:
-    - name: Queryng "{{ identity }}" 
-      when: identity is defined
+    - name: Queryng "{{ sAMAccountName }}" 
+      when: sAMAccountName is defined
       community.windows.win_domain_user:
-        name: "{{ identity }}"
+        name: "{{ sAMAccountName }}"
         state: query
-      register: result_query 
+      register: result_query   
+
+    - name: Mostrar el resultado del Queryng
+      debug:
+        var: result_query
 
     - name: Establecer el valor de result_query como result
       ansible.builtin.set_fact:
-        result: "{{ result_query }}"   
+        result: "{{ result_query }}" 
