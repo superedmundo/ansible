@@ -53,7 +53,8 @@
   # Modificando al usuario por que ya existe o por que ya fue creado
 
     - name: Modify User because is present
-      when: result.state == "present" or (result_add_user.changed == true and result_add_user.failed == false)
+      when: result.state == "present" or (result_add_user is defined and (result_add_user.changed == true and result_add_user.failed == false))
+      
       block:
         - name: Entrando al bloque de Modificación
           ansible.builtin.debug:
