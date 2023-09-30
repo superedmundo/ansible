@@ -8,37 +8,41 @@
 
   vars:
 
-    sAMAccountName: PatoAventuras
+    samaccountname: null
+    userprincipalname: null
     password: null
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
 
   tasks:
-    - name: Queryng "{{ sAMAccountName }}" 
-      when: sAMAccountName is defined
+
+    - name: Desplegando las variables que llegaron.
+      ansible.builtin.debug:
+        msg: 
+          samaccountname: "{{ samaccountname }}"
+          userprincipalname: "{{ userprincipalname }}"
+          password: "{{ password }}"
+          generated_password: "{{ generated_password }}"
+
+    - name: Queryng "{{ samaccountname }}" 
+      when: samaccountname is defined
       community.windows.win_domain_user:
-        name: "{{ sAMAccountName }}"
+        name: "{{ samaccountname }}"
         state: query
       register: result   
 
-    - name: Mostrar el resultado del Queryng
-      ansible.builtin.debug:
-        var: result 
+    # - name: Mostrar el resultado del Queryng
+    #   ansible.builtin.debug:
+    #     var: result 
 
     - name: Add User because is absent
       when: result.state == "absent"
       block:
-        - name: Mostrar Contraseña Generada
-          ansible.builtin.debug:
-            msg: 
-              sAMAccountName: "{{ sAMAccountName }}"
-              generated_password: "{{ generated_password }}"
-
-        # - name: Add user in AD
-        #   microsoft.ad.user:
-        #     password: "{{ password }}"
-        #     state: present
-        #     attributes:
-        #       set:
-        #         #userPrincipalName: "{{ userPrincipalName }}"
-        #         sAMAccountName: "{{ sAMAccountName }}"
-        #   register: result_add_user
+        - name: add user in ad
+          microsoft.ad.user:
+            password: "{{ (password) | ternary(password, generated_password) }}"
+            state: present
+            attributes:
+              set:
+                userprincipalname: "{{ userprincipalname }}"
+                samaccountname: "{{ samaccountname }}"
+          register: result_add_user
