@@ -29,7 +29,9 @@
       block:
         - name: Mostrar Contraseña Generada
           ansible.builtin.debug:
-            var: generated_password
+            var:
+              - sAMAccountName 
+              - generated_password
 
         # - name: Add user in AD
         #   microsoft.ad.user:
