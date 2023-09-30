@@ -10,7 +10,9 @@
 
     sAMAccountName: PatoAventuras
     password: null
-    random_password: "{{ lookup('password', '/dev/null length={{length_password}} chars=ascii_letters,digits') }}"
+
+    length_password: 12
+    generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', length={{length_password}}, chars=['ascii_letters', 'ascii_uppercase', 'digits', 'punctuation']) }}"
 
   tasks:
     - name: Queryng "{{ sAMAccountName }}" 
@@ -27,18 +29,9 @@
     - name: Add User because is absent
       when: result.state == "absent"
       block:
-        - name: Revisando Password
-          when: password is not defined
-          no_log: true
-          ansible.builtin.password:
-            length: 16
-            digit: yes
-            punct: yes
-          register: generated_password
-
         - name: Mostrar Contraseña Generada
-          ansible.builtin.debug:
-            var: generated_password.stdout
+          debug:
+            var: generated_password
 
         # - name: Add user in AD
         #   microsoft.ad.user:
