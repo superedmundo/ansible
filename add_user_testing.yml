@@ -6,7 +6,10 @@
     - ditra.cisco
 
   vars:
+
     sAMAccountName: PatoAventuras
+    password: null
+    random_password: "{{ lookup('password', '/dev/null length={{length_password}} chars=ascii_letters,digits') }}"
 
   tasks:
     - name: Queryng "{{ sAMAccountName }}" 
@@ -14,8 +17,34 @@
       community.windows.win_domain_user:
         name: "{{ sAMAccountName }}"
         state: query
-      register: result_query   
+      register: result   
 
     - name: Mostrar el resultado del Queryng
       debug:
-        var: result_query
+        var: result 
+
+    - name: Add User because is absent
+      when: result.state == "absent"
+      block:
+        - name: Revisando Password
+          when: password is not defined
+          no_log: true
+          ansible.builtin.password:
+            length: 16
+            digit: yes
+            punct: yes
+          register: generated_password
+
+        - name: Mostrar Contraseña Generada
+          ansible.builtin.debug:
+            var: generated_password.stdout
+
+        # - name: Add user in AD
+        #   microsoft.ad.user:
+        #     password: "{{ password }}"
+        #     state: present
+        #     attributes:
+        #       set:
+        #         #userPrincipalName: "{{ userPrincipalName }}"
+        #         sAMAccountName: "{{ sAMAccountName }}"
+        #   register: result_add_user
