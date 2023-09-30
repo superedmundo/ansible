@@ -45,6 +45,7 @@
               set:
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
           register: result_add_user
+
         - name: Desplegando el resultado del Add.
           when: result_add_user is defined
           ansible.builtin.debug:
@@ -59,5 +60,5 @@
           ansible.builtin.debug:
             msg: 
               result.state: "{{ result.state }}" 
-              result_add_user_is_defined: "{{ result_add_user is defined }}"
+              result_add_user_is_defined.changed: "{{ result_add_user.changed is defined }}"
               #result_add_user.failed: "{{ result_add_user is defined }}"
