@@ -13,7 +13,7 @@
 
     length_password: 12
     #generated_password: "{{ lookup('password', '/dev/null', length=8, chars=['ascii_letters', 'digits', 'punctuation']) }}"
-    generated_password: "{{ lookup('password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=8) }}"
+    generated_password: "{{ lookup('password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length={{ length_password }}) }}"
 
   tasks:
     - name: Queryng "{{ sAMAccountName }}" 
