@@ -39,6 +39,7 @@
       block:
         - name: add user in ad
           microsoft.ad.user:
+            name: "{{ sAMAccountName }}"
             password: "{{ (password) | ternary(password, generated_password) }}"
             state: present
             attributes:
