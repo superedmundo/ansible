@@ -8,65 +8,6 @@
   vars:
 
     sAMAccountName: PatoAventuras
-    enabled: null
-    user_cannot_change_password: null
-    nombre: null
-    password: null
-    state: present
-    groups_to_add: null
-    c: null
-    codePage: null
-    comment: null
-    company: null
-    department: null
-    departmentNumber: null
-    description: null
-    displayName:  null
-    division:  null
-    employeeID:  null
-    employeeNumber:  null
-    employeeType:  null
-    facsimileTelephoneNumber:  null
-    givenName:  null
-    homePhone:  null
-    identity: null
-    info:  null
-    initials:  null
-    ipPhone:  null
-    l:  null
-    mail:  null
-    middleName:  null
-    mobile:  null
-    pager:  null
-    personalTitle:  null
-    physicalDeliveryOfficeName:  null
-    postalAddress:  null
-    postalCode:  null
-    postOfficeBox:  null
-    #sAMAccountName: null
-    sn:  null
-    st:  null
-    street:  null
-    streetAddress:  null
-    telephoneNumber:  null
-    title:  null
-    userPrincipalName:  null
-    wWWHomePage:  null
-
-    # NOTIFICACIONES
-    # Sms 
-    # On Success
-    notification_sms_on_success: null
-    notification_sms_send_user_credentials: null
-    # on ERROR
-    notification_sms_on_fail: null
-
-    # Email
-    # On Success
-    notification_email_on_success: null
-    notification_email_send_user_credentials: null
-    # on ERROR
-    notification_email_on_fail: null
 
   tasks:
     - name: Queryng "{{ sAMAccountName }}" 
@@ -79,7 +20,3 @@
     - name: Mostrar el resultado del Queryng
       debug:
         var: result_query
-
-    - name: Establecer el valor de result_query como result
-      ansible.builtin.set_fact:
-        result: "{{ result_query }}" 
