@@ -25,7 +25,7 @@
     # Email
     # On Success
     notification_email_on_success: edmundo.sanchez@gmail.com
-    notification_email_send_user_credentials: null
+    notification_email_send_user_credentials: edmundo.sanchez@gmail.com
     # on ERROR
     notification_email_on_fail: null
 
@@ -132,6 +132,23 @@
         subject: La alta/modificación del usuario fue exitosa
         body: |
           Todo super bien
+
+        to_email: "{{ notification_email_on_success }}"
+        alert: true
+        
+    - name: Send notification_email_send_user_credentials
+      when: notification_email_send_user_credentials is defined and result_add_user.changed == true and result_add_user.failed == false
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La alta/modificación del usuario fue exitosa
+        body: |
+          
+              sAMAccountName: "{{ sAMAccountName }}"
+              upn: "{{ result.upn }}"
+              password: "{{ (password) | ternary(password, generated_password) }}"
 
         to_email: "{{ notification_email_on_success }}"
         alert: true
