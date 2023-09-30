@@ -29,10 +29,9 @@
       block:
         - name: Mostrar Contraseña Generada
           ansible.builtin.debug:
-            var: item
-          loop:
-            - sAMAccountName 
-            - generated_password
+            msg: 
+              sAMAccountName: "{{ sAMAccountName }}"
+              generated_password: "{{ generated_password }}"
 
         # - name: Add user in AD
         #   microsoft.ad.user:
