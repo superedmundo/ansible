@@ -60,5 +60,5 @@
           ansible.builtin.debug:
             msg: 
               result.state: "{{ result.state }}" 
-              result_add_user.changed: "{{ result_add_user.changed }}"
-              result_add_user.failed: "{{ result_add_user.failed }}"
+              #result_add_user.changed: "{{ result_add_user.changed }}"
+              #result_add_user.failed: "{{ result_add_user.failed }}"
