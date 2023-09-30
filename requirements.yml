@@ -2,6 +2,7 @@
 collections:
   - community.windows
   - microsoft.ad
+  - ansible.builtin.password
   #- name: ditra.cisco
   #  source: git@gitlab.com:ditramx/ditra.cisco.git
   #  type: git

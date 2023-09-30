@@ -4,6 +4,7 @@
   gather_facts: no 
   collections:
     - ditra.cisco
+    - ansible.builtin.password
 
   vars:
 
