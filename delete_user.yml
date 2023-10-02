@@ -1,0 +1,156 @@
+---
+- name: Add a user in Active Directory
+  hosts: 10.100.1.116
+  gather_facts: no 
+  collections:
+    - ditra.cisco
+    - ansible.builtin.password
+
+  vars:
+    sAMAccountName: null
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms: null
+
+    # Email
+    # On Success
+    notification_email: null
+
+    # Variables internas de control de flujo
+    something_wrong: false
+
+  tasks:
+
+    - name: Desplegando las variables que llegaron.
+      ansible.builtin.debug:
+        msg: 
+          sAMAccountName: "{{ sAMAccountName }}" 
+
+          # NOTIFICACIONES
+          # Email
+          # On Success
+          notification_email: "{{ notification_email }}"
+
+  # Revisando si ya existe o no el ususario en el AD
+
+    - name: Queryng "{{ sAMAccountName }}" 
+      block:
+        - name: Queryng "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result_query 
+
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
+      
+      rescue: 
+        - name: Envio de correo failed
+          when: notification_email is defined
+          ansible.builtin.include_role:
+            name: ditra.cisco.send_email
+            apply:
+              delegate_to: localhost
+          vars:
+            subject: Ocurrió un error en la búsqueda de la cuenta en AD
+            body: |
+              ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}"
+              ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
+
+            to_email: "{{ notification_email }}"
+            alert: true         
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+
+  # Agregando al usuario por que no existe
+
+    - name: Remove User because is present
+      when: result.state == "present" and something_wrong == false
+      block:
+        - name: remove user in ad
+          microsoft.ad.user:
+            name: "{{ sAMAccountName }}"
+            state: absent
+          register: result_delete_user
+
+        - name: Desplegando el resultado del Add.
+          ansible.builtin.debug:
+            var:  result_delete_user
+
+        - name: Queryng Again "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result_query 
+
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
+      
+      rescue: 
+        - name: Envio de correo failed al no poder crear el usuario
+          when: notification_email is defined and something_wrong == true
+          ansible.builtin.include_role:
+            name: ditra.cisco.send_email
+            apply:
+              delegate_to: localhost
+          vars:
+            subject: Ocurrió un error en la alta de la cuenta de AD
+            body: |
+              result_delete_user: "{{ result_delete_user | to_json(indent=2) }}" 
+
+              ***********
+              ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}" 
+
+              ***********
+              ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
+
+            to_email: "{{ notification_email }}"
+            alert: true
+
+        - name: Desplegando la variable de ansible_facts.
+          ansible.builtin.debug:
+            msg: 
+              ansible_facts: "{{ ansible_facts | to_json(indent=2) }}"          
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+
+
+    # NOTIFICACIONES
+    - name: Send notification_email
+      when: notification_email is defined and something_wrong == false and result.state == "absent"
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: El borrado del usuario fue exitoso
+        body: |
+          Todo super bien
+
+        to_email: "{{ notification_email }}"
+        alert: true
+        
+    - name: Send notification_email_on_fail
+      when: notification_email is defined and (something_wrong == true or result.state == "present")
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: El borrado del usuario falló
+        body: |
+          Algo salió mal, revisa la bitácora
+
+        to_email: "{{ notification_email }}"
+        alert: true
+        
