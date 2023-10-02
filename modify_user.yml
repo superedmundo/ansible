@@ -126,7 +126,7 @@
             state:    present
             attributes:
               set:
-                codePage: "{{ codePage }}"
+                codePage: "{{ (codePage is defined) | ternary(codePage, 0) }}"
 
         - name: Modify comment user in AD
           when: comment is defined
