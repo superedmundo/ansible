@@ -74,8 +74,8 @@
           vars:
             subject: Ocurrió un error en la búsqueda de la cuenta en AD
             body: |
-              El error ocurrió en la tarea: "{{ ansible_failed.task.name }}"
-              toda la info de la falla: "{{ ansible_failed.task }}" 
+              ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}"
+              ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
             to_email: "{{ notification_email_on_fail }}"
             alert: true
@@ -121,7 +121,12 @@
             subject: Ocurrió un error en la alta de la cuenta de AD
             body: |
               result_add_user: "{{ result_add_user | to_json(indent=2) }}" 
-              falla: "{{ ansible_failed_task | to_json(indent=2) }}" 
+
+              ***********
+              ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}" 
+
+              ***********
+              ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
             to_email: "{{ notification_email_on_fail }}"
             alert: true
