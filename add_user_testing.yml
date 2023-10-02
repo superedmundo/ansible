@@ -27,7 +27,7 @@
     notification_email_on_success: null
     notification_email_send_user_credentials: null
     # on ERROR
-    notification_email_on_fail: null
+    notification_email_on_fail: edmundo.sanchez@gmail.com
 
   tasks:
 
@@ -49,15 +49,32 @@
   # Revisando si ya existe o no el ususario en el AD
 
     - name: Queryng "{{ sAMAccountName }}" 
-      when: sAMAccountName is defined
-      community.windows.win_domain_user:
-        name: "{{ sAMAccountName }}"
-        state: query
-      register: result_query 
+      block:
+        - name: Queryng "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result_query 
 
-    - name: Establecer el valor de result_query como result
-      ansible.builtin.set_fact:
-        result: "{{ result_query }}"   
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
+      
+      rescue: 
+        - name: Envio de correo failed
+          ansible.builtin.include_role:
+            name: ditra.cisco.send_email
+            apply:
+              delegate_to: localhost
+          vars:
+            subject: Ocurrió un error en la alta/modificación de la cuenta de AD
+            body: |
+              El error ocurrió en la tarea: "{{ ansible_failed.task.name }}"
+              toda la info de la falla: "{{ ansible_failed.task }}"
+
+            to_email: "{{ notification_email_on_fail }}"
+            alert: true
 
   # Agregando al usuario por que no existe
 
@@ -88,7 +105,7 @@
 
         - name: Establecer el valor de result_query como result
           ansible.builtin.set_fact:
-            result: "{{ result_query }}"   
+            result: "{{ result_query }}"  
 
   # Modificando al usuario por que ya existe o por que ya fue creado
 
