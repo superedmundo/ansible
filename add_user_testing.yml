@@ -66,12 +66,13 @@
       
       rescue: 
         - name: Envio de correo failed
+          when: notification_email_on_fail is defined
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
               delegate_to: localhost
           vars:
-            subject: Ocurrió un error en la alta/modificación de la cuenta de AD
+            subject: Ocurrió un error en la búsqueda de la cuenta en AD
             body: |
               El error ocurrió en la tarea: "{{ ansible_failed.task.name }}"
               toda la info de la falla: "{{ ansible_failed.task }}" 
@@ -119,11 +120,16 @@
           vars:
             subject: Ocurrió un error en la alta de la cuenta de AD
             body: |
-              El error ocurrió en la tarea: "{{ ansible_failed_task }}"
-              toda la info de la falla: "{{ ansible_failed_task }}" 
+              result_add_user: "{{ result_add_user | to_json(indent=2) }}" 
+              falla: "{{ ansible_failed_task | to_json(indent=2) }}" 
 
             to_email: "{{ notification_email_on_fail }}"
             alert: true
+
+        - name: Desplegando la variable de ansible_facts.
+          ansible.builtin.debug:
+            msg: 
+              ansible_facts: "{{ ansible_facts | to_json(indent=2) }}"          
 
         - name: Establecer el valor de algo Erroneo
           ansible.builtin.set_fact:
