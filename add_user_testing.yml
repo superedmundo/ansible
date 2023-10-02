@@ -19,15 +19,11 @@
     # On Success
     notification_sms_on_success: null
     notification_sms_send_user_credentials: null
-    # on ERROR
-    notification_sms_on_fail: null
 
     # Email
     # On Success
     notification_email_on_success: null
     notification_email_send_user_credentials: null
-    # on ERROR
-    notification_email_on_fail: edmundo.sanchez@gmail.com
 
     # Variables internas de control de flujo
     something_wrong: false
@@ -46,8 +42,6 @@
           # On Success
           notification_email_on_success: "{{ notification_email_on_success }}"
           notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
-          # on ERROR
-          notification_email_on_fail: "{{ notification_email_on_fail }}"
 
   # Revisando si ya existe o no el ususario en el AD
 
@@ -66,7 +60,7 @@
       
       rescue: 
         - name: Envio de correo failed
-          when: notification_email_on_fail is defined
+          when: notification_email_on_success is defined
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
@@ -77,7 +71,7 @@
               ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}"
               ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
-            to_email: "{{ notification_email_on_fail }}"
+            to_email: "{{ notification_email_on_success }}"
             alert: true         
 
         - name: Establecer el valor de algo Erroneo
@@ -116,7 +110,7 @@
       
       rescue: 
         - name: Envio de correo failed al no poder crear el usuario
-          when: notification_email_on_fail is defined and something_wrong == true
+          when: notification_email_on_success is defined and something_wrong == true
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
@@ -132,7 +126,7 @@
               ***********
               ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
-            to_email: "{{ notification_email_on_fail }}"
+            to_email: "{{ notification_email_on_success }}"
             alert: true
 
         - name: Desplegando la variable de ansible_facts.
@@ -576,7 +570,7 @@
         alert: true
         
     - name: Send notification_email_on_fail
-      when: notification_email_on_fail is defined and something_wrong == true
+      when: notification_email_on_success is defined and something_wrong == true
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
@@ -586,6 +580,6 @@
         body: |
           Algo salió mal, revisa la bitácora
 
-        to_email: "{{ notification_email_on_fail }}"
+        to_email: "{{ notification_email_on_success }}"
         alert: true
         
