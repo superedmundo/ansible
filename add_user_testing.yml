@@ -538,7 +538,7 @@
 
     # NOTIFICACIONES
     - name: Send notification_email_on_success
-      when: notification_email_on_success is defined and result_add_user.changed == true and result_add_user.failed == false
+      when: notification_email_on_success is defined and something_wrong == false
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
