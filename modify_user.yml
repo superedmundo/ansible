@@ -6,8 +6,8 @@
     - ditra.cisco
 
   vars:
-    enabled: true
     sAMAccountName: null
+    state: present
 
     # NOTIFICACIONES
     # Sms 
