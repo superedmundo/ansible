@@ -90,7 +90,6 @@
       when: result.state == "absent" and something_wrong == false
       block:
         - name: add user in ad
-          when: result.state == "absent"
           microsoft.ad.user:
             name: "{{ sAMAccountName }}"
             password: "{{ (password) | ternary(password, generated_password) }}"
@@ -117,6 +116,7 @@
       
       rescue: 
         - name: Envio de correo failed al no poder crear el usuario
+          when: notification_email_on_fail is defined and something_wrong == true
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
