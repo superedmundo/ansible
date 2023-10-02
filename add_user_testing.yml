@@ -78,12 +78,16 @@
               ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
             to_email: "{{ notification_email_on_fail }}"
-            alert: true
+            alert: true         
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
 
   # Agregando al usuario por que no existe
 
     - name: Add User because is absent
-      when: result.state == "absent"
+      when: result.state == "absent" and something_wrong == false
       block:
         - name: add user in ad
           when: result.state == "absent"
@@ -572,7 +576,7 @@
         alert: true
         
     - name: Send notification_email_on_fail
-      when: notification_email_on_fail is defined
+      when: notification_email_on_fail is defined and something_wrong == true
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
