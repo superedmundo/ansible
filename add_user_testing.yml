@@ -71,7 +71,7 @@
             subject: Ocurrió un error en la alta/modificación de la cuenta de AD
             body: |
               El error ocurrió en la tarea: "{{ ansible_failed.task.name }}"
-              toda la info de la falla: "{{ ansible_failed.task }}"
+              toda la info de la falla: "{{ ansible_failed.task }}" 
 
             to_email: "{{ notification_email_on_fail }}"
             alert: true
