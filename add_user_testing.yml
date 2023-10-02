@@ -111,16 +111,16 @@
             result: "{{ result_query }}"   
       
       rescue: 
-        - name: Envio de correo failed
+        - name: Envio de correo failed al no poder crear el usuario
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
               delegate_to: localhost
           vars:
-            subject: Ocurrió un error en la alta/modificación de la cuenta de AD
+            subject: Ocurrió un error en la alta de la cuenta de AD
             body: |
-              El error ocurrió en la tarea: "{{ ansible_failed.task.name }}"
-              toda la info de la falla: "{{ ansible_failed.task }}" 
+              El error ocurrió en la tarea: "{{ ansible_failed_task }}"
+              toda la info de la falla: "{{ ansible_failed_task }}" 
 
             to_email: "{{ notification_email_on_fail }}"
             alert: true
