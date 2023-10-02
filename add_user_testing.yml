@@ -29,6 +29,9 @@
     # on ERROR
     notification_email_on_fail: edmundo.sanchez@gmail.com
 
+    # Variables internas de control de flujo
+    something_wrong: false
+
   tasks:
 
     - name: Desplegando las variables que llegaron.
@@ -105,12 +108,31 @@
 
         - name: Establecer el valor de result_query como result
           ansible.builtin.set_fact:
-            result: "{{ result_query }}"  
+            result: "{{ result_query }}"   
+      
+      rescue: 
+        - name: Envio de correo failed
+          ansible.builtin.include_role:
+            name: ditra.cisco.send_email
+            apply:
+              delegate_to: localhost
+          vars:
+            subject: Ocurrió un error en la alta/modificación de la cuenta de AD
+            body: |
+              El error ocurrió en la tarea: "{{ ansible_failed.task.name }}"
+              toda la info de la falla: "{{ ansible_failed.task }}" 
+
+            to_email: "{{ notification_email_on_fail }}"
+            alert: true
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
 
   # Modificando al usuario por que ya existe o por que ya fue creado
 
     - name: Modify User because is present
-      when: result.state == "present"
+      when: result.state == "present" and something_wrong == false
       block:
         - name: Entrando al bloque de Modificación
           ansible.builtin.debug:
