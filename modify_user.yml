@@ -471,7 +471,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La alta/modificación del usuario fue exitosa
+        subject: La modificación del usuario fue exitosa
         body: |
           Todo bien
 
@@ -485,7 +485,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La alta/modificación del usuario fue fallida
+        subject: La modificación del usuario fue fallida
         body: |
           Algo salió mal, revisa la bitácora
 
