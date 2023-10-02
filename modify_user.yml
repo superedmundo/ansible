@@ -74,11 +74,6 @@
           ansible.builtin.debug:
             msg: 
               result.state: "{{ result.state }}" 
-              result_add_user: "{{ result_add_user }}"
-              result_add_user_is_defined: "{{ result_add_user is defined }}"
-              result_add_user.changed_is_defined: "{{ result_add_user.changed is defined }}"
-              result_add_user.failed_is_defined: "{{ result_add_user.failed is defined }}"
-              result_add_user.changed: "{{ result_add_user.changed }}"
               
         - name: Modify enabled user in AD
           when: enabled is defined and result.enabled != enabled
