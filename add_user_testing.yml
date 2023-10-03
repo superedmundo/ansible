@@ -78,6 +78,14 @@
           ansible.builtin.set_fact:
             something_wrong: true
 
+  # Revisando que no exista ya el usuario
+    - name: Asegurando que NO exista ya el usuario
+      when: result.state == "present"
+      block:
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+
   # Agregando al usuario por que no existe
 
     - name: Add User because is absent
@@ -170,7 +178,7 @@
             state:  present
 
         - name: Modify password user in AD
-          when: password is defined or generated_password is defined
+          when: (password is defined or generated_password is defined) and something_wrong == false
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
@@ -576,7 +584,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La alta/modificación del usuario fue fallida
+        subject: La alta del usuario fue fallida
         body: |
           Algo salió mal, revisa la bitácora
 
