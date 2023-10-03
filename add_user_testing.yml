@@ -552,7 +552,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La alta/modificación del usuario fue exitosa
+        subject: La alta del usuario fue exitosa
         body: |
           Todo super bien
 
