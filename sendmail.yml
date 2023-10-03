@@ -1,0 +1,29 @@
+---
+- name: Testing Deliver of mail
+  hosts: 10.100.1.116
+  gather_facts: no 
+  collections:
+    - ditra.cisco
+
+  vars:
+
+    notification_email:  edmundo.sanchez@gmail.com
+
+    # Variables internas de control de flujo
+    something_wrong: false
+
+  tasks:
+
+    # NOTIFICACIONES
+    - name: Send notification
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: sendmail.yml
+        body: |
+          Todo super bien
+
+        to_email: "{{ notification_email }}"
+        alert: true
