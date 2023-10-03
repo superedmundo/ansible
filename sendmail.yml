@@ -23,7 +23,9 @@
       vars:
         subject: sendmail.yml
         body: |
-          Todo super bien
+          Todo super bien, veamos si funciona el correo
+
+          Atte Edmundo Sánchez Medina
 
         to_email: "{{ notification_email }}"
         alert: true
