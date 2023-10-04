@@ -9,6 +9,11 @@
   vars:
     sAMAccountName_source: null
     sAMAccountName: null
+    
+    enabled: true
+    givenName: null
+    sn: null
+
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
     dominio: Contoso.mx
 
@@ -581,16 +586,16 @@
   #       alert: true
         
   #   - name: Send notification_email_on_fail
-      when: notification_email is defined and something_wrong == true
-      ansible.builtin.include_role:
-        name: ditra.cisco.send_email
-        apply:
-          delegate_to: localhost
-      vars:
-        subject: La alta del usuario fue fallida
-        body: |
-          Algo salió mal, revisa la bitácora
+      # when: notification_email is defined and something_wrong == true
+      # ansible.builtin.include_role:
+      #   name: ditra.cisco.send_email
+      #   apply:
+      #     delegate_to: localhost
+      # vars:
+      #   subject: La alta del usuario fue fallida
+      #   body: |
+      #     Algo salió mal, revisa la bitácora
 
-        to_email: "{{ notification_email }}"
-        alert: true
+      #   to_email: "{{ notification_email }}"
+      #   alert: true
         
