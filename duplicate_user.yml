@@ -112,7 +112,7 @@
                 #codePage: "{{ codePage }}"
                 #comment: "{{ result.comment }}"
                 company: "{{ result.company }}"
-                delegates: "{{ result.delegates }}"
+                #delegates: "{{ result.delegates }}"
                 #department: "{{ result.department }}"
                 #departmentNumber: "{{ result.departmentNumber }}"
                 description: "{{ result.description }}"
