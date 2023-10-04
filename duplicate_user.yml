@@ -202,9 +202,11 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La alta del usuario fue exitosa
+        subject: La duplicación del usuario fue exitosa
         body: |
-          Todo super bien
+          Todo bien.
+
+          Se duplicó la cuenta: "{{ sAMAccountName_source }}" por "{{ sAMAccountName }}" 
 
         to_email: "{{ notification_email }}"
         alert: true
@@ -216,10 +218,10 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La alta del usuario fue exitosa
+        subject: La duplicacion del usuario fue exitosa
         body: |
          
-          AccountName: "{{ sAMAccountName_source }}" 
+          AccountName: "{{ sAMAccountName }}" 
           password: "{{ generated_password }}"
           identity: "{{ result.distinguished_name }}"
           
