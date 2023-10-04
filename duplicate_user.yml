@@ -93,41 +93,9 @@
           ansible.builtin.set_fact:
             something_wrong: true
 
-  # Duplicando al usuario Source
-
-        # "account_locked": false,
-        # "changed": false,
-        # "city": "Ciudad",
-        # "company": "BobCo",
-        # "country": "MX",
-        # "created": false,
-        # "delegates": [],
-        # "description": "Esta cuenta fue creada con Ansible",
-        # "display_name": "Nombre_a_Desplegar",
-        # "distinguished_name": "CN=edmundo.sanchez,CN=Users,DC=Contoso,DC=mx",
-        # "email": "edmundo.sanchez@gmail.com",
-        # "enabled": true,
-        # "failed": false,
-        # "firstname": "Pedro",
-        # "groups": "CN=Domain Users,CN=Users,DC=Contoso,DC=mx",
-        # "msg": "User 'edmundo.sanchez' is present",
-        # "name": "edmundo.sanchez",
-        # "password_expired": false,
-        # "password_never_expires": true,
-        # "password_updated": false,
-        # "postal_code": "44600",
-        # "sam_account_name": "edmundo.sanchez",
-        # "sid": "S-1-5-21-2350583528-39209825-191241035-1104",
-        # "spn": [],
-        # "state": "present",
-        # "state_province": "Gdl",
-        # "street": "123 Av. Pedro",
-        # "surname": "Sanchez",
-        # "upn": "edmundo.sanchez@contoso.mx",
-        # "user_cannot_change_password": false  
-
+  # Agregando al usuario por que no existe
     - name: Add User because is absent
-      when: result.state == "absent" and something_wrong == false
+      when: something_wrong == false
       block:
         - name: add user in ad
           microsoft.ad.user:
