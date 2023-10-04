@@ -103,10 +103,10 @@
             password: "{{ generated_password }}"
             enabled: "{{ result.enabled }}"
             state: present
-            groups:
-              set:  "{{ result.groups }}" 
-            delegates: 
-              set:  "{{ result.delegates }}"
+            #groups:
+            #  set:  "{{ result.groups }}" 
+            #delegates: 
+            #  set:  "{{ result.delegates }}"
             attributes:
               set:
                 #account_locked: "{{ result.account_locked }}"
