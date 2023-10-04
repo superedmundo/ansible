@@ -63,8 +63,7 @@
 
         - name: Desplegando result_query
           ansible.builtin.debug:
-            msg: 
-              result_query: "{{ result_query | to_json(indent=2) }}" 
+            var: "{{ result_query | to_json(indent=2) }}" 
 
       rescue: 
         - name: Envio de correo failed
