@@ -104,7 +104,7 @@
             enabled: "{{ result.enabled }}"
             state: present
             groups:
-              set:  "{{ result.groups_to_add }}" 
+              set:  "{{ result.groups }}" 
             attributes:
               set:
                 #account_locked: "{{ result.account_locked }}"
