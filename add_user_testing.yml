@@ -22,7 +22,7 @@
 
     # Email
     # On Success
-    notification_email_on_success: null
+    notification_email: null
     notification_email_send_user_credentials: null
 
     # Variables internas de control de flujo
@@ -40,7 +40,7 @@
           # NOTIFICACIONES
           # Email
           # On Success
-          notification_email_on_success: "{{ notification_email_on_success }}"
+          notification_email: "{{ notification_email }}"
           notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
 
   # Revisando si ya existe o no el ususario en el AD
@@ -60,7 +60,7 @@
       
       rescue: 
         - name: Envio de correo failed
-          when: notification_email_on_success is defined
+          when: notification_email is defined
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
@@ -71,7 +71,7 @@
               ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}"
               ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
-            to_email: "{{ notification_email_on_success }}"
+            to_email: "{{ notification_email }}"
             alert: true         
 
         - name: Establecer el valor de algo Erroneo
@@ -118,7 +118,7 @@
       
       rescue: 
         - name: Envio de correo failed al no poder crear el usuario
-          when: notification_email_on_success is defined and something_wrong == true
+          when: notification_email is defined and something_wrong == true
           ansible.builtin.include_role:
             name: ditra.cisco.send_email
             apply:
@@ -134,7 +134,7 @@
               ***********
               ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
 
-            to_email: "{{ notification_email_on_success }}"
+            to_email: "{{ notification_email }}"
             alert: true
 
         - name: Desplegando la variable de ansible_facts.
@@ -545,8 +545,8 @@
                 wWWHomePage: "{{ wWWHomePage }}"
 
     # NOTIFICACIONES
-    - name: Send notification_email_on_success
-      when: notification_email_on_success is defined and something_wrong == false
+    - name: Send notification_email
+      when: notification_email is defined and something_wrong == false
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
@@ -556,7 +556,7 @@
         body: |
           Todo super bien
 
-        to_email: "{{ notification_email_on_success }}"
+        to_email: "{{ notification_email }}"
         alert: true
         
     - name: Send notification_email_send_user_credentials
@@ -574,11 +574,11 @@
           identity: "{{ result.distinguished_name }}"
           
   
-        to_email: "{{ notification_email_on_success }}"
+        to_email: "{{ notification_email }}"
         alert: true
         
     - name: Send notification_email_on_fail
-      when: notification_email_on_success is defined and something_wrong == true
+      when: notification_email is defined and something_wrong == true
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
@@ -588,6 +588,6 @@
         body: |
           Algo salió mal, revisa la bitácora
 
-        to_email: "{{ notification_email_on_success }}"
+        to_email: "{{ notification_email }}"
         alert: true
         
