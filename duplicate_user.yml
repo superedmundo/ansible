@@ -220,7 +220,7 @@
         body: |
          
           AccountName: "{{ sAMAccountName_source }}" 
-          password: "{{ (password) | ternary(password, generated_password) }}"
+          password: "{{ generated_password }}"
           identity: "{{ result.distinguished_name }}"
           
   
