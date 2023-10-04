@@ -30,6 +30,7 @@
 
     # Variables internas de control de flujo
     something_wrong: false
+    mensaje_error: null
 
   tasks:
 
@@ -65,6 +66,13 @@
           ansible.builtin.debug:
             var: result_query
 
+        - name: Queryng "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result_query 
+
       rescue: 
         - name: Envio de correo failed
           when: notification_email is defined
@@ -87,11 +95,12 @@
 
   # Asegurandonos que el usuario source ya exista
     - name: Asegurando que NO exista ya el usuario
-      when: result.state == "absent"
+      when: result.state == "absent" or result_query.state == "present"
       block:
         - name: Establecer el valor de algo Erroneo
           ansible.builtin.set_fact:
             something_wrong: true
+            mensaje_error: "La cuenta fuente no existe y/o la cuenta destino ya existe."
 
   # Agregando al usuario por que no existe
     - name: Add User because is absent
@@ -239,6 +248,8 @@
         subject: La duplicación del usuario fue fallida
         body: |
           Algo salió mal, revisa la bitácora
+
+          "{{ (mensaje_error is defined) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
 
         to_email: "{{ notification_email }}"
         alert: true
