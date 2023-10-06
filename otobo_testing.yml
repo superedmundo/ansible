@@ -7,8 +7,6 @@
   collections:
     - ditra.cisco
     - ansible.builtin.password
-    - community.general
-
 
   vars:
     sAMAccountName: null
