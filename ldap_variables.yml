@@ -1,0 +1,45 @@
+---
+
+  vars:
+    enabled: null
+    user_cannot_change_password: null
+    nombre: null
+    password: null
+    state: present
+    groups_to_add: null
+    c: null
+    codePage: null
+    comment: null
+    company: null
+    department: null
+    departmentNumber: null
+    description: null
+    displayName:  null
+    division:  null
+    employeeID:  null
+    employeeNumber:  null
+    employeeType:  null
+    facsimileTelephoneNumber:  null
+    givenName:  null
+    homePhone:  null
+    info:  null
+    initials:  null
+    ipPhone:  null
+    l:  null
+    mail:  null
+    middleName:  null
+    mobile:  null
+    pager:  null
+    personalTitle:  null
+    physicalDeliveryOfficeName:  null
+    postalAddress:  null
+    postalCode:  null
+    postOfficeBox:  null
+    sn:  null
+    st:  null
+    street:  null
+    streetAddress:  null
+    telephoneNumber:  null
+    title:  null
+    userPrincipalName:  null
+    wWWHomePage:  null
