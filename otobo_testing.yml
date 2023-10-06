@@ -1,0 +1,94 @@
+---
+- name: Add a user in Active Directory
+  hosts: 10.100.1.116
+  gather_facts: no 
+  vars_files:
+    - "./oscarc_otobo_password"
+  collections:
+    - ditra.cisco
+    - ansible.builtin.password
+    - community.general
+
+
+  vars:
+    sAMAccountName: null
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms: null
+
+    # Email
+    # On Success
+    notification_email: null
+
+    # Variables internas de control de flujo
+    something_wrong: false
+
+    # vars for otobo changes
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+    TicketID: null
+
+
+  tasks:
+
+    - name: Desplegando las variables que llegaron.
+      ansible.builtin.debug:
+        msg: 
+          sAMAccountName: "{{ sAMAccountName }}" 
+
+          # NOTIFICACIONES
+          # Email
+          # On Success
+          notification_email: "{{ notification_email }}"
+
+  # tasks to update status in oboto
+    - name: Otobo login, get session id
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.login }}"
+        method: POST
+        body_format: json
+        body:
+          UserLogin: "{{ otobo_user }}"
+          Password: "{{ otobo_password }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get SessionID from login response
+      ansible.builtin.set_fact:
+        session_id: "{{ r.SessionID }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+      delegate_to: localhost
+    
+    - name: Set auto process ticket as processing status
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          DynamicField:
+           - Name: AutoStatus
+             Value: processing
+
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
+
+
