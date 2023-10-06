@@ -91,4 +91,35 @@
       run_once: true
       when: TicketID is not none and session_id is defined
 
+    - name: Crear mensaje para otobo
+      ansible.builtin.set_fact:
+        result_process: "Se borró de manera exitosa la cuenta: {{ sAMAccountName }}"
+
+    # tasks to update status in oboto
+    - name: Post report to ticket on otobo
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          Article:
+            CommunicationChannel: Internal
+            IsVisibleForCustomer: 1
+            Subject: Reporte ansible
+            Body: "{{ result_process }}"
+            ContentType: text/plain; charset=utf-8
+          DynamicField:
+           - Name: AutoStatus
+             Value: completed
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
+
+
 
