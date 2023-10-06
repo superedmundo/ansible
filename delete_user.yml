@@ -6,9 +6,7 @@
     - "./oscarc_otobo_password"
   collections:
     - ditra.cisco
-    - ansible.builtin.password
     - community.general
-
 
   vars:
     sAMAccountName: null
@@ -37,9 +35,7 @@
       Ticket: "{{ base_url }}{{ module.login }}/Ticket"
     TicketID: null
 
-
   tasks:
-
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
         msg: 
@@ -141,8 +137,19 @@
           ansible.builtin.set_fact:
             something_wrong: true
 
+  # NOTIFICACIONES
+    
+  # Crear mensaje para Notificación
+    - name: Crear mensaje notificación exitosa
+      when: something_wrong == false
+      ansible.builtin.set_fact:
+        result_process: "Se borró de manera exitosa la cuenta: {{ sAMAccountName }}"
 
-    # NOTIFICACIONES
+    - name: Crear mensaje notificación fallida
+      when: something_wrong == true
+      ansible.builtin.set_fact:
+        result_process: "Ocurrió un error no fue posible borrar la cuenta: {{ sAMAccountName }}"
+
     - name: Send notification_email
       when: notification_email is defined and something_wrong == false and result.state == "absent"
       ansible.builtin.include_role:
@@ -170,4 +177,29 @@
 
         to_email: "{{ notification_email }}"
         alert: true
-        
+       
+  # Actualización del Ticket de Otobo
+    - name: Post report to ticket on otobo
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          Article:
+            CommunicationChannel: Internal
+            IsVisibleForCustomer: 1
+            Subject: Reporte ansible
+            Body: "{{ result_process }}"
+            ContentType: text/plain; charset=utf-8
+          DynamicField:
+           - Name: AutoStatus
+             Value: completed
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined

@@ -32,7 +32,60 @@
     something_wrong: false
     mensaje_error: null
 
+    # vars for otobo changes
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+    TicketID: null
+
   tasks:
+
+  # tasks to update status in oboto
+    - name: Otobo login, get session id
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.login }}"
+        method: POST
+        body_format: json
+        body:
+          UserLogin: "{{ otobo_user }}"
+          Password: "{{ otobo_password }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get SessionID from login response
+      ansible.builtin.set_fact:
+        session_id: "{{ r.SessionID }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+      delegate_to: localhost
+    
+    - name: Set auto process ticket as processing status
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          DynamicField:
+           - Name: AutoStatus
+             Value: processing
+
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
 
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
@@ -203,7 +256,19 @@
           ansible.builtin.set_fact:
             something_wrong: true          
 
-    # NOTIFICACIONES
+  # NOTIFICACIONES
+  # Crear mensaje para Notificación
+
+    - name: Crear mensaje notificación exitosa
+      when: something_wrong == false
+      ansible.builtin.set_fact:
+        result_process: "Se duplicó de manera exitosa la cuenta: {{ sAMAccountName_source }}"
+
+    - name: Crear mensaje notificación fallida
+      when: something_wrong == true
+      ansible.builtin.set_fact:
+        result_process: "Ocurrió un error no fue posible duplicar la cuenta: {{ sAMAccountName_source }}"
+
     - name: Send notification_email
       when: notification_email is defined and something_wrong == false
       ansible.builtin.include_role:
@@ -254,6 +319,33 @@
         to_email: "{{ notification_email }}"
         alert: true
         
+  # Actualización del Ticket de Otobo
+    - name: Post report to ticket on otobo
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          Article:
+            CommunicationChannel: Internal
+            IsVisibleForCustomer: 1
+            Subject: Reporte ansible
+            Body: |
+              "{{ result_process }}"
+              "{{ (mensaje_error is defined) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+            ContentType: text/plain; charset=utf-8
+          DynamicField:
+           - Name: AutoStatus
+             Value: completed
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
 
 
         
