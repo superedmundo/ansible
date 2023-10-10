@@ -165,24 +165,25 @@
           microsoft.ad.user:
             name: "{{ sAMAccountName }}"
             password: "{{ generated_password }}"
-            enabled: "{{ result.enabled }}"
+            #enabled: "{{ result.enabled }}"
             state: present
-            groups:
-              set:  ["Domain Users"]
+            # groups:
+            #   set:  
+            #     - Domain users
             #delegates: 
             #  set:  "{{ result.delegates }}"
             attributes:
               set:
                 #account_locked: "{{ result.account_locked }}"
-                c: "{{ result.country }}"
+                #c: "{{ result.country }}"
                 #codePage: "{{ codePage }}"
                 #comment: "{{ result.comment }}"
-                company: "{{ result.company }}"
+                #company: "{{ result.company }}"
                 #delegates: "{{ result.delegates }}"
                 #department: "{{ result.department }}"
                 #departmentNumber: "{{ result.departmentNumber }}"
-                description: "{{ result.description }}"
-                displayName: "{{ givenName }} {{ sn }}"
+                #description: "{{ result.description }}"
+                #displayName: "{{ givenName }} {{ sn }}"
                 
 
                 #division: "{{ result.division }}"
@@ -191,7 +192,7 @@
                 #employeeType: "{{ result.employeeType }}"
                 #facsimileTelephoneNumber: "{{ result.facsimileTelephoneNumber }}"
                 
-                givenName: "{{ givenName }}"
+                #givenName: "{{ givenName }}"
                 #mail: "{{ result.email }}"
                 
                 #middleName: "{{ result.middleName }}"
@@ -200,11 +201,11 @@
                 #personalTitle: "{{ result.personalTitle }}"
                 #physicalDeliveryOfficeName: "{{ result.physicalDeliveryOfficeName }}"
                 #postalAddress: "{{ result.postalAddress }}"
-                postalCode: "{{ result.postal_code }}"
+                #postalCode: "{{ result.postal_code }}"
                 #postOfficeBox: "{{ result.postOfficeBox }}"
-                sn: "{{ result.surname }}"
-                st: "{{ result.state_province }}"
-                street: "{{ result.street }}"
+                # sn: "{{ result.surname }}"
+                # st: "{{ result.state_province }}"
+                # street: "{{ result.street }}"
                 #streetAddress: "{{ result.streetAddress }}"
                 #telephoneNumber: "{{ result.telephoneNumber }}"
                 #title: "{{ result.title }}"
