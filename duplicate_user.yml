@@ -167,8 +167,8 @@
             password: "{{ generated_password }}"
             enabled: "{{ result.enabled }}"
             state: present
-            #groups:
-            #  set:  "{{ result.groups }}" 
+            groups:
+              set:  ["Domain Users"]
             #delegates: 
             #  set:  "{{ result.delegates }}"
             attributes:
