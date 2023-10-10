@@ -183,7 +183,7 @@
                 #department: "{{ result.department }}"
                 #departmentNumber: "{{ result.departmentNumber }}"
                 #description: "{{ result.description }}"
-                #displayName: "{{ givenName }} {{ sn }}"
+                displayName: "{{ givenName }} {{ sn }}"
                 
 
                 #division: "{{ result.division }}"
@@ -192,7 +192,7 @@
                 #employeeType: "{{ result.employeeType }}"
                 #facsimileTelephoneNumber: "{{ result.facsimileTelephoneNumber }}"
                 
-                #givenName: "{{ givenName }}"
+                givenName: "{{ givenName }}"
                 #mail: "{{ result.email }}"
                 
                 #middleName: "{{ result.middleName }}"
@@ -203,7 +203,7 @@
                 #postalAddress: "{{ result.postalAddress }}"
                 #postalCode: "{{ result.postal_code }}"
                 #postOfficeBox: "{{ result.postOfficeBox }}"
-                # sn: "{{ result.surname }}"
+                sn: "{{ result.surname }}"
                 # st: "{{ result.state_province }}"
                 # street: "{{ result.street }}"
                 #streetAddress: "{{ result.streetAddress }}"
