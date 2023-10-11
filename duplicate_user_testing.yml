@@ -1,0 +1,373 @@
+---
+- name: Add a user in Active Directory
+  hosts: 10.100.1.116
+  gather_facts: no 
+  vars_files:
+  - "./oscarc_otobo_password"
+  collections:
+    - ditra.cisco
+    - ansible.builtin.password
+
+  vars:
+    sAMAccountName_source: null
+    sAMAccountName: null
+    
+    enabled: true
+    givenName: ' '
+    sn: ' '
+
+    generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
+    dominio: contoso.mx
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms: null
+    notification_sms_send_user_credentials: null
+
+    # Email
+    # On Success
+    notification_email: null
+    notification_email_send_user_credentials: null
+
+    # Variables internas de control de flujo
+    something_wrong: false
+    mensaje_error: null
+
+    # vars for otobo changes
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+    TicketID: null
+
+  tasks:
+
+  # tasks to update status in oboto
+    - name: Otobo login, get session id
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.login }}"
+        method: POST
+        body_format: json
+        body:
+          UserLogin: "{{ otobo_user }}"
+          Password: "{{ otobo_password }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get SessionID from login response
+      ansible.builtin.set_fact:
+        session_id: "{{ r.SessionID }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+      delegate_to: localhost
+    
+    - name: Set auto process ticket as processing status
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          DynamicField:
+           - Name: AutoStatus
+             Value: processing
+
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
+
+    - name: Desplegando las variables que llegaron.
+      ansible.builtin.debug:
+        msg: 
+          sAMAccountName_source: "{{ sAMAccountName_source }}" 
+          sAMAccountName:        "{{ sAMAccountName }}" 
+          generated_password:    "{{ generated_password }}"
+          givenName:             "{{ givenName }}"
+          sn:               "{{ sn }}"
+
+          # NOTIFICACIONES
+          # Email
+          # On Success
+          notification_email: "{{ notification_email }}"
+          notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
+
+  # Revisando si ya existe o no el ususario en el AD
+
+    - name: Queryng "{{ sAMAccountName_source }}" 
+      block:
+        - name: Queryng "{{ sAMAccountName_source }}" 
+          when: sAMAccountName_source is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName_source }}"
+            state: query
+          register: result_query 
+
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
+
+        - name: Desplegando result_query
+          ansible.builtin.debug:
+            var: result_query
+
+        - name: Queryng "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result_query 
+
+      rescue: 
+        - name: Envio de correo failed
+          when: notification_email is defined
+          ansible.builtin.include_role:
+            name: ditra.cisco.send_email
+            apply:
+              delegate_to: localhost
+          vars:
+            subject: Ocurrió un error en la búsqueda de la cuenta en AD
+            body: |
+              ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}"
+              ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
+
+            to_email: "{{ notification_email }}"
+            alert: true         
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+
+  # Asegurandonos que el usuario source ya exista
+    - name: Asegurando que NO exista ya el usuario
+      when: result.state == "absent" or result_query.state == "present"
+      block:
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+            mensaje_error: "La cuenta fuente no existe y/o la cuenta destino ya existe."
+
+  # Consultando todas las propiedades.
+    - name: Get all properties for the specified account using its DistinguishedName
+      when: something_wrong == false
+      microsoft.ad.object_info:
+        identity: {{ distinguished_name }}
+        properties: '*'
+      register: result_query_all_properties
+
+    - name: Establecer el valor de result_query_all_properties como result
+      ansible.builtin.set_fact:
+        result: "{{ result_query_all_properties }}"   
+
+    - name: Desplegando result_query_all_properties
+      ansible.builtin.debug:
+        var: result_query_all_properties
+
+  # Agregando al usuario por que no existe
+    - name: Add User because is absent
+      when: something_wrong == false
+      block:
+        - name: add user in ad
+          microsoft.ad.user:
+            name: "{{ sAMAccountName }}"
+            password: "{{ generated_password }}"
+            #enabled: "{{ result.enabled }}"
+            state: present
+            # groups:
+            #   set:  
+            #     - Domain users
+            #delegates: 
+            #  set:  "{{ result.delegates }}"
+            attributes:
+              set:
+                #account_locked: "{{ result.account_locked }}"
+                #c: "{{ result.country }}"
+                #codePage: "{{ codePage }}"
+                #comment: "{{ (result.comment) | ternary(result.comment,' ') }}"
+                #company: "{{ (result.company) | ternary(result.company,' ') }}" 
+                #delegates: "{{ result.delegates }}"
+                #department: "{{ (result.department) | ternary(result.department,' ') }}"
+                #departmentNumber: "{{ result.departmentNumber }}"
+                #description: "{{ (result.description) | ternary(result.description,' ') }}"
+                #displayName: "{{ givenName }} {{ sn }}"
+                
+
+                #division: "{{ (result.division) | ternary(result.division,' ') }}"
+                #employeeID: "{{ result.employeeID }}"
+                #employeeNumber: "{{ result.employeeNumber }}"
+                #employeeType: "{{ result.employeeType }}"
+                #facsimileTelephoneNumber: "{{ result.facsimileTelephoneNumber }}"
+                
+                #givenName: "{{ (givenName) | ternary(givenName,' Nombre de pila ') }}"
+                #mail: "{{ result.email }}"
+                
+                #middleName: "{{ result.middleName }}"
+                #mobile: "{{ result.mobile }}"
+                #pager: "{{ result.pager }}"
+                #personalTitle: "{{ result.personalTitle }}"
+                #physicalDeliveryOfficeName: "{{ result.physicalDeliveryOfficeName }}"
+                #postalAddress: "{{ (result.postalAddress) | ternary(result.postalAddress,' ') }}"
+                #postalCode: "{{ (result.postal_code) | ternary(result.postal_code,' ') }}"
+                #postOfficeBox: "{{ (result.postOfficeBox) | ternary(result.postOfficeBox,' ') }}"
+                #sn: "{{ (sn) | ternary(sn,' Apellido ') }}"
+                #st: "{{ (result.state_province) | ternary(result.state_province,' ') }}"
+                #street: "{{ (result.street) | ternary(result.street,' ') }}"
+                #streetAddress: "{{ result.streetAddress }}"
+                #telephoneNumber: "{{ result.telephoneNumber }}"
+                #title: "{{ result.title }}"
+                userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
+                #wWWHomePage: "{{ result.wWWHomePage }}"
+          register: result_add_user
+
+
+        - name: Desplegando el resultado del Add.
+          ansible.builtin.debug:
+            var:  result_add_user
+
+        - name: Queryng Again "{{ sAMAccountName }}" 
+          when: sAMAccountName is defined
+          community.windows.win_domain_user:
+            name: "{{ sAMAccountName }}"
+            state: query
+          register: result_query 
+
+        - name: Establecer el valor de result_query como result
+          ansible.builtin.set_fact:
+            result: "{{ result_query }}"   
+      
+      rescue: 
+        - name: Envio de correo failed al no poder crear el usuario
+          when: notification_email is defined and something_wrong == true
+          ansible.builtin.include_role:
+            name: ditra.cisco.send_email
+            apply:
+              delegate_to: localhost
+          vars:
+            subject: Ocurrió un error en la alta de la cuenta de AD
+            body: |
+              result_add_user: "{{ result_add_user | to_json(indent=2) }}" 
+
+              ***********
+              ansible_failed_task: "{{ ansible_failed_task | to_json(indent=2) }}" 
+
+              ***********
+              ansible_failed_result: "{{ ansible_failed_result | to_json(indent=2) }}" 
+
+            to_email: "{{ notification_email }}"
+            alert: true
+
+        - name: Desplegando la variable de ansible_facts.
+          ansible.builtin.debug:
+            msg: 
+              ansible_facts: "{{ ansible_facts | to_json(indent=2) }}"          
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true          
+
+  # NOTIFICACIONES
+  # Crear mensaje para Notificación
+
+    - name: Crear mensaje notificación exitosa
+      when: something_wrong == false
+      ansible.builtin.set_fact:
+        result_process: "Se duplicó de manera exitosa la cuenta: {{ sAMAccountName_source }}"
+
+    - name: Crear mensaje notificación fallida
+      when: something_wrong == true
+      ansible.builtin.set_fact:
+        result_process: "Ocurrió un error no fue posible duplicar la cuenta: {{ sAMAccountName_source }}"
+
+    - name: Send notification_email
+      when: notification_email is defined and something_wrong == false
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La duplicación del usuario fue exitosa
+        body: |
+          Todo bien.
+
+          Se duplicó la cuenta: "{{ sAMAccountName_source }}" por "{{ sAMAccountName }}" 
+
+        to_email: "{{ notification_email }}"
+        alert: true
+        
+    - name: Send notification_email_send_user_credentials
+      when: notification_email_send_user_credentials is defined and something_wrong == false
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La duplicacion del usuario fue exitosa
+        body: |
+         
+          AccountName: "{{ sAMAccountName }}" 
+          password: "{{ generated_password }}"
+          identity: "{{ result.distinguished_name }}"
+          
+  
+        to_email: "{{ notification_email }}"
+        alert: true
+        
+    - name: Send notification_email_on_fail
+      when: notification_email is defined and something_wrong == true
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La duplicación del usuario fue fallida
+        body: |
+          Algo salió mal, revisa la bitácora
+
+          "{{ (mensaje_error is defined) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+
+        to_email: "{{ notification_email }}"
+        alert: true
+        
+  # Actualización del Ticket de Otobo
+    - name: Post report to ticket on otobo
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          Article:
+            CommunicationChannel: Internal
+            IsVisibleForCustomer: 1
+            Subject: Reporte ansible
+            Body: |
+              "{{ result_process }}"
+              "{{ (mensaje_error is defined) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+            ContentType: text/plain; charset=utf-8
+          DynamicField:
+           - Name: AutoStatus
+             Value: completed
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
+
+
+        
+                
