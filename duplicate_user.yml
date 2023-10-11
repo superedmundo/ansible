@@ -177,7 +177,7 @@
                 #account_locked: "{{ result.account_locked }}"
                 #c: "{{ result.country }}"
                 #codePage: "{{ codePage }}"
-                comment: "{{ result.comment }}"
+                comment: "{{ (result.comment) | ternary(result.comment,' ') }}"
                 company: "{{ result.company }}"
                 #delegates: "{{ result.delegates }}"
                 department: "{{ result.department }}"
