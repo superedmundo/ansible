@@ -202,7 +202,7 @@
                 #physicalDeliveryOfficeName: "{{ result.physicalDeliveryOfficeName }}"
                 #postalAddress: "{{ (result.postalAddress) | ternary(result.postalAddress,' ') }}"
                 postalCode: "{{ (result.postal_code) | ternary(result.postal_code,' ') }}"
-                postOfficeBox: "{{ (result.postOfficeBox) | ternary(result.postOfficeBox,' ') }}"
+                #postOfficeBox: "{{ (result.postOfficeBox) | ternary(result.postOfficeBox,' ') }}"
                 sn: "{{ (result.surname) | ternary(result.surname,' ') }}"
                 st: "{{ (result.state_province) | ternary(result.state_province,' ') }}"
                 street: "{{ (result.street) | ternary(result.street,' ') }}"
