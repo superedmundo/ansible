@@ -97,6 +97,7 @@
           generated_password:    "{{ generated_password }}"
           givenname:             "{{ givenname }}"
           surname:               "{{ surname }}"
+          sn:               "{{ sn }}"
 
           # NOTIFICACIONES
           # Email
