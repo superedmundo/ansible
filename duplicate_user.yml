@@ -289,7 +289,7 @@
         alert: true
         
     - name: Send notification_email_send_user_credentials
-      when: notification_email_send_user_credentials is defined and result_add_user.changed == true and result_add_user.failed == false
+      when: notification_email_send_user_credentials is defined and something_wrong == false
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
