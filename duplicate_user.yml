@@ -180,19 +180,19 @@
                 #comment: "{{ (result.comment) | ternary(result.comment,' ') }}"
                 company: "{{ (result.company) | ternary(result.company,' ') }}" 
                 #delegates: "{{ result.delegates }}"
-                department: "{{ (result.department) | ternary(result.department,' ') }}"
+                #department: "{{ (result.department) | ternary(result.department,' ') }}"
                 #departmentNumber: "{{ result.departmentNumber }}"
                 description: "{{ (result.description) | ternary(result.description,' ') }}"
                 displayName: "{{ givenName }} {{ sn }}"
                 
 
-                division: "{{ (result.division) | ternary(result.division,' ') }}"
+                #division: "{{ (result.division) | ternary(result.division,' ') }}"
                 #employeeID: "{{ result.employeeID }}"
                 #employeeNumber: "{{ result.employeeNumber }}"
                 #employeeType: "{{ result.employeeType }}"
                 #facsimileTelephoneNumber: "{{ result.facsimileTelephoneNumber }}"
                 
-                givenName: "{{ givenName }}"
+                givenName: "{{ (givenName) | ternary(givenName,' Nombre de pila ') }}"
                 #mail: "{{ result.email }}"
                 
                 #middleName: "{{ result.middleName }}"
@@ -200,7 +200,7 @@
                 #pager: "{{ result.pager }}"
                 #personalTitle: "{{ result.personalTitle }}"
                 #physicalDeliveryOfficeName: "{{ result.physicalDeliveryOfficeName }}"
-                postalAddress: "{{ (result.postalAddress) | ternary(result.postalAddress,' ') }}"
+                #postalAddress: "{{ (result.postalAddress) | ternary(result.postalAddress,' ') }}"
                 postalCode: "{{ (result.postal_code) | ternary(result.postal_code,' ') }}"
                 postOfficeBox: "{{ (result.postOfficeBox) | ternary(result.postOfficeBox,' ') }}"
                 sn: "{{ (result.surname) | ternary(result.surname,' ') }}"
