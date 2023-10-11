@@ -95,9 +95,8 @@
           sAMAccountName_source: "{{ sAMAccountName_source }}" 
           sAMAccountName:        "{{ sAMAccountName }}" 
           generated_password:    "{{ generated_password }}"
-          #givenname:             "{{ givenname }}"
-          #surname:               "{{ surname }}"
-          sn:               "{{ lastname }}"
+          givenName:             "{{ givenName }}"
+          sn:               "{{ sn }}"
 
           # NOTIFICACIONES
           # Email
@@ -206,7 +205,7 @@
                 #postalAddress: "{{ (result.postalAddress) | ternary(result.postalAddress,' ') }}"
                 postalCode: "{{ (result.postal_code) | ternary(result.postal_code,' ') }}"
                 #postOfficeBox: "{{ (result.postOfficeBox) | ternary(result.postOfficeBox,' ') }}"
-                sn: "{{ (result.surname) | ternary(result.surname,' ') }}"
+                sn: "{{ (sn) | ternary(sn,' Apellido ') }}"
                 st: "{{ (result.state_province) | ternary(result.state_province,' ') }}"
                 street: "{{ (result.street) | ternary(result.street,' ') }}"
                 #streetAddress: "{{ result.streetAddress }}"
