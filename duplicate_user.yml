@@ -95,6 +95,8 @@
           sAMAccountName_source: "{{ sAMAccountName_source }}" 
           sAMAccountName:        "{{ sAMAccountName }}" 
           generated_password:    "{{ generated_password }}"
+          givenname:             "{{ givenname }}"
+          surname:               "{{ surname }}"
 
           # NOTIFICACIONES
           # Email
