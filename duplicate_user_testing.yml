@@ -163,7 +163,7 @@
     - name: Get all properties for the specified account using its DistinguishedName
       when: something_wrong == false
       microsoft.ad.object_info:
-        identity: {{ result.distinguished_name }}
+        identity: "{{ result.distinguished_name }}"
         properties: '*'
       register: result_query_all_properties
 
