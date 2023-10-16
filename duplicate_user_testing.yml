@@ -191,42 +191,42 @@
             #  set:  "{{ result.delegates }}"
             attributes:
               set:
-                #account_locked: "{{ result.account_locked }}"
-                c: "{{ (json_properties.Country is defined ) | ternary(json_properties.Country,' ', '') }}"
-                #codePage: "{{ codePage }}"
-                comment: "{{ (json_properties.comment is defined ) | ternary(json_properties.comment,' ', '') }}"
-                company: "{{ (json_properties.Company is defined ) | ternary(json_properties.Company,' ',' ') }}" 
-                #delegates: "{{ result.delegates }}"
-                department: "{{ (json_properties.Department is defined ) | ternary(json_properties.Department,' ',' ') }}"
-                #departmentNumber: "{{ result.departmentNumber }}"
-                description: "{{ (json_properties.Description is defined ) | ternary(json_properties.Description,' ',' ') }}"
-                #displayName: "{{ givenName }} {{ sn }}"
+                # #account_locked: "{{ result.account_locked }}"
+                # c: "{{ (json_properties.Country is defined ) | ternary(json_properties.Country,' ', '') }}"
+                # #codePage: "{{ codePage }}"
+                # comment: "{{ (json_properties.comment is defined ) | ternary(json_properties.comment,' ', '') }}"
+                # company: "{{ (json_properties.Company is defined ) | ternary(json_properties.Company,' ',' ') }}" 
+                # #delegates: "{{ result.delegates }}"
+                # department: "{{ (json_properties.Department is defined ) | ternary(json_properties.Department,' ',' ') }}"
+                # #departmentNumber: "{{ result.departmentNumber }}"
+                # description: "{{ (json_properties.Description is defined ) | ternary(json_properties.Description,' ',' ') }}"
+                # #displayName: "{{ givenName }} {{ sn }}"
 
-                division: "{{ (json_properties.Division is defined ) | ternary(json_properties.Division,' ',' ') }}"
-                #employeeID: "{{ result.employeeID }}"
-                #employeeNumber: "{{ result.employeeNumber }}"
-                #employeeType: "{{ result.employeeType }}"
-                facsimileTelephoneNumber: "{{ (json_properties.facsimileTelephoneNumber is defined ) | ternary(json_properties.facsimileTelephoneNumber,' ',' ') }}"
+                # division: "{{ (json_properties.Division is defined ) | ternary(json_properties.Division,' ',' ') }}"
+                # #employeeID: "{{ result.employeeID }}"
+                # #employeeNumber: "{{ result.employeeNumber }}"
+                # #employeeType: "{{ result.employeeType }}"
+                # facsimileTelephoneNumber: "{{ (json_properties.facsimileTelephoneNumber is defined ) | ternary(json_properties.facsimileTelephoneNumber,' ',' ') }}"
                 
-                #givenName: "{{ (givenName is defined ) | ternary(givenName,' Nombre de pila ') }}"
-                #mail: "{{ result.email }}"
+                # #givenName: "{{ (givenName is defined ) | ternary(givenName,' Nombre de pila ') }}"
+                # #mail: "{{ result.email }}"
                 
-                #middleName: "{{ result.middleName }}"
-                #mobile: "{{ result.mobile }}"
-                #pager: "{{ result.pager }}"
-                personalTitle: "{{ (json_properties.personalTitle is defined ) | ternary(json_properties.personalTitle,' ',' ') }}"
-                physicalDeliveryOfficeName: "{{ (json_properties.personalTitle is defined ) | ternary(json_properties.personalTitle,' ',' ') }}"
-                #postalAddress: "{{ (result.postalAddress is defined ) | ternary(result.postalAddress,' ') }}"
-                postalCode: "{{ (json_properties.PostalCode is defined ) | ternary(json_properties.PostalCode,' ',' ') }}"
-                #postOfficeBox: "{{ (result.postOfficeBox is defined ) | ternary(result.postOfficeBox,' ') }}"
-                sn: "{{ (json_properties.sn is defined ) | ternary(json_properties.sn,' ',' ') }}"
-                st: "{{ (json_properties.State is defined ) | ternary(json_properties.State,' ',' ') }}"
-                street: "{{ (json_properties.street is defined ) | ternary(json_properties.street,' ',' ') }}"
-                streetAddress: "{{ (json_properties.StreetAddress is defined ) | ternary(json_properties.StreetAddress,' ',' ') }}"
-                telephoneNumber: "{{ (json_properties.telephoneNumber is defined ) | ternary(json_properties.telephoneNumber,' ',' ') }}"
-                title: "{{ (json_properties.Title is defined ) | ternary(json_properties.Title,' ',' ') }}"
+                # #middleName: "{{ result.middleName }}"
+                # #mobile: "{{ result.mobile }}"
+                # #pager: "{{ result.pager }}"
+                # personalTitle: "{{ (json_properties.personalTitle is defined ) | ternary(json_properties.personalTitle,' ',' ') }}"
+                # physicalDeliveryOfficeName: "{{ (json_properties.personalTitle is defined ) | ternary(json_properties.personalTitle,' ',' ') }}"
+                # #postalAddress: "{{ (result.postalAddress is defined ) | ternary(result.postalAddress,' ') }}"
+                # postalCode: "{{ (json_properties.PostalCode is defined ) | ternary(json_properties.PostalCode,' ',' ') }}"
+                # #postOfficeBox: "{{ (result.postOfficeBox is defined ) | ternary(result.postOfficeBox,' ') }}"
+                # sn: "{{ (json_properties.sn is defined ) | ternary(json_properties.sn,' ',' ') }}"
+                # st: "{{ (json_properties.State is defined ) | ternary(json_properties.State,' ',' ') }}"
+                # street: "{{ (json_properties.street is defined ) | ternary(json_properties.street,' ',' ') }}"
+                # streetAddress: "{{ (json_properties.StreetAddress is defined ) | ternary(json_properties.StreetAddress,' ',' ') }}"
+                # telephoneNumber: "{{ (json_properties.telephoneNumber is defined ) | ternary(json_properties.telephoneNumber,' ',' ') }}"
+                # title: "{{ (json_properties.Title is defined ) | ternary(json_properties.Title,' ',' ') }}"
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
-                wWWHomePage: "{{ (json_properties.wWWHomePage is defined ) | ternary(json_properties.wWWHomePage,' ',' ') }}"
+                #wWWHomePage: "{{ (json_properties.wWWHomePage is defined ) | ternary(json_properties.wWWHomePage,' ',' ') }}"
           register: result_add_user
 
 
@@ -274,6 +274,400 @@
         - name: Establecer el valor de algo Erroneo
           ansible.builtin.set_fact:
             something_wrong: true          
+
+  # Modificando al usuario por que ya existe
+
+    - name: Modify User because is present
+      when: result.state == "present" and something_wrong == false
+      block:
+        - name: Entrando al bloque de Modificación
+          ansible.builtin.debug:
+            msg: 
+              result.state: "{{ result.state }}" 
+              
+        - name: Modify enabled user in AD
+          when: enabled is defined and result.enabled != enabled
+          microsoft.ad.user:
+            enabled: "{{ enabled }}"
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+
+        - name: Modify user_cannot_change_password user in AD
+          when: user_cannot_change_password is defined and result.user_cannot_change_password != user_cannot_change_password
+          microsoft.ad.user:
+            user_cannot_change_password: "{{ user_cannot_change_password }}"
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:  present
+
+        - name: Modify password user in AD
+          when: generated_password is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            password: "{{ generated_password }}"
+        
+        # - name: Modify groups_to_add user in AD
+        #   when: groups_to_add is defined
+        #   microsoft.ad.user:
+        #     name: "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:  present
+        #     groups:
+        #       set:  "{{ groups_to_add }}" 
+
+        # - name: Modify c user in AD
+        #   when: json_properties.c is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         c: "{{ json_properties.c }}"
+
+        # - name: Modify codePage user in AD
+        #   when: codePage is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         codePage: "{{ (codePage is defined) | ternary(codePage, 0) }}"
+
+        - name: Modify comment user in AD
+          when: comment is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                comment: "{{ comment }}"
+
+        # - name: Modify company user in AD
+        #   when: company is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         company: "{{ company }}"
+
+        # - name: Modify department user in AD
+        #   when: department is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         department: "{{ department }}"
+
+        # - name: Modify departmentNumber user in AD
+        #   when: departmentNumber is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         departmentNumber: "{{ departmentNumber }}"
+
+        # - name: Modify description user in AD
+        #   when: description is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         description: "{{ description }}"
+
+        # - name: Modify displayName user in AD
+        #   when: displayName is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         displayName: "{{ displayName }}"
+
+        # - name: Modify division user in AD
+        #   when: division is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         division: "{{ division }}"
+
+        # - name: Modify employeeID user in AD
+        #   when: employeeID is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         employeeID: "{{ employeeID }}"
+
+        # - name: Modify employeeNumber user in AD
+        #   when: employeeNumber is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         employeeNumber: "{{ employeeNumber }}"
+
+        # - name: Modify employeeType user in AD
+        #   when: employeeType is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         employeeType: "{{ employeeType }}"
+
+        # - name: Modify facsimileTelephoneNumber user in AD
+        #   when: facsimileTelephoneNumber is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         facsimileTelephoneNumber: "{{ facsimileTelephoneNumber }}"
+
+        # - name: Modify givenName user in AD
+        #   when: givenName is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         givenName: "{{ givenName }}"
+
+        # - name: Modify homePhone user in AD
+        #   when: homePhone is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         homePhone: "{{ homePhone }}"
+
+        # - name: Modify info user in AD
+        #   when: info is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         info: "{{ info }}"
+
+        # - name: Modify initials user in AD
+        #   when: initials is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         initials: "{{ initials }}"
+
+        # - name: Modify ipPhone user in AD
+        #   when: ipPhone is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         ipPhone: "{{ ipPhone }}"
+
+        # - name: Modify l user in AD
+        #   when: l is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         l: "{{ l }}"
+
+        # - name: Modify mail user in AD
+        #   when: mail is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         mail: "{{ mail }}"
+
+        # - name: Modify middleName user in AD
+        #   when: middleName is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         middleName: "{{ middleName }}"
+
+        # - name: Modify mobile user in AD
+        #   when: mobile is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         mobile: "{{ mobile }}"
+
+        # - name: Modify pager user in AD
+        #   when: pager is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         pager: "{{ pager }}"
+
+        # - name: Modify personalTitle user in AD
+        #   when: personalTitle is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         personalTitle: "{{ personalTitle }}"
+
+        # - name: Modify physicalDeliveryOfficeName user in AD
+        #   when: physicalDeliveryOfficeName is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         physicalDeliveryOfficeName: "{{ physicalDeliveryOfficeName }}"
+
+        # - name: Modify postalAddress user in AD
+        #   when: postalAddress is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         postalAddress: "{{ postalAddress }}"
+
+        # - name: Modify postalCode user in AD
+        #   when: postalCode is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         postalCode: "{{ postalCode }}"
+
+        # - name: Modify postOfficeBox user in AD
+        #   when: postOfficeBox is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         postOfficeBox: "{{ postOfficeBox }}"
+
+        # - name: Modify sn user in AD
+        #   when: sn is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         sn: "{{ sn }}"
+
+        # - name: Modify st user in AD
+        #   when: st is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         st: "{{ st }}"
+
+        # - name: Modify street user in AD
+        #   when: street is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         street: "{{ street }}"
+
+        # - name: Modify streetAddress user in AD
+        #   when: streetAddress is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         streetAddress: "{{ streetAddress }}"
+
+        # - name: Modify telephoneNumber user in AD
+        #   when: telephoneNumber is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         telephoneNumber: "{{ telephoneNumber }}"
+
+        # - name: Modify title user in AD
+        #   when: title is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         title: "{{ title }}"
+
+        # - name: Modify wWWHomePage user in AD
+        #   when: wWWHomePage is defined
+        #   microsoft.ad.user:
+        #     name:     "{{ result.name }}"
+        #     identity: "{{ result.distinguished_name }}"
+        #     state:    present
+        #     attributes:
+        #       set:
+        #         wWWHomePage: "{{ wWWHomePage }}"
+
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
