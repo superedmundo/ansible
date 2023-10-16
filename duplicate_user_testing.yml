@@ -13,8 +13,8 @@
     sAMAccountName: null
     
     enabled: true
-    givenName: ' '
-    sn: ' '
+    givenName: null
+    sn: null
 
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
     dominio: contoso.mx
@@ -96,7 +96,7 @@
           sAMAccountName:        "{{ sAMAccountName }}" 
           generated_password:    "{{ generated_password }}"
           givenName:             "{{ givenName }}"
-          sn:               "{{ sn }}"
+          sn:                    "{{ sn }}"
 
           # NOTIFICACIONES
           # Email
@@ -170,9 +170,9 @@
       ansible.builtin.set_fact:
         json_properties: "{{ properties.output[0] }}"
 
-    - name: Desplegando json_properties
-      ansible.builtin.debug:
-        var: json_properties
+    # - name: Desplegando json_properties
+    #   ansible.builtin.debug:
+    #     var: json_properties
 
   # Agregando al usuario por que no existe
     - name: Add User because is absent
@@ -358,15 +358,15 @@
               set:
                 company: "{{ json_properties.Company }}"
 
-        # - name: Modify department user in AD
-        #   when: department is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         department: "{{ department }}"
+        - name: modify department user in ad
+          when: json_properties.Department is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                department: "{{ json_properties.Department }}"
 
         # - name: Modify departmentNumber user in AD
         #   when: departmentNumber is defined
@@ -378,15 +378,15 @@
         #       set:
         #         departmentNumber: "{{ departmentNumber }}"
 
-        # - name: Modify description user in AD
-        #   when: description is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         description: "{{ description }}"
+        - name: Modify description user in AD
+          when: json_properties.Description is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                description: "{{ json_properties.Description }}"
 
         # - name: Modify displayName user in AD
         #   when: displayName is defined
@@ -398,15 +398,15 @@
         #       set:
         #         displayName: "{{ displayName }}"
 
-        # - name: Modify division user in AD
-        #   when: division is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         division: "{{ division }}"
+        - name: Modify division user in AD
+          when: json_properties.Division is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                division: "{{ json_properties.Division }}"
 
         # - name: Modify employeeID user in AD
         #   when: employeeID is defined
@@ -438,25 +438,25 @@
         #       set:
         #         employeeType: "{{ employeeType }}"
 
-        # - name: Modify facsimileTelephoneNumber user in AD
-        #   when: facsimileTelephoneNumber is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         facsimileTelephoneNumber: "{{ facsimileTelephoneNumber }}"
+        - name: Modify facsimileTelephoneNumber user in AD
+          when: json_properties.facsimileTelephoneNumber is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                facsimileTelephoneNumber: "{{ json_properties.facsimileTelephoneNumber }}"
 
-        # - name: Modify givenName user in AD
-        #   when: givenName is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         givenName: "{{ givenName }}"
+        - name: Modify givenName user in AD
+          when: givenName is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                givenName: "{{ givenName }}"
 
         # - name: Modify homePhone user in AD
         #   when: homePhone is defined
@@ -488,25 +488,25 @@
         #       set:
         #         initials: "{{ initials }}"
 
-        # - name: Modify ipPhone user in AD
-        #   when: ipPhone is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         ipPhone: "{{ ipPhone }}"
+        - name: Modify ipPhone user in AD
+          when: json_properties.ipPhone is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                ipPhone: "{{ json_properties.ipPhone }}"
 
-        # - name: Modify l user in AD
-        #   when: l is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         l: "{{ l }}"
+        - name: Modify l user in AD
+          when: json_properties.l is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                l: "{{ json_properties.l }}"
 
         # - name: Modify mail user in AD
         #   when: mail is defined
@@ -528,45 +528,45 @@
         #       set:
         #         middleName: "{{ middleName }}"
 
-        # - name: Modify mobile user in AD
-        #   when: mobile is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         mobile: "{{ mobile }}"
+        - name: Modify mobile user in AD
+          when: json_properties.mobile is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                mobile: "{{ json_properties.mobile }}"
 
-        # - name: Modify pager user in AD
-        #   when: pager is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         pager: "{{ pager }}"
+        - name: Modify pager user in AD
+          when: json_properties.pager is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                pager: "{{ json_properties.pager }}"
 
-        # - name: Modify personalTitle user in AD
-        #   when: personalTitle is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         personalTitle: "{{ personalTitle }}"
+        - name: Modify personalTitle user in AD
+          when: json_properties.personalTitle is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                personalTitle: "{{ json_properties.personalTitle }}"
 
-        # - name: Modify physicalDeliveryOfficeName user in AD
-        #   when: physicalDeliveryOfficeName is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         physicalDeliveryOfficeName: "{{ physicalDeliveryOfficeName }}"
+        - name: Modify physicalDeliveryOfficeName user in AD
+          when: json_properties.physicalDeliveryOfficeName is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                physicalDeliveryOfficeName: "{{ json_properties.physicalDeliveryOfficeName }}"
 
         # - name: Modify postalAddress user in AD
         #   when: postalAddress is defined
@@ -578,15 +578,15 @@
         #       set:
         #         postalAddress: "{{ postalAddress }}"
 
-        # - name: Modify postalCode user in AD
-        #   when: postalCode is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         postalCode: "{{ postalCode }}"
+        - name: Modify postalCode user in AD
+          when: json_properties.postalCode is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                postalCode: "{{ json_properties.postalCode }}"
 
         # - name: Modify postOfficeBox user in AD
         #   when: postOfficeBox is defined
@@ -598,75 +598,75 @@
         #       set:
         #         postOfficeBox: "{{ postOfficeBox }}"
 
-        # - name: Modify sn user in AD
-        #   when: sn is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         sn: "{{ sn }}"
+        - name: Modify sn user in AD
+          when: sn is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                sn: "{{ sn }}"
 
-        # - name: Modify st user in AD
-        #   when: st is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         st: "{{ st }}"
+        - name: Modify st user in AD
+          when: json_properties.st is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                st: "{{ json_properties.st }}"
 
-        # - name: Modify street user in AD
-        #   when: street is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         street: "{{ street }}"
+        - name: Modify street user in AD
+          when: json_properties.street is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                street: "{{ json_properties.street }}"
 
-        # - name: Modify streetAddress user in AD
-        #   when: streetAddress is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         streetAddress: "{{ streetAddress }}"
+        - name: Modify streetAddress user in AD
+          when: json_properties.StreetAddress is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                streetAddress: "{{ json_properties.StreetAddress }}"
 
-        # - name: Modify telephoneNumber user in AD
-        #   when: telephoneNumber is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         telephoneNumber: "{{ telephoneNumber }}"
+        - name: Modify telephoneNumber user in AD
+          when: json_properties.telephoneNumber is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                telephoneNumber: "{{ json_properties.telephoneNumber }}"
 
-        # - name: Modify title user in AD
-        #   when: title is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         title: "{{ title }}"
+        - name: Modify title user in AD
+          when: json_properties.title is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                title: "{{ json_properties.title }}"
 
-        # - name: Modify wWWHomePage user in AD
-        #   when: wWWHomePage is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         wWWHomePage: "{{ wWWHomePage }}"
+        - name: Modify wWWHomePage user in AD
+          when: json_properties.wWWHomePage is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                wWWHomePage: "{{ json_properties.wWWHomePage }}"
 
 
   # NOTIFICACIONES
