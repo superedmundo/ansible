@@ -8,7 +8,7 @@
     - name: Gather all properties
       ansible.windows.win_powershell:
         script: |
-          Get-ADUser -Identity Administrator -Properties * | ConvertTo-JSON
+          Get-ADUser -Identity Administrator -Properties Memberof | ConvertTo-JSON
       register: properties
 
     - name: Debug all properties
