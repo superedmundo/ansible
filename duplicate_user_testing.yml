@@ -653,7 +653,7 @@
             state:    present
             attributes:
               set:
-                postOfficeBox: "{{ postOfficeBox }}"
+                postOfficeBox: "{{ json_properties.POBox }}"
 
         - name: Modify sn user in AD
           when: sn is defined
