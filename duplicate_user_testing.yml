@@ -170,9 +170,9 @@
       ansible.builtin.set_fact:
         json_properties: "{{ properties.output[0] }}"
 
-    # - name: Desplegando json_properties
-    #   ansible.builtin.debug:
-    #     var: json_properties
+    - name: desplegando json_properties
+      ansible.builtin.debug:
+        var: json_properties
 
   # Agregando al usuario por que no existe
     - name: Add User because is absent
@@ -386,7 +386,7 @@
             state:    present
             attributes:
               set:
-                description: "{{ (json_properties.Description is empty) | ternary(' asdf','gfdh',' fghj') }}"
+                description: "{{ (json_properties.Description is defined) | ternary(' asdf','gfdh',' fghj') }}"
 
         # - name: Modify displayName user in AD
         #   when: displayName is defined
