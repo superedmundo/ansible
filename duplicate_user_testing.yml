@@ -405,12 +405,12 @@
 
         - name: Modify displayName user in AD
           when: 
-            - json_properties.givenName is defined
-            - json_properties.givenName != none  
-            - json_properties.givenName | length != 0
-            - json_properties.sn is defined
-            - json_properties.sn != none  
-            - json_properties.sn | length != 0
+            - givenName is defined
+            - givenName != none  
+            - givenName | length != 0
+            - sn is defined
+            - sn != none  
+            - sn | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
@@ -496,7 +496,7 @@
             state:    present
             attributes:
               set:
-                homePhone: "{{ homePhone }}"
+                homePhone: "{{ json_properties.homePhone }}"
 
         - name: modify info user in ad
           when:
