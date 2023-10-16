@@ -379,14 +379,14 @@
         #         departmentNumber: "{{ departmentNumber }}"
 
         - name: Modify description user in AD
-          when: json_properties.Description is defined
+          when: json_properties.Description is defined and json_properties.Description != none and json_properties.Description | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                description: "{{ (json_properties.Description is defined) | ternary(' asdf','gfdh',' fghj') }}"
+                description: "{{ json_properties.Description }}"
 
         # - name: Modify displayName user in AD
         #   when: displayName is defined
@@ -399,7 +399,7 @@
         #         displayName: "{{ displayName }}"
 
         - name: Modify division user in AD
-          when: json_properties.Division is defined
+          when: json_properties.Division is defined is defined and json_properties.Division != none and json_properties.Division | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
