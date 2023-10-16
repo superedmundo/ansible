@@ -339,24 +339,24 @@
         #         codePage: "{{ (codePage is defined) | ternary(codePage, 0) }}"
 
         - name: Modify comment user in AD
-          when: comment is defined
+          when: json_properties.comment is defined
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                comment: "{{ comment }}"
+                comment: "{{ json_properties.comment }}"
 
-        # - name: Modify company user in AD
-        #   when: company is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         company: "{{ company }}"
+        - name: modify Company user in ad
+          when: json_properties.Company is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                company: "{{ json_properties.Company }}"
 
         # - name: Modify department user in AD
         #   when: department is defined
