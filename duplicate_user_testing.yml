@@ -400,7 +400,7 @@
 
         - name: Modify division user in AD
           when: 
-            - json_properties.Division is defined is defined  
+            - json_properties.Division is defined
             - json_properties.Division != none  
             - json_properties.Division | length != 0
           microsoft.ad.user:
@@ -442,7 +442,10 @@
         #         employeeType: "{{ employeeType }}"
 
         - name: Modify facsimileTelephoneNumber user in AD
-          when: json_properties.facsimileTelephoneNumber is defined
+          when: 
+            - json_properties.facsimileTelephoneNumber is defined
+            - json_properties.facsimileTelephoneNumber != none  
+            - json_properties.facsimileTelephoneNumber | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
@@ -492,7 +495,10 @@
         #         initials: "{{ initials }}"
 
         - name: Modify ipPhone user in AD
-          when: json_properties.ipPhone is defined
+          when: 
+            - json_properties.ipPhone is defined
+            - json_properties.ipPhone != none  
+            - json_properties.ipPhone | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
@@ -502,7 +508,10 @@
                 ipPhone: "{{ json_properties.ipPhone }}"
 
         - name: Modify l user in AD
-          when: json_properties.l is defined
+          when: 
+            - json_properties.l is defined
+            - json_properties.l != none  
+            - json_properties.l | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
@@ -532,7 +541,10 @@
         #         middleName: "{{ middleName }}"
 
         - name: Modify mobile user in AD
-          when: json_properties.mobile is defined
+          when: 
+            - json_properties.mobile is defined
+            - json_properties.mobile != none  
+            - json_properties.mobile | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
@@ -542,7 +554,10 @@
                 mobile: "{{ json_properties.mobile }}"
 
         - name: Modify pager user in AD
-          when: json_properties.pager is defined
+          when: 
+            - json_properties.pager is defined
+            - json_properties.pager != none  
+            - json_properties.pager | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
