@@ -1,0 +1,20 @@
+---
+- name: Retrieve all properties from user in AD
+  hosts: 10.100.1.116
+  become: false
+  gather_facts: false
+  tasks:
+
+    - name: Gather all properties
+      ansible.windows.win_powershell:
+        script: |
+          Get-ADUser -Identity Administrator -Properties * | ConvertTo-JSON
+      register: properties
+
+    - name: Set JSON object
+      ansible.builtin.set_fact:
+        json_properties: "{{ properties.output[0] }}"
+
+    - name: Debug all properties
+      ansible.builtin.debug:
+        msg: "{{ json_properties }}"
