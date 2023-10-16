@@ -399,7 +399,10 @@
         #         displayName: "{{ displayName }}"
 
         - name: Modify division user in AD
-          when: json_properties.Division is defined is defined and json_properties.Division != none and json_properties.Division | length != 0
+          when: 
+            - json_properties.Division is defined is defined  
+            - json_properties.Division != none  
+            - json_properties.Division | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
