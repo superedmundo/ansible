@@ -309,14 +309,14 @@
             state:    present
             password: "{{ generated_password }}"
         
-        # - name: Modify groups_to_add user in AD
-        #   when: groups_to_add is defined
-        #   microsoft.ad.user:
-        #     name: "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:  present
-        #     groups:
-        #       set:  "{{ groups_to_add }}" 
+        - name: Modify groups_to_add user in AD
+          when: json_properties.MemberOf is defined
+          microsoft.ad.user:
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:  present
+            groups:
+              set:  "{{ json_properties.MemberOf }}" 
 
         - name: modify c user in ad
           when:
