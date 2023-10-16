@@ -11,6 +11,10 @@
           Get-ADUser -Identity Administrator -Properties * | ConvertTo-JSON
       register: properties
 
+    - name: Debug all properties
+      ansible.builtin.debug:
+        var: properties
+
     - name: Set JSON object
       ansible.builtin.set_fact:
         json_properties: "{{ properties.output[0] }}"
