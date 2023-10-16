@@ -727,7 +727,7 @@
         body: |
           Algo salió mal, revisa la bitácora
 
-          "{{ (mensaje_error is defined is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+          "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
 
         to_email: "{{ notification_email }}"
         alert: true
