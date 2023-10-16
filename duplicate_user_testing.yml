@@ -192,7 +192,7 @@
             attributes:
               set:
                 #account_locked: "{{ result.account_locked }}"
-                c: "{{ json_properties.country }}"
+                c: "{{ (json_properties.Country) | ternary(json_properties.Country,' ', '') }}"
                 #codePage: "{{ codePage }}"
                 comment: "{{ (json_properties.comment) | ternary(json_properties.comment,' ', '') }}"
                 company: "{{ (json_properties.Company) | ternary(json_properties.Company,' ',' ') }}" 
