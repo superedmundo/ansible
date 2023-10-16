@@ -160,20 +160,19 @@
             mensaje_error: "La cuenta fuente no existe y/o la cuenta destino ya existe."
 
   # Consultando todas las propiedades.
-    - name: Get all properties for the specified account using its DistinguishedName
-      when: something_wrong == false
-      microsoft.ad.object_info:
-        identity: "{{ result.distinguished_name }}"
-        properties: '*'
-      register: result_query_all_properties
+    - name: Gather all properties
+      ansible.windows.win_powershell:
+        script: |
+          Get-ADUser -Identity "{{ sAMAccountName_source }}" -Properties * | ConvertTo-JSON
+      register: properties
 
-    - name: Establecer el valor de result_query_all_properties como result
+    - name: Set JSON object
       ansible.builtin.set_fact:
-        result: "{{ result_query_all_properties }}"   
+        json_properties: "{{ properties.output[0] }}"
 
-    - name: Desplegando result_query_all_properties
+    - name: Desplegando json_properties
       ansible.builtin.debug:
-        var: result_query_all_properties
+        var: json_properties
 
   # Agregando al usuario por que no existe
     - name: Add User because is absent
@@ -193,22 +192,21 @@
             attributes:
               set:
                 #account_locked: "{{ result.account_locked }}"
-                #c: "{{ result.country }}"
+                c: "{{ json_properties.country }}"
                 #codePage: "{{ codePage }}"
-                #comment: "{{ (result.comment) | ternary(result.comment,' ') }}"
-                #company: "{{ (result.company) | ternary(result.company,' ') }}" 
+                comment: "{{ (json_properties.comment) | ternary(json_properties.comment,' ', '') }}"
+                company: "{{ (json_properties.Company) | ternary(json_properties.Company,' ',' ') }}" 
                 #delegates: "{{ result.delegates }}"
-                #department: "{{ (result.department) | ternary(result.department,' ') }}"
+                department: "{{ (json_properties.Department) | ternary(json_properties.Department,' ',' ') }}"
                 #departmentNumber: "{{ result.departmentNumber }}"
-                #description: "{{ (result.description) | ternary(result.description,' ') }}"
+                description: "{{ (json_properties.Description) | ternary(json_properties.Description,' ',' ') }}"
                 #displayName: "{{ givenName }} {{ sn }}"
-                
 
-                #division: "{{ (result.division) | ternary(result.division,' ') }}"
+                division: "{{ (json_properties.Division) | ternary(json_properties.Division,' ',' ') }}"
                 #employeeID: "{{ result.employeeID }}"
                 #employeeNumber: "{{ result.employeeNumber }}"
                 #employeeType: "{{ result.employeeType }}"
-                #facsimileTelephoneNumber: "{{ result.facsimileTelephoneNumber }}"
+                facsimileTelephoneNumber: "{{ (json_properties.facsimileTelephoneNumber) | ternary(json_properties.facsimileTelephoneNumber,' ',' ') }}"
                 
                 #givenName: "{{ (givenName) | ternary(givenName,' Nombre de pila ') }}"
                 #mail: "{{ result.email }}"
@@ -216,19 +214,19 @@
                 #middleName: "{{ result.middleName }}"
                 #mobile: "{{ result.mobile }}"
                 #pager: "{{ result.pager }}"
-                #personalTitle: "{{ result.personalTitle }}"
-                #physicalDeliveryOfficeName: "{{ result.physicalDeliveryOfficeName }}"
+                personalTitle: "{{ (json_properties.personalTitle) | ternary(json_properties.personalTitle,' ',' ') }}"
+                physicalDeliveryOfficeName: "{{ (json_properties.personalTitle) | ternary(json_properties.personalTitle,' ',' ') }}"
                 #postalAddress: "{{ (result.postalAddress) | ternary(result.postalAddress,' ') }}"
-                #postalCode: "{{ (result.postal_code) | ternary(result.postal_code,' ') }}"
+                postalCode: "{{ (json_properties.PostalCode) | ternary(json_properties.PostalCode,' ',' ') }}"
                 #postOfficeBox: "{{ (result.postOfficeBox) | ternary(result.postOfficeBox,' ') }}"
-                #sn: "{{ (sn) | ternary(sn,' Apellido ') }}"
-                #st: "{{ (result.state_province) | ternary(result.state_province,' ') }}"
-                #street: "{{ (result.street) | ternary(result.street,' ') }}"
-                #streetAddress: "{{ result.streetAddress }}"
-                #telephoneNumber: "{{ result.telephoneNumber }}"
-                #title: "{{ result.title }}"
+                sn: "{{ (json_properties.sn) | ternary(json_properties.sn,' ',' ') }}"
+                st: "{{ (json_properties.State) | ternary(json_properties.State,' ',' ') }}"
+                street: "{{ (json_properties.street) | ternary(json_properties.street,' ',' ') }}"
+                streetAddress: "{{ (json_properties.StreetAddress) | ternary(json_properties.StreetAddress,' ',' ') }}"
+                telephoneNumber: "{{ (json_properties.telephoneNumber) | ternary(json_properties.telephoneNumber,' ',' ') }}"
+                title: "{{ (json_properties.Title) | ternary(json_properties.Title,' ',' ') }}"
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
-                #wWWHomePage: "{{ result.wWWHomePage }}"
+                wWWHomePage: "{{ (json_properties.wWWHomePage) | ternary(json_properties.wWWHomePage,' ',' ') }}"
           register: result_add_user
 
 
