@@ -386,7 +386,7 @@
             state:    present
             attributes:
               set:
-                description: "{{ json_properties.Description }}"
+                description: "{{ (json_properties.Description is defined) | ternary('','','') }}"
 
         # - name: Modify displayName user in AD
         #   when: displayName is defined
