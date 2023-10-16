@@ -318,15 +318,18 @@
         #     groups:
         #       set:  "{{ groups_to_add }}" 
 
-        # - name: Modify c user in AD
-        #   when: json_properties.c is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         c: "{{ json_properties.c }}"
+        - name: modify c user in ad
+          when:
+            - json_properties.Country is defined
+            - json_properties.Country != none  
+            - json_properties.Country | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                c: "{{ json_properties.Country }}"
 
         # - name: Modify codePage user in AD
         #   when: codePage is defined
@@ -400,15 +403,21 @@
               set:
                 description: "{{ json_properties.Description }}"
 
-        # - name: Modify displayName user in AD
-        #   when: displayName is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         displayName: "{{ displayName }}"
+        - name: Modify displayName user in AD
+          when: 
+            - json_properties.givenName is defined
+            - json_properties.givenName != none  
+            - json_properties.givenName | length != 0
+            - json_properties.sn is defined
+            - json_properties.sn != none  
+            - json_properties.sn | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                displayName: "{{ givenName }} {{ sn }}"
 
         - name: Modify division user in AD
           when: 
@@ -476,25 +485,31 @@
               set:
                 givenName: "{{ givenName }}"
 
-        # - name: Modify homePhone user in AD
-        #   when: homePhone is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         homePhone: "{{ homePhone }}"
+        - name: Modify homePhone user in AD
+          when:
+            - json_properties.homePhone is defined
+            - json_properties.homePhone != none  
+            - json_properties.homePhone | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                homePhone: "{{ homePhone }}"
 
-        # - name: Modify info user in AD
-        #   when: info is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         info: "{{ info }}"
+        - name: modify info user in ad
+          when:
+            - json_properties.info is defined
+            - json_properties.info != none  
+            - json_properties.info | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                info: "{{ json_properties.info }}"
 
         # - name: Modify initials user in AD
         #   when: initials is defined
@@ -616,26 +631,29 @@
 
         - name: Modify postalCode user in AD
           when: 
-            - json_properties.postalCode is defined
-            - json_properties.postalCode != none  
-            - json_properties.postalCode | length != 0
+            - json_properties.PostalCode is defined
+            - json_properties.PostalCode != none  
+            - json_properties.PostalCode | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                postalCode: "{{ json_properties.postalCode }}"
+                postalCode: "{{ json_properties.PostalCode }}"
 
-        # - name: Modify postOfficeBox user in AD
-        #   when: postOfficeBox is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         postOfficeBox: "{{ postOfficeBox }}"
+        - name: Modify postOfficeBox user in AD
+          when:
+            - json_properties.POBox is defined
+            - json_properties.POBox != none  
+            - json_properties.POBox | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                postOfficeBox: "{{ postOfficeBox }}"
 
         - name: Modify sn user in AD
           when: sn is defined
@@ -701,16 +719,16 @@
 
         - name: Modify title user in AD
           when: 
-            - json_properties.title is defined
-            - json_properties.title != none  
-            - json_properties.title | length != 0
+            - json_properties.Title is defined
+            - json_properties.Title != none  
+            - json_properties.Title | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                title: "{{ json_properties.title }}"
+                title: "{{ json_properties.Title }}"
 
         - name: Modify wWWHomePage user in AD
           when: 
@@ -724,7 +742,6 @@
             attributes:
               set:
                 wWWHomePage: "{{ json_properties.wWWHomePage }}"
-
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
