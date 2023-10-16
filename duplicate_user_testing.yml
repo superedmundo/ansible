@@ -487,16 +487,16 @@
 
         - name: Modify homePhone user in AD
           when:
-            - json_properties.homePhone is defined
-            - json_properties.homePhone != none  
-            - json_properties.homePhone | length != 0
+            - json_properties.HomePhone is defined
+            - json_properties.HomePhone != none  
+            - json_properties.HomePhone | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                homePhone: "{{ json_properties.homePhone }}"
+                homePhone: "{{ json_properties.HomePhone }}"
 
         - name: modify info user in ad
           when:
@@ -511,15 +511,18 @@
               set:
                 info: "{{ json_properties.info }}"
 
-        # - name: Modify initials user in AD
-        #   when: initials is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         initials: "{{ initials }}"
+        - name: Modify initials user in AD
+          when:
+            - json_properties.Initials is defined
+            - json_properties.Initials != none  
+            - json_properties.Initials | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                initials: "{{ json_properties.Initials }}"
 
         - name: Modify ipPhone user in AD
           when: 
@@ -547,25 +550,31 @@
               set:
                 l: "{{ json_properties.l }}"
 
-        # - name: Modify mail user in AD
-        #   when: mail is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         mail: "{{ mail }}"
+        - name: Modify mail user in AD
+          when:
+            - json_properties.mail is defined
+            - json_properties.mail != none  
+            - json_properties.mail | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                mail: "{{ json_properties.mail }}"
 
-        # - name: Modify middleName user in AD
-        #   when: middleName is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         middleName: "{{ middleName }}"
+        - name: Modify middleName user in AD
+          when:
+            - json_properties.middleName is defined
+            - json_properties.middleName != none  
+            - json_properties.middleName | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                middleName: "{{ json_properties.middleName }}"
 
         - name: Modify mobile user in AD
           when: 
