@@ -101,13 +101,22 @@
           sAMAccountName_source: "{{ sAMAccountName_source }}" 
           sAMAccountName:        "{{ sAMAccountName }}" 
           generated_password:    "{{ generated_password }}"
+
+          enabled:               "{{ enabled }}"
+          departmentNumber:      "{{ departmentNumber }}"
+          dominio:               "{{ dominio }}"
+          employeeID:            "{{ employeeID }}"
+          employeeNumber:        "{{ employeeNumber }}"
+          employeeType:          "{{ employeeType }}"
           givenName:             "{{ givenName }}"
+          homePhone:             "{{ homePhone }}"
+          initials:              "{{ initials }}"
           sn:                    "{{ sn }}"
 
           # NOTIFICACIONES
           # Email
           # On Success
-          notification_email: "{{ notification_email }}"
+          notification_email:    "{{ notification_email }}"
           notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
 
   # Revisando si ya existe o no el ususario en el AD
@@ -378,6 +387,8 @@
         - name: modify delegates user in ad
           when:
             - json_properties.Manager is defined
+            - json_properties.Manager != none  
+            - json_properties.Manager | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
