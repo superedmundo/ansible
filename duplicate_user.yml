@@ -13,11 +13,17 @@
     sAMAccountName: null
     
     enabled: true
+    departmentNumber: null
+    dominio: contoso.mx
+    employeeID: null
+    employeeNumber: null
+    employeeType: null
     givenName: null
+    homePhone: null
+    initials: null
     sn: null
 
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
-    dominio: contoso.mx
 
     # NOTIFICACIONES
     # Sms 
@@ -331,15 +337,18 @@
               set:
                 c: "{{ json_properties.Country }}"
 
-        # - name: Modify codePage user in AD
-        #   when: codePage is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         codePage: "{{ (codePage is defined) | ternary(codePage, 0) }}"
+        - name: modify codepage user in ad
+          when: codePage is defined
+            - json_properties.codePage is defined
+            - json_properties.codePage != none  
+            - json_properties.codePage | length != 0
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                codepage: "{{ json_properties.codePage }}"
 
         - name: Modify comment user in AD
           when: 
@@ -367,6 +376,17 @@
               set:
                 company: "{{ json_properties.Company }}"
 
+        - name: modify delegates user in ad
+          when:
+            - json_properties.delegates is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                delegates: "{{ json_properties.delegates }}"
+
         - name: modify department user in ad
           when:
             - json_properties.Department is defined
@@ -380,15 +400,15 @@
               set:
                 department: "{{ json_properties.Department }}"
 
-        # - name: Modify departmentNumber user in AD
-        #   when: departmentNumber is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         departmentNumber: "{{ departmentNumber }}"
+        - name: Modify departmentNumber user in AD
+          when: departmentNumber is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                departmentNumber: "{{ departmentNumber }}"
 
         - name: Modify description user in AD
           when:
@@ -432,35 +452,35 @@
               set:
                 division: "{{ json_properties.Division }}"
 
-        # - name: Modify employeeID user in AD
-        #   when: employeeID is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         employeeID: "{{ employeeID }}"
+        - name: Modify employeeID user in AD
+          when: employeeID is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                employeeID: "{{ employeeID }}"
 
-        # - name: Modify employeeNumber user in AD
-        #   when: employeeNumber is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         employeeNumber: "{{ employeeNumber }}"
+        - name: Modify employeeNumber user in AD
+          when: employeeNumber is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                employeeNumber: "{{ employeeNumber }}"
 
-        # - name: Modify employeeType user in AD
-        #   when: employeeType is defined
-        #   microsoft.ad.user:
-        #     name:     "{{ result.name }}"
-        #     identity: "{{ result.distinguished_name }}"
-        #     state:    present
-        #     attributes:
-        #       set:
-        #         employeeType: "{{ employeeType }}"
+        - name: Modify employeeType user in AD
+          when: employeeType is defined
+          microsoft.ad.user:
+            name:     "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:    present
+            attributes:
+              set:
+                employeeType: "{{ employeeType }}"
 
         - name: Modify facsimileTelephoneNumber user in AD
           when: 
@@ -487,16 +507,16 @@
 
         - name: Modify homePhone user in AD
           when:
-            - json_properties.HomePhone is defined
-            - json_properties.HomePhone != none  
-            - json_properties.HomePhone | length != 0
+            - homePhone is defined
+            - homePhone != none  
+            - homePhone | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                homePhone: "{{ json_properties.HomePhone }}"
+                homePhone: "{{ homePhone }}"
 
         - name: modify info user in ad
           when:
@@ -513,16 +533,16 @@
 
         - name: Modify initials user in AD
           when:
-            - json_properties.Initials is defined
-            - json_properties.Initials != none  
-            - json_properties.Initials | length != 0
+            - initials is defined
+            - initials != none  
+            - initials | length != 0
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                initials: "{{ json_properties.Initials }}"
+                initials: "{{ initials }}"
 
         - name: Modify ipPhone user in AD
           when: 
