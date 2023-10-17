@@ -197,51 +197,10 @@
           microsoft.ad.user:
             name: "{{ sAMAccountName }}"
             password: "{{ generated_password }}"
-            #enabled: "{{ result.enabled }}"
             state: present
-            # groups:
-            #   set:  
-            #     - Domain users
-            #delegates: 
-            #  set:  "{{ result.delegates }}"
             attributes:
               set:
-                # #account_locked: "{{ result.account_locked }}"
-                # c: "{{ (json_properties.Country is defined ) | ternary(json_properties.Country,' ', '') }}"
-                # #codePage: "{{ codePage }}"
-                # comment: "{{ (json_properties.comment is defined ) | ternary(json_properties.comment,' ', '') }}"
-                # company: "{{ (json_properties.Company is defined ) | ternary(json_properties.Company,' ',' ') }}" 
-                # #delegates: "{{ result.delegates }}"
-                # department: "{{ (json_properties.Department is defined ) | ternary(json_properties.Department,' ',' ') }}"
-                # #departmentNumber: "{{ result.departmentNumber }}"
-                # description: "{{ (json_properties.Description is defined ) | ternary(json_properties.Description,' ',' ') }}"
-                # #displayName: "{{ givenName }} {{ sn }}"
-
-                # division: "{{ (json_properties.Division is defined ) | ternary(json_properties.Division,' ',' ') }}"
-                # #employeeID: "{{ result.employeeID }}"
-                # #employeeNumber: "{{ result.employeeNumber }}"
-                # #employeeType: "{{ result.employeeType }}"
-                # facsimileTelephoneNumber: "{{ (json_properties.facsimileTelephoneNumber is defined ) | ternary(json_properties.facsimileTelephoneNumber,' ',' ') }}"
-                
-                # #givenName: "{{ (givenName is defined ) | ternary(givenName,' Nombre de pila ') }}"
-                # #mail: "{{ result.email }}"
-                
-                # #middleName: "{{ result.middleName }}"
-                # #mobile: "{{ result.mobile }}"
-                # #pager: "{{ result.pager }}"
-                # personalTitle: "{{ (json_properties.personalTitle is defined ) | ternary(json_properties.personalTitle,' ',' ') }}"
-                # physicalDeliveryOfficeName: "{{ (json_properties.personalTitle is defined ) | ternary(json_properties.personalTitle,' ',' ') }}"
-                # #postalAddress: "{{ (result.postalAddress is defined ) | ternary(result.postalAddress,' ') }}"
-                # postalCode: "{{ (json_properties.PostalCode is defined ) | ternary(json_properties.PostalCode,' ',' ') }}"
-                # #postOfficeBox: "{{ (result.postOfficeBox is defined ) | ternary(result.postOfficeBox,' ') }}"
-                # sn: "{{ (json_properties.sn is defined ) | ternary(json_properties.sn,' ',' ') }}"
-                # st: "{{ (json_properties.State is defined ) | ternary(json_properties.State,' ',' ') }}"
-                # street: "{{ (json_properties.street is defined ) | ternary(json_properties.street,' ',' ') }}"
-                # streetAddress: "{{ (json_properties.StreetAddress is defined ) | ternary(json_properties.StreetAddress,' ',' ') }}"
-                # telephoneNumber: "{{ (json_properties.telephoneNumber is defined ) | ternary(json_properties.telephoneNumber,' ',' ') }}"
-                # title: "{{ (json_properties.Title is defined ) | ternary(json_properties.Title,' ',' ') }}"
                 userPrincipalName: "{{ sAMAccountName }}@{{ dominio }}"
-                #wWWHomePage: "{{ (json_properties.wWWHomePage is defined ) | ternary(json_properties.wWWHomePage,' ',' ') }}"
           register: result_add_user
 
 
