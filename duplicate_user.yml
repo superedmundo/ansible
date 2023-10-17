@@ -378,14 +378,14 @@
 
         - name: modify delegates user in ad
           when:
-            - json_properties.delegates is defined
+            - json_properties.Manager is defined
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:    present
             attributes:
               set:
-                delegates: "{{ json_properties.delegates }}"
+                delegates: "{{ json_properties.Manager }}"
 
         - name: modify department user in ad
           when:
