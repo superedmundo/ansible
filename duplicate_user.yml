@@ -518,8 +518,7 @@
         - name: Modify homePhone user in AD
           when:
             - homePhone is defined
-            - homePhone != none  
-            - homePhone | length != 0
+            - homePhone != none
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
