@@ -340,8 +340,7 @@
         - name: modify codepage user in ad
           when: codePage is defined
             - json_properties.codePage is defined
-            - json_properties.codePage != none  
-            - json_properties.codePage | length != 0
+            - json_properties.codePage > -1 
           microsoft.ad.user:
             name:     "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
