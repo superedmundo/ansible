@@ -384,7 +384,7 @@
             state:    present
             attributes:
               set:
-                delegates: "{{ json_properties.Manager }}"
+                manager: "{{ json_properties.Manager }}"
 
         - name: modify department user in ad
           when:
