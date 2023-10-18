@@ -7,7 +7,7 @@
   collections:
     - ditra.cisco
     - ansible.builtin.password
-
+ 
   vars:
     puerto: null
     vlan: 1
