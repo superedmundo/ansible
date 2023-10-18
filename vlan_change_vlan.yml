@@ -5,14 +5,13 @@
   vars:
     tag: "something"
 
-
-
   tasks:
     - name: Change Vlan Port
       debug:
         msg: HolaCrayola
 
-    - name: Gather listed ntp config
-      cisco.ios.ios_ntp_global:
-        state: gathered
-      register: ntp_config 
+    - name: Retrieve Mac addresses
+      cisco.ios.ios_command:
+        commands:
+          - "show mac address-table"
+      register: mac_addresses
