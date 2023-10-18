@@ -109,11 +109,7 @@
   #   ansible.builtin.set_fact:
   #     result_process: "Ocurrió un error "
 
-  # handlers:
-  #   - name: save ios
-  #     ios_command:
-  #       commands: "write mem"
-  #     when: resultado.changed    
+ 
 
   # NOTIFICACIONES
   - name: Send notification
@@ -143,6 +139,8 @@
 
   #     to_email: "{{ notification_email }}"
   #     alert: true
+
+   
         
   # Actualización del Ticket de Otobo
   - name: Post report to ticket on otobo
@@ -172,5 +170,9 @@
     run_once: true
     when: TicketID is not none and session_id is defined
 
-  
+    handlers:
+    - name: save ios
+      ios_command:
+        commands: "write mem"
+      when: resultado.changed
   
