@@ -102,6 +102,17 @@
     register: resultado  
     notify: "save ios"
 
+  - name: Crear mensaje notificación exitosa
+    when: something_wrong == false
+    ansible.builtin.set_fact:
+      result_process: "Todo Ok"
+
+  - name: Crear mensaje notificación fallida
+    when: something_wrong == true
+    ansible.builtin.set_fact:
+      result_process: "Ocurrió un error "
+
+
   handlers:
 
   - name: save ios
@@ -133,9 +144,7 @@
     vars:
       subject: La alta del usuario fue exitosa
       body: |
-        AccountName: "{{ sAMAccountName }}" 
-        password: "{{ (password) | ternary(password, generated_password) }}"
-        identity: "{{ result.distinguished_name }}"
+        AccountName: dfghdfh
 
       to_email: "{{ notification_email }}"
       alert: true
