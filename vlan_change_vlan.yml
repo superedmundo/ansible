@@ -3,41 +3,19 @@
   hosts: 10.100.1.59
   gather_facts: false
 
-  tasks:
+  vars:
+    interface: GigabitEthernet1/0/30
+    vlan: 101
 
-  - name: Gather only the config and default facts
-    cisco.ios.ios_facts:
-      gather_subset:
-      - config
+  tasks: 
 
-  # - name: Show facts
-  #   debug:
-  #     msg: "{{ ansible_facts | to_json(indent=2) }}"
-
-  - name: Retrieve Mac addresses
-    cisco.ios.ios_command:
-      commands:
-        - "show mac address-table"
-    register: mac_addresses     
-
-  - name: show facts
-    debug:
-      msg: "{{ mac_addresses }}"    
-
-
-  - name: switchport access vlan 1
+  - name: switchport access vlan "{{ vlan }}"
+    when: vlan is defined and interface is defined
     cisco.ios.ios_config:
       lines:
-        - switchport access vlan 1
-        - shutdown
-      parents: interface GigabitEthernet1/0/30  
-
-  - name: Config interface
-    cisco.ios.ios_interfaces:
-      config:
-        - name: GigabitEthernet1/0/30
-          description: Configured and Merged by Ansible Network
-          enabled: true 
+        - switchport access vlan "{{ vlan }}"
+        - no shutdown
+      parents: interface "{{ interface }}"  
     register: resultado  
     notify: "save ios"
 
@@ -59,6 +37,31 @@
   #   cisco.ios.ios_config:
   #     lines:
   #       - write memory
-  #   when: resultado.changed      
+  #   when: resultado.changed   
+
+
+  # - name: Config interface
+  #   cisco.ios.ios_interfaces:
+  #     config:
+  #       - name: GigabitEthernet1/0/30
+  #         description: Configured and Merged by Ansible Network
+  #         enabled: true 
+  #   register: resultado  
+  #   notify: "save ios"     
+
+  # - name: Gather only the config and default facts
+  #   cisco.ios.ios_facts:
+  #     gather_subset:
+  #     - config
+
+  # - name: Retrieve Mac addresses
+  #   cisco.ios.ios_command:
+  #     commands:
+  #       - "show mac address-table"
+  #   register: mac_addresses     
+
+  # - name: show facts
+  #   debug:
+  #     msg: "{{ mac_addresses }}" 
   
   
