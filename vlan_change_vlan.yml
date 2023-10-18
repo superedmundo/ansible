@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars:
-    puerto: wertwert
+    puerto: GigabitEthernet1/0/30
     vlan: 101
 
   tasks: 
@@ -15,7 +15,7 @@
       lines:
         - switchport access vlan {{ vlan }}
         - no shutdown
-      parents: interface GigabitEthernet1/0/30  
+      parents: interface {{ puerto }}  
     register: resultado  
     notify: "save ios"
 
