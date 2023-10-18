@@ -51,32 +51,32 @@
       return_content: true
     register: response
 
-  # - name: Get SessionID from login response
-  #   ansible.builtin.set_fact:
-  #     session_id: "{{ r.SessionID }}"
-  #   vars:
-  #     r: "{{ response.content | from_json }}"
-  #   delegate_to: localhost
+  - name: Get SessionID from login response
+    ansible.builtin.set_fact:
+      session_id: "{{ r.SessionID }}"
+    vars:
+      r: "{{ response.content | from_json }}"
+    delegate_to: localhost
     
-  # - name: Set auto process ticket as processing status
-  #   delegate_to: localhost
-  #   ansible.builtin.uri:
-  #     url: "{{ path.Ticket }}/{{ TicketID }}/Update"
-  #     method: POST
-  #     body_format: json
-  #     body:
-  #       SessionID: "{{ session_id }}"
-  #       TicketID: "{{ TicketID }}"
-  #       DynamicField:
-  #         - Name: AutoStatus
-  #           Value: processing
+  - name: Set auto process ticket as processing status
+    delegate_to: localhost
+    ansible.builtin.uri:
+      url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+      method: POST
+      body_format: json
+      body:
+        SessionID: "{{ session_id }}"
+        TicketID: "{{ TicketID }}"
+        DynamicField:
+          - Name: AutoStatus
+            Value: processing
 
-  #     validate_certs: "{{ validate_certs }}"
-  #     return_content: true
-  #   register: response
-  #   failed_when: "response.status != 200"
-  #   run_once: true
-  #   when: TicketID is not none and session_id is defined
+      validate_certs: "{{ validate_certs }}"
+      return_content: true
+    register: response
+    failed_when: "response.status != 200"
+    run_once: true
+    when: TicketID is not none and session_id is defined
 
   - name: Desplegando las variables que llegaron.
     ansible.builtin.debug:
