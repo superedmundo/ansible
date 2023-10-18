@@ -25,6 +25,14 @@
           access:
             vlan: 140
     register: resultado  
+    notify: "save ios"
+
+  handlers:
+     - name: save ios
+       ios_command:
+         commands: "write mem"
+         timeout: 40
+       when: not ansible_check_mode    
 
   # - name: Configurar puerto en VLAN
   #   cisco.ios.ios_interface:
@@ -34,8 +42,10 @@
   #     switchport_access_vlan: 140  # Reemplaza con el número de VLAN al que deseas mover el puerto
   #   register: resultado
 
-  - name: Guardar la configuración
-    cisco.ios.ios_config:
-      lines:
-        - write memory
-    when: resultado.changed      
+  # - name: Guardar la configuración
+  #   cisco.ios.ios_config:
+  #     lines:
+  #       - write memory
+  #   when: resultado.changed      
+  
+  
