@@ -819,7 +819,7 @@
             Subject: Reporte ansible
             Body: |
               "{{ result_process }}"
-              "{{ (mensaje_error is defined is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+              "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
             ContentType: text/plain; charset=utf-8
           DynamicField:
            - Name: AutoStatus
