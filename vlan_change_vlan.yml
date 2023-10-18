@@ -6,10 +6,6 @@
     tag: "something"
 
   tasks:
-    - name: Change Vlan Port
-      debug:
-        msg: HolaCrayola
-
     - name: Retrieve Mac addresses
       cisco.ios.ios_command:
         commands:
