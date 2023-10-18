@@ -2,8 +2,8 @@
 - name: Change Vlan Port
   hosts: 10.100.1.59
   gather_facts: false
-  # vars_files:
-  # - "./oscarc_otobo_password"
+  vars_files:
+  - "./oscarc_otobo_password"
   collections:
     - ditra.cisco
  
@@ -90,7 +90,6 @@
         # Email
         # On Success
         notification_email: "{{ notification_email }}"
-        notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
 
   - name: switchport access vlan 
     when: vlan is defined and puerto is defined
