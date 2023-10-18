@@ -38,18 +38,18 @@
 
   tasks: 
 
-  # - name: Otobo login, get session id
-  #   delegate_to: localhost
-  #   ansible.builtin.uri:
-  #     url: "{{ path.login }}"
-  #     method: POST
-  #     body_format: json
-  #     body:
-  #       UserLogin: "{{ otobo_user }}"
-  #       Password: "{{ otobo_password }}"
-  #     validate_certs: "{{ validate_certs }}"
-  #     return_content: true
-  #   register: response
+  - name: Otobo login, get session id
+    delegate_to: localhost
+    ansible.builtin.uri:
+      url: "{{ path.login }}"
+      method: POST
+      body_format: json
+      body:
+        UserLogin: "{{ otobo_user }}"
+        Password: "{{ otobo_password }}"
+      validate_certs: "{{ validate_certs }}"
+      return_content: true
+    register: response
 
   # - name: Get SessionID from login response
   #   ansible.builtin.set_fact:
