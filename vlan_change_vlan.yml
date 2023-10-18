@@ -1,0 +1,10 @@
+---
+- name: Change Vlan Port
+  hosts: switches
+  gather_facts: false
+  vars:
+    tag: "something"
+  tasks:
+    - name: Change Vlan Port
+      cisco.ios.config:
+        commands:
