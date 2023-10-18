@@ -4,8 +4,8 @@
   gather_facts: false
 
   vars:
-    puerto: GigabitEthernet1/0/30
-    vlan: 101
+    puerto: null
+    vlan: 1
 
   tasks: 
 
