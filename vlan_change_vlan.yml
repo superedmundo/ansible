@@ -20,7 +20,8 @@
       config:
         - name: GigabitEthernet1/0/30
           description: Configured and Merged by Ansible Network
-          enabled: true    
+          enabled: true   
+          switchport_access_vlan: 140 
     register: resultado  
 
   # - name: Configurar puerto en VLAN
