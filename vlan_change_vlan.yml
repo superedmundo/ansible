@@ -21,9 +21,6 @@
         - name: GigabitEthernet1/0/30
           description: Configured and Merged by Ansible Network
           enabled: true   
-          #mode: access
-          access:
-            vlan: 140
     register: resultado  
     notify: "save ios"
 
