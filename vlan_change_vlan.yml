@@ -134,21 +134,7 @@
 
       to_email: "{{ notification_email }}"
       alert: true
-        
-  - name: Send notification_email_send_user_credentials
-    when: notification_email_send_user_credentials is defined and result_add_user.changed == true and result_add_user.failed == false
-    ansible.builtin.include_role:
-      name: ditra.cisco.send_email
-      apply:
-        delegate_to: localhost
-    vars:
-      subject: La alta del usuario fue exitosa
-      body: |
-        AccountName: dfghdfh
-
-      to_email: "{{ notification_email }}"
-      alert: true
-        
+       
   - name: Send notification_email_on_fail
     when: notification_email is defined and something_wrong == true
     ansible.builtin.include_role:
