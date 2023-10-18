@@ -2,8 +2,8 @@
 - name: Change Vlan Port
   hosts: 10.100.1.59
   gather_facts: false
-  vars_files:
-  - "./oscarc_otobo_password"
+  # vars_files:
+  # - "./oscarc_otobo_password"
   collections:
     - ditra.cisco
  
@@ -40,45 +40,45 @@
 
   tasks: 
 
-  - name: Otobo login, get session id
-    delegate_to: localhost
-    ansible.builtin.uri:
-      url: "{{ path.login }}"
-      method: POST
-      body_format: json
-      body:
-        UserLogin: "{{ otobo_user }}"
-        Password: "{{ otobo_password }}"
-      validate_certs: "{{ validate_certs }}"
-      return_content: true
-    register: response
+  # - name: Otobo login, get session id
+  #   delegate_to: localhost
+  #   ansible.builtin.uri:
+  #     url: "{{ path.login }}"
+  #     method: POST
+  #     body_format: json
+  #     body:
+  #       UserLogin: "{{ otobo_user }}"
+  #       Password: "{{ otobo_password }}"
+  #     validate_certs: "{{ validate_certs }}"
+  #     return_content: true
+  #   register: response
 
-  - name: Get SessionID from login response
-    ansible.builtin.set_fact:
-      session_id: "{{ r.SessionID }}"
-    vars:
-      r: "{{ response.content | from_json }}"
-    delegate_to: localhost
+  # - name: Get SessionID from login response
+  #   ansible.builtin.set_fact:
+  #     session_id: "{{ r.SessionID }}"
+  #   vars:
+  #     r: "{{ response.content | from_json }}"
+  #   delegate_to: localhost
     
-  - name: Set auto process ticket as processing status
-    delegate_to: localhost
-    ansible.builtin.uri:
-      url: "{{ path.Ticket }}/{{ TicketID }}/Update"
-      method: POST
-      body_format: json
-      body:
-        SessionID: "{{ session_id }}"
-        TicketID: "{{ TicketID }}"
-        DynamicField:
-          - Name: AutoStatus
-            Value: processing
+  # - name: Set auto process ticket as processing status
+  #   delegate_to: localhost
+  #   ansible.builtin.uri:
+  #     url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+  #     method: POST
+  #     body_format: json
+  #     body:
+  #       SessionID: "{{ session_id }}"
+  #       TicketID: "{{ TicketID }}"
+  #       DynamicField:
+  #         - Name: AutoStatus
+  #           Value: processing
 
-      validate_certs: "{{ validate_certs }}"
-      return_content: true
-    register: response
-    failed_when: "response.status != 200"
-    run_once: true
-    when: TicketID is not none and session_id is defined
+  #     validate_certs: "{{ validate_certs }}"
+  #     return_content: true
+  #   register: response
+  #   failed_when: "response.status != 200"
+  #   run_once: true
+  #   when: TicketID is not none and session_id is defined
 
   - name: Desplegando las variables que llegaron.
     ansible.builtin.debug:
@@ -102,15 +102,15 @@
     register: resultado  
     notify: "save ios"
 
-  - name: Crear mensaje notificación exitosa
-    when: something_wrong == false
-    ansible.builtin.set_fact:
-      result_process: "Todo Ok"
+  # - name: Crear mensaje notificación exitosa
+  #   when: something_wrong == false
+  #   ansible.builtin.set_fact:
+  #     result_process: "Todo Ok"
 
-  - name: Crear mensaje notificación fallida
-    when: something_wrong == true
-    ansible.builtin.set_fact:
-      result_process: "Ocurrió un error "
+  # - name: Crear mensaje notificación fallida
+  #   when: something_wrong == true
+  #   ansible.builtin.set_fact:
+  #     result_process: "Ocurrió un error "
 
   handlers:
 
@@ -119,63 +119,63 @@
       commands: "write mem"
     when: resultado.changed    
 
-  # NOTIFICACIONES
-  - name: Send notification_email
-    when: notification_email is defined and something_wrong == false
-    ansible.builtin.include_role:
-      name: ditra.cisco.send_email
-      apply:
-        delegate_to: localhost
-    vars:
-      subject: La alta del usuario fue exitosa
-      body: |
-        Todo super bien
+  # # NOTIFICACIONES
+  # - name: Send notification_email
+  #   when: notification_email is defined and something_wrong == false
+  #   ansible.builtin.include_role:
+  #     name: ditra.cisco.send_email
+  #     apply:
+  #       delegate_to: localhost
+  #   vars:
+  #     subject: La alta del usuario fue exitosa
+  #     body: |
+  #       Todo super bien
 
-      to_email: "{{ notification_email }}"
-      alert: true
+  #     to_email: "{{ notification_email }}"
+  #     alert: true
        
-  - name: Send notification_email_on_fail
-    when: notification_email is defined and something_wrong == true
-    ansible.builtin.include_role:
-      name: ditra.cisco.send_email
-      apply:
-        delegate_to: localhost
-    vars:
-      subject: La alta del usuario fue fallida
-      body: |
-        Algo salió mal, revisa la bitácora
+  # - name: Send notification_email_on_fail
+  #   when: notification_email is defined and something_wrong == true
+  #   ansible.builtin.include_role:
+  #     name: ditra.cisco.send_email
+  #     apply:
+  #       delegate_to: localhost
+  #   vars:
+  #     subject: La alta del usuario fue fallida
+  #     body: |
+  #       Algo salió mal, revisa la bitácora
 
-      to_email: "{{ notification_email }}"
-      alert: true
+  #     to_email: "{{ notification_email }}"
+  #     alert: true
         
         
-  # Actualización del Ticket de Otobo
-  - name: Post report to ticket on otobo
-    delegate_to: localhost
-    ansible.builtin.uri:
-      url: "{{ path.Ticket }}/{{ TicketID }}/Update"
-      method: POST
-      body_format: json
-      body:
-        SessionID: "{{ session_id }}"
-        TicketID: "{{ TicketID }}"
-        Article:
-          CommunicationChannel: Internal
-          IsVisibleForCustomer: 1
-          Subject: Reporte ansible
-          Body: |
-            "{{ result_process }}"
-            "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
-          ContentType: text/plain; charset=utf-8
-        DynamicField:
-          - Name: AutoStatus
-            Value: completed
-      validate_certs: "{{ validate_certs }}"
-      return_content: true
-    register: response
-    failed_when: "response.status != 200"
-    run_once: true
-    when: TicketID is not none and session_id is defined
+  # # Actualización del Ticket de Otobo
+  # - name: Post report to ticket on otobo
+  #   delegate_to: localhost
+  #   ansible.builtin.uri:
+  #     url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+  #     method: POST
+  #     body_format: json
+  #     body:
+  #       SessionID: "{{ session_id }}"
+  #       TicketID: "{{ TicketID }}"
+  #       Article:
+  #         CommunicationChannel: Internal
+  #         IsVisibleForCustomer: 1
+  #         Subject: Reporte ansible
+  #         Body: |
+  #           "{{ result_process }}"
+  #           "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+  #         ContentType: text/plain; charset=utf-8
+  #       DynamicField:
+  #         - Name: AutoStatus
+  #           Value: completed
+  #     validate_certs: "{{ validate_certs }}"
+  #     return_content: true
+  #   register: response
+  #   failed_when: "response.status != 200"
+  #   run_once: true
+  #   when: TicketID is not none and session_id is defined
 
   
   
