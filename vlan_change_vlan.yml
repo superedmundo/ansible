@@ -2,12 +2,80 @@
 - name: Change Vlan Port
   hosts: 10.100.1.59
   gather_facts: false
+  vars_files:
+  - "./oscarc_otobo_password"
+  collections:
+    - ditra.cisco
+    - ansible.builtin.password
 
   vars:
     puerto: null
     vlan: 1
 
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms_on_success: null
+    notification_sms_send_user_credentials: null
+
+    # Email
+    # On Success
+    notification_email: null
+    notification_email_send_user_credentials: null
+
   tasks: 
+
+  - name: Otobo login, get session id
+    delegate_to: localhost
+    ansible.builtin.uri:
+      url: "{{ path.login }}"
+      method: POST
+      body_format: json
+      body:
+        UserLogin: "{{ otobo_user }}"
+        Password: "{{ otobo_password }}"
+      validate_certs: "{{ validate_certs }}"
+      return_content: true
+    register: response
+
+  - name: Get SessionID from login response
+    ansible.builtin.set_fact:
+      session_id: "{{ r.SessionID }}"
+    vars:
+      r: "{{ response.content | from_json }}"
+    delegate_to: localhost
+    
+  - name: Set auto process ticket as processing status
+    delegate_to: localhost
+    ansible.builtin.uri:
+      url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+      method: POST
+      body_format: json
+      body:
+        SessionID: "{{ session_id }}"
+        TicketID: "{{ TicketID }}"
+        DynamicField:
+          - Name: AutoStatus
+            Value: processing
+
+      validate_certs: "{{ validate_certs }}"
+      return_content: true
+    register: response
+    failed_when: "response.status != 200"
+    run_once: true
+    when: TicketID is not none and session_id is defined
+
+  - name: Desplegando las variables que llegaron.
+    ansible.builtin.debug:
+      msg: 
+        puerto: "{{ puerto }}" 
+        vlan: "{{ vlan }}"
+
+        # NOTIFICACIONES
+        # Email
+        # On Success
+        notification_email: "{{ notification_email }}"
+        notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
 
   - name: switchport access vlan 
     when: vlan is defined and puerto is defined
@@ -20,48 +88,85 @@
     notify: "save ios"
 
   handlers:
-     - name: save ios
-       ios_command:
-         commands: "write mem"
-       when: resultado.changed    
 
-  # - name: Configurar puerto en VLAN
-  #   cisco.ios.ios_interface:
-  #     name: GigabitEthernet1/0/30  # Reemplaza con el nombre del puerto que deseas configurar
-  #     description: Conexión a servidor
-  #     switchport_mode: access
-  #     switchport_access_vlan: 140  # Reemplaza con el número de VLAN al que deseas mover el puerto
-  #   register: resultado
+  - name: save ios
+    ios_command:
+      commands: "write mem"
+    when: resultado.changed    
 
-  # - name: Guardar la configuración
-  #   cisco.ios.ios_config:
-  #     lines:
-  #       - write memory
-  #   when: resultado.changed   
+  # NOTIFICACIONES
+  - name: Send notification_email
+    when: notification_email is defined and something_wrong == false
+    ansible.builtin.include_role:
+      name: ditra.cisco.send_email
+      apply:
+        delegate_to: localhost
+    vars:
+      subject: La alta del usuario fue exitosa
+      body: |
+        Todo super bien
 
+      to_email: "{{ notification_email }}"
+      alert: true
+        
+  - name: Send notification_email_send_user_credentials
+    when: notification_email_send_user_credentials is defined and result_add_user.changed == true and result_add_user.failed == false
+    ansible.builtin.include_role:
+      name: ditra.cisco.send_email
+      apply:
+        delegate_to: localhost
+    vars:
+      subject: La alta del usuario fue exitosa
+      body: |
+        AccountName: "{{ sAMAccountName }}" 
+        password: "{{ (password) | ternary(password, generated_password) }}"
+        identity: "{{ result.distinguished_name }}"
 
-  # - name: Config interface
-  #   cisco.ios.ios_interfaces:
-  #     config:
-  #       - name: GigabitEthernet1/0/30
-  #         description: Configured and Merged by Ansible Network
-  #         enabled: true 
-  #   register: resultado  
-  #   notify: "save ios"     
+      to_email: "{{ notification_email }}"
+      alert: true
+        
+  - name: Send notification_email_on_fail
+    when: notification_email is defined and something_wrong == true
+    ansible.builtin.include_role:
+      name: ditra.cisco.send_email
+      apply:
+        delegate_to: localhost
+    vars:
+      subject: La alta del usuario fue fallida
+      body: |
+        Algo salió mal, revisa la bitácora
 
-  # - name: Gather only the config and default facts
-  #   cisco.ios.ios_facts:
-  #     gather_subset:
-  #     - config
+      to_email: "{{ notification_email }}"
+      alert: true
+        
+        
+  # Actualización del Ticket de Otobo
+  - name: Post report to ticket on otobo
+    delegate_to: localhost
+    ansible.builtin.uri:
+      url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+      method: POST
+      body_format: json
+      body:
+        SessionID: "{{ session_id }}"
+        TicketID: "{{ TicketID }}"
+        Article:
+          CommunicationChannel: Internal
+          IsVisibleForCustomer: 1
+          Subject: Reporte ansible
+          Body: |
+            "{{ result_process }}"
+            "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+          ContentType: text/plain; charset=utf-8
+        DynamicField:
+          - Name: AutoStatus
+            Value: completed
+      validate_certs: "{{ validate_certs }}"
+      return_content: true
+    register: response
+    failed_when: "response.status != 200"
+    run_once: true
+    when: TicketID is not none and session_id is defined
 
-  # - name: Retrieve Mac addresses
-  #   cisco.ios.ios_command:
-  #     commands:
-  #       - "show mac address-table"
-  #   register: mac_addresses     
-
-  # - name: show facts
-  #   debug:
-  #     msg: "{{ mac_addresses }}" 
   
   
