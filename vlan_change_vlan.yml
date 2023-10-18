@@ -1,10 +1,10 @@
 ---
 - name: Change Vlan Port
   hosts: switches
-  gather_facts: false
+  gather_facts: true
   vars:
     tag: "something"
   tasks:
     - name: Change Vlan Port
-      cisco.ios.config:
-        commands:
+      debug:
+        msg: HolaCrayola
