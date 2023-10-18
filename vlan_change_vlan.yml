@@ -112,7 +112,6 @@
     ansible.builtin.set_fact:
       result_process: "Ocurrió un error "
 
-
   handlers:
 
   - name: save ios
