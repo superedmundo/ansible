@@ -14,13 +14,22 @@
     debug:
       msg: "{{ ansible_facts }}"
 
-  - name: Configurar puerto en VLAN
-    cisco.ios.ios_interface:
-      name: GigabitEthernet1/0/30  # Reemplaza con el nombre del puerto que deseas configurar
-      description: Conexión a servidor
-      switchport_mode: access
-      switchport_access_vlan: 140  # Reemplaza con el número de VLAN al que deseas mover el puerto
-    register: resultado
+
+  - name: Merge provided configuration with device configuration
+    cisco.ios.ios_interfaces:
+      config:
+        - name: GigabitEthernet2
+          description: Configured and Merged by Ansible Network
+          enabled: true    
+    register: resultado  
+
+  # - name: Configurar puerto en VLAN
+  #   cisco.ios.ios_interface:
+  #     name: GigabitEthernet1/0/30  # Reemplaza con el nombre del puerto que deseas configurar
+  #     description: Conexión a servidor
+  #     switchport_mode: access
+  #     switchport_access_vlan: 140  # Reemplaza con el número de VLAN al que deseas mover el puerto
+  #   register: resultado
 
   - name: Guardar la configuración
     cisco.ios.ios_config:
