@@ -97,7 +97,12 @@
         - no shutdown
       parents: interface {{ puerto }}  
     register: resultado  
-    notify: "save ios"
+    #notify: "save ios"
+
+  - name: save ios
+    when: resultado.changed
+    ios_command:
+      commands: "write mem"
 
   # - name: Crear mensaje notificación exitosa
   #   when: something_wrong == false
@@ -170,9 +175,9 @@
     run_once: true
     when: TicketID is not none and session_id is defined
 
-    handlers:
-    - name: save ios
-      ios_command:
-        commands: "write mem"
-      when: resultado.changed
+    # handlers:
+    # - name: save ios
+    #   ios_command:
+    #     commands: "write mem"
+    #   when: resultado.changed
   
