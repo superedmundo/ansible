@@ -1,6 +1,6 @@
 ---
 - name: Change Vlan Port
-  hosts: switches
+  hosts: 10.100.1.59
   gather_facts: true
   vars:
     tag: "something"
