@@ -14,7 +14,7 @@
     # NOTIFICACIONES
     # Sms 
     # On Success
-    notification_sms_on_success: null
+    notification_sms: null
 
     # Email
     # On Success
@@ -41,7 +41,7 @@
   - name: Otobo login, get session id
     delegate_to: localhost
     ansible.builtin.uri:
-      url: "{{ path.login }}"
+      url: "{{ path.login }}" 
       method: POST
       body_format: json
       body:
