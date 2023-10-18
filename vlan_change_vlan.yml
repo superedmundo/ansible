@@ -11,3 +11,8 @@
     - name: Change Vlan Port
       debug:
         msg: HolaCrayola
+
+    - name: Gather listed ntp config
+      cisco.ios.ios_ntp_global:
+        state: gathered
+      register: ntp_config 
