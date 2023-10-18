@@ -116,20 +116,20 @@
       commands: "write mem"
     when: resultado.changed    
 
-  # # NOTIFICACIONES
-  # - name: Send notification_email
-  #   when: notification_email is defined and something_wrong == false
-  #   ansible.builtin.include_role:
-  #     name: ditra.cisco.send_email
-  #     apply:
-  #       delegate_to: localhost
-  #   vars:
-  #     subject: La alta del usuario fue exitosa
-  #     body: |
-  #       Todo super bien
+  # NOTIFICACIONES
+  - name: Send notification_email
+    when: notification_email is defined and something_wrong == false
+    ansible.builtin.include_role:
+      name: ditra.cisco.send_email
+      apply:
+        delegate_to: localhost
+    vars:
+      subject: La modificación del puerto "{{ puerto }}" a la vlan "{{ vlan }}" fue exitoso
+      body: |
+        Todo super bien
 
-  #     to_email: "{{ notification_email }}"
-  #     alert: true
+      to_email: "{{ notification_email }}"
+      alert: true
        
   # - name: Send notification_email_on_fail
   #   when: notification_email is defined and something_wrong == true
