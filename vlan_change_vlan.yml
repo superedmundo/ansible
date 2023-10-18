@@ -1,9 +1,12 @@
 ---
 - name: Change Vlan Port
   hosts: 10.100.1.59
-  gather_facts: true
+  gather_facts: false
   vars:
     tag: "something"
+
+
+
   tasks:
     - name: Change Vlan Port
       debug:
