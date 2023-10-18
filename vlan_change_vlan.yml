@@ -2,10 +2,21 @@
 - name: Change Vlan Port
   hosts: 10.100.1.59
   gather_facts: false
+  
+  vars: # for execution environment
+  
+    ansible_connection: ansible.netcommon.network_cli
+    ansible_network_os: cisco.ios.ios
+    ansible_become: yes
+    ansible_become_method: enable
 
   tasks:
-    - name: Retrieve Mac addresses
-      cisco.ios.ios_command:
-        commands:
-          - "show mac address-table"
-      register: mac_addresses
+
+  - name: Gather only the config and default facts
+    cisco.ios.ios_facts:
+      gather_subset:
+      - config
+
+  - name: Show facts
+    debug:
+      msg: "{{ ansible_facts.net_version }}"
