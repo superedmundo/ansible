@@ -6,7 +6,6 @@
   - "./oscarc_otobo_password"
   collections:
     - ditra.cisco
-    - ansible.builtin.password
  
   vars:
     puerto: null
@@ -22,6 +21,22 @@
     # On Success
     notification_email: null
     notification_email_send_user_credentials: null
+
+    # Variables internas de control de flujo
+    something_wrong: false
+    mensaje_error: null
+
+    # vars for otobo changes
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+    TicketID: null
 
   tasks: 
 
