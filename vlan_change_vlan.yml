@@ -97,55 +97,50 @@
         - no shutdown
       parents: interface {{ puerto }}  
     register: resultado  
-    #notify: "save ios"
 
   - name: save ios
     when: resultado.changed
     ios_command:
       commands: "write mem"
 
-  # - name: Crear mensaje notificación exitosa
-  #   when: something_wrong == false
-  #   ansible.builtin.set_fact:
-  #     result_process: "Todo Ok"
+  - name: crear mensaje notificación exitosa
+    when: something_wrong == false
+    ansible.builtin.set_fact:
+      result_process: "todo ok"
 
-  # - name: Crear mensaje notificación fallida
-  #   when: something_wrong == true
-  #   ansible.builtin.set_fact:
-  #     result_process: "Ocurrió un error "
-
- 
+  - name: crear mensaje notificación fallida
+    when: something_wrong == true
+    ansible.builtin.set_fact:
+      result_process: "ocurrió un error "
 
   # NOTIFICACIONES
   - name: Send notification
+    when: notification_email is defined and something_wrong == false
     ansible.builtin.include_role:
       name: ditra.cisco.send_email
       apply:
         delegate_to: localhost
     vars:
-      subject: sendmail.yml
+      subject: La modificación del puerto "{{ puerto }}" a la vlan "{{ vlan }}" fue un exito
       body: |
-        Todo super bien, veamos si funciona el correo
-        Atte Edmundo Sánchez Medina
+        Todo super bien
 
       to_email: "{{ notification_email }}"
       alert: true
        
-  # - name: Send notification_email_on_fail
-  #   when: notification_email is defined and something_wrong == true
-  #   ansible.builtin.include_role:
-  #     name: ditra.cisco.send_email
-  #     apply:
-  #       delegate_to: localhost
-  #   vars:
-  #     subject: La modificación del puerto "{{ puerto }}" a la vlan "{{ vlan }}" falló
-  #     body: |
-  #       Algo salió mal, revisa la bitácora
+  - name: Send notification_email_on_fail
+    when: notification_email is defined and something_wrong == true
+    ansible.builtin.include_role:
+      name: ditra.cisco.send_email
+      apply:
+        delegate_to: localhost
+    vars:
+      subject: La modificación del puerto "{{ puerto }}" a la vlan "{{ vlan }}" falló
+      body: |
+        Algo salió mal, revisa la bitácora
 
-  #     to_email: "{{ notification_email }}"
-  #     alert: true
-
-   
+      to_email: "{{ notification_email }}"
+      alert: true
         
   # Actualización del Ticket de Otobo
   - name: Post report to ticket on otobo
@@ -175,9 +170,4 @@
     run_once: true
     when: TicketID is not none and session_id is defined
 
-    # handlers:
-    # - name: save ios
-    #   ios_command:
-    #     commands: "write mem"
-    #   when: resultado.changed
   
