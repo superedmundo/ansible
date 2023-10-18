@@ -2,13 +2,6 @@
 - name: Change Vlan Port
   hosts: 10.100.1.59
   gather_facts: false
-  
-  vars: # for execution environment
-  
-    ansible_connection: ansible.netcommon.network_cli
-    ansible_network_os: cisco.ios.ios
-    ansible_become: yes
-    ansible_become_method: enable
 
   tasks:
 
@@ -19,4 +12,18 @@
 
   - name: Show facts
     debug:
-      msg: "{{ ansible_facts.net_version }}"
+      msg: "{{ ansible_facts }}"
+
+  - name: Configurar puerto en VLAN
+    ios_interface:
+      name: GigabitEthernet1/0/30  # Reemplaza con el nombre del puerto que deseas configurar
+      description: Conexión a servidor
+      switchport_mode: access
+      switchport_access_vlan: 140  # Reemplaza con el número de VLAN al que deseas mover el puerto
+    register: resultado
+
+  - name: Guardar la configuración
+    ios_config:
+      lines:
+        - write memory
+    when: resultado.changed      
