@@ -220,9 +220,12 @@
           IsVisibleForCustomer: 1
           Subject: Reporte ansible
           Body: |
+            result_process: "{{ result_process }}"
+
+            Configuración final del puerto despúes de correr el proceso:
             #sh running-config | section interface {{ puerto }}:
             "{{ sh_running_config }}"
-            "{{ result_process }}"
+            
             
             "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de cambiar la vlan") }}"
           ContentType: text/plain; charset=utf-8
