@@ -187,6 +187,7 @@
     vars:
       subject: La modificación del puerto {{ puerto }} a la vlan {{ vlan }} fue un éxito
       body: |
+        sh running-config | section interface "{{ puerto }}":
         "{{ sh_running_config }}"
 
       to_email: "{{ notification_email }}"
@@ -222,6 +223,7 @@
           Subject: Reporte ansible
           Body: |
             something_wrong: "{{ something_wrong }}"
+            sh running-config | section interface "{{ puerto }}":
             "{{ sh_running_config }}"
             "{{ result_process }}"
             
