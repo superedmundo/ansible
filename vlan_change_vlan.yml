@@ -108,6 +108,10 @@
       commands: "sh running-config | section interface {{ puerto }}" 
     register: running_config  
 
+  - name: Desplegando el resultado del running_config.
+    ansible.builtin.debug:
+      var:  running_config
+
   - name: crear mensaje notificación exitosa
     when: something_wrong == false
     ansible.builtin.set_fact:
