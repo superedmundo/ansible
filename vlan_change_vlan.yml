@@ -135,9 +135,9 @@
       apply:
         delegate_to: localhost
     vars:
-      subject: La modificación del puerto "{{ puerto }}" a la vlan "{{ vlan }}" fue un exito
+      subject: La modificación del puerto {{ puerto }} a la vlan {{ vlan }} fue un éxito
       body: |
-        Todo super bien
+        "{{ sh_running_config }}"
 
       to_email: "{{ notification_email }}"
       alert: true
@@ -174,7 +174,7 @@
             "{{ sh_running_config }}"
             "{{ result_process }}"
             
-            "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
+            "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de cambiar la vlan") }}"
           ContentType: text/plain; charset=utf-8
         DynamicField:
           - Name: AutoStatus
