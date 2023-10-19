@@ -91,28 +91,78 @@
 
   - name: switchport access vlan 
     when: vlan is defined and puerto is defined
-    cisco.ios.ios_config:
-      lines:
-        - switchport access vlan {{ vlan }}
-        - no shutdown
-      parents: interface {{ puerto }}  
-    register: resultado  
+    block:
+      - name: switchport access vlan {{ puerto }} --> {{ vlan }}
+        cisco.ios.ios_config:
+          lines:
+            - switchport access vlan {{ vlan }}
+            - no shutdown
+          parents: interface {{ puerto }}  
+        register: resultado 
+      
+    rescue: 
 
-  - name: save ios
-    when: resultado.changed
-    ios_command:
-      commands: "write mem"
+      - name: Envio de correo failed al no poder cambiar el {{ puerto }} a la vlan {{ vlan }}
+        when: notification_email is defined
+        ansible.builtin.include_role:
+          name: ditra.cisco.send_email
+          apply:
+            delegate_to: localhost
+        vars:
+          subject: Ocurrió un error al tratar de cambiar el {{ puerto }} a la vlan {{ vlan }}
+          body: |
+            Ocurrió un error al tratar de cambiar el "{{ puerto }}" a la vlan "{{ vlan }}"
+            "{{ resultado }}"
+
+          to_email: "{{ notification_email }}"
+          alert: true      
+
+      - name: Establecer el valor de algo Erroneo
+        ansible.builtin.set_fact:
+          something_wrong: true
+
+  - name: Grabar la configuracion
+    when: vlan is defined and puerto is defined
+    block:
+      - name: save ios
+        when: resultado.changed
+        ios_command:
+          commands: "write mem"
+      
+    rescue: 
+
+      - name: Envio de correo failed al no poder grabar la configuración
+        when: notification_email is defined
+        ansible.builtin.include_role:
+          name: ditra.cisco.send_email
+          apply:
+            delegate_to: localhost
+        vars:
+          subject: Ocurrió un error al tratar de grabar la configuracion
+          body: |
+            Ocurrió un error al tratar de grabar la configuracion de cambiar el "{{ puerto }}" a la vlan "{{ vlan }}"
+            "{{ resultado }}"
+
+          to_email: "{{ notification_email }}"
+          alert: true      
+
+      - name: Establecer el valor de algo Erroneo
+        ansible.builtin.set_fact:
+          something_wrong: true
+
 
   - name: Sh runing
+    when: something_wrong == false
     ios_command:
       commands: "sh running-config | section interface {{ puerto }}" 
     register: running_config  
 
   - name: Desplegando el resultado del running_config.
+    when: something_wrong == false
     ansible.builtin.debug:
       var:  running_config
 
-  - name: Desplegando el resultado del running_config.
+  - name: fact running_config.
     when: something_wrong == false
     ansible.builtin.set_fact:
       sh_running_config: "{{ running_config.stdout.0 }}"
@@ -171,6 +221,7 @@
           IsVisibleForCustomer: 1
           Subject: Reporte ansible
           Body: |
+            something_wrong: "{{ something_wrong }}"
             "{{ sh_running_config }}"
             "{{ result_process }}"
             
