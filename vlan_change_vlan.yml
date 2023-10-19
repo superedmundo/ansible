@@ -104,7 +104,6 @@
       commands: "write mem"
 
   - name: Sh runing
-    when: resultado.changed
     ios_command:
       commands: "sh running-config | section interface {{ puerto }}" 
     register: running_config  
