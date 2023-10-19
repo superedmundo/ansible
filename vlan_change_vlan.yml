@@ -222,7 +222,6 @@
           IsVisibleForCustomer: 1
           Subject: Reporte ansible
           Body: |
-            something_wrong: "{{ something_wrong }}"
             #sh running-config | section interface {{ puerto }}:
             "{{ sh_running_config }}"
             "{{ result_process }}"
