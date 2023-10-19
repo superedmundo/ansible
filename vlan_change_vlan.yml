@@ -23,6 +23,7 @@
     # Variables internas de control de flujo
     something_wrong: false
     mensaje_error: null
+    sh_running_config: null
 
     # vars for otobo changes
     validate_certs: false
@@ -111,7 +112,7 @@
         vars:
           subject: Ocurrió un error al tratar de cambiar el {{ puerto }} a la vlan {{ vlan }}
           body: |
-            Ocurrió un error al tratar de cambiar el "{{ puerto }}" a la vlan "{{ vlan }}"
+            Ocurrió un error al tratar de cambiar el {{ puerto }} a la vlan {{ vlan }}
             "{{ resultado }}"
 
           to_email: "{{ notification_email }}"
@@ -122,17 +123,22 @@
           something_wrong: true
 
   - name: Grabar la configuracion
-    when: vlan is defined and puerto is defined
+    when: vlan is defined and puerto is defined and something_wrong == false
     block:
       - name: save ios
         when: resultado.changed
         ios_command:
           commands: "write mem"
+        register: resultado 
       
-    rescue: 
+    rescue:   
+
+      - name: Establecer el valor de algo Erroneo
+        ansible.builtin.set_fact:
+          something_wrong: true
 
       - name: Envio de correo failed al no poder grabar la configuración
-        when: notification_email is defined
+        when: notification_email is defined and something_wrong == true
         ansible.builtin.include_role:
           name: ditra.cisco.send_email
           apply:
@@ -140,30 +146,22 @@
         vars:
           subject: Ocurrió un error al tratar de grabar la configuracion
           body: |
-            Ocurrió un error al tratar de grabar la configuracion de cambiar el "{{ puerto }}" a la vlan "{{ vlan }}"
+            Ocurrió un error al tratar de grabar la configuracion de cambiar el {{ puerto }} a la vlan {{ vlan }}
             "{{ resultado }}"
 
           to_email: "{{ notification_email }}"
-          alert: true      
-
-      - name: Establecer el valor de algo Erroneo
-        ansible.builtin.set_fact:
-          something_wrong: true
-
+          alert: true    
 
   - name: Sh runing
-    when: something_wrong == false
     ios_command:
       commands: "sh running-config | section interface {{ puerto }}" 
     register: running_config  
 
   - name: Desplegando el resultado del running_config.
-    when: something_wrong == false
     ansible.builtin.debug:
       var:  running_config
 
   - name: fact running_config.
-    when: something_wrong == false
     ansible.builtin.set_fact:
       sh_running_config: "{{ running_config.stdout.0 }}"
 
@@ -200,7 +198,7 @@
       apply:
         delegate_to: localhost
     vars:
-      subject: La modificación del puerto "{{ puerto }}" a la vlan "{{ vlan }}" falló
+      subject: La modificación del puerto {{ puerto }} a la vlan {{ vlan }} falló
       body: |
         Algo salió mal, revisa la bitácora
 
