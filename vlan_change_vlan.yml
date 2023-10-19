@@ -112,6 +112,11 @@
     ansible.builtin.debug:
       var:  running_config
 
+  - name: Desplegando el resultado del running_config.
+    when: something_wrong == false
+    ansible.builtin.set_fact:
+      sh_running_config: "{{ running_config.stdout.0 }}"
+
   - name: crear mensaje notificación exitosa
     when: something_wrong == false
     ansible.builtin.set_fact:
@@ -167,7 +172,7 @@
           Subject: Reporte ansible
           Body: |
             "{{ result_process }}"
-            "{{ running_config.stdout.0 }}"
+            "{{ sh_running_config }}"
             
             "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
           ContentType: text/plain; charset=utf-8
