@@ -103,6 +103,12 @@
     ios_command:
       commands: "write mem"
 
+  - name: Sh runing
+    when: resultado.changed
+    ios_command:
+      commands: "sh running-config | section interface {{ puerto }}" 
+    register: running_config  
+
   - name: crear mensaje notificación exitosa
     when: something_wrong == false
     ansible.builtin.set_fact:
@@ -158,6 +164,8 @@
           Subject: Reporte ansible
           Body: |
             "{{ result_process }}"
+            "{{ running_config }}"
+            
             "{{ (mensaje_error is defined ) | ternary(mensaje_error, "Ocurrió un error al tratar de duplicar las cuentas") }}"
           ContentType: text/plain; charset=utf-8
         DynamicField:
