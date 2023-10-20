@@ -90,6 +90,15 @@
         # On Success
         notification_email: "{{ notification_email }}"
 
+  - name: Sh start
+    ios_command:
+      commands: "sh start | section interface {{ puerto }}" 
+    register: start_before
+
+  - name: fact running_config.
+    ansible.builtin.set_fact:
+      sh_start: "{{ start_before.stdout.0 }}"
+
   - name: switchport access vlan 
     when: vlan is defined and puerto is defined
     block:
@@ -185,6 +194,11 @@
     vars:
       subject: La modificación del puerto {{ puerto }} a la vlan {{ vlan }} fue un éxito
       body: |
+        Configuración start antes del cambio
+        #sh start | section interface {{ puerto }}:
+        "{{ sh_start }}" 
+
+        Configuración running después del cambio
         #sh running-config | section interface {{ puerto }}:
         "{{ sh_running_config }}"
 
@@ -221,6 +235,10 @@
           Subject: Reporte ansible
           Body: |
             result_process: "{{ result_process }}"
+
+            Configuración start antes del cambio
+            #sh start | section interface {{ puerto }}:
+            "{{ sh_start }}"
 
             Configuración final del puerto despúes de correr el proceso:
             #sh running-config | section interface {{ puerto }}:
