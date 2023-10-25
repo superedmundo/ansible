@@ -145,7 +145,7 @@
         - name: Crear mensaje notificación fallida
           when: something_wrong == true
           ansible.builtin.set_fact:
-            result_process: "Ocurrió un error al tratar de hacer la conexión con Exchange Online"    
+            result_process: "Ocurrió un error al tratar de crear el buzón"    
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
