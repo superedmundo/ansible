@@ -37,6 +37,7 @@
     # Variables internas de control de flujo
     something_wrong: false
     result_process: null
+    result_create: null
 
     # vars for otobo changes
     validate_certs: false
