@@ -131,9 +131,11 @@
           register: result_check
 
         - name: result_check
+          when: result_check.output[0].Alias is defined 
           ansible.builtin.debug:
             msg: 
               result_check: "{{ result_check.output[0] }}" 
+
 
         # - name: Tls2-Import_Module-Connect-Get_MailUser-Disconnect
         #   ansible.windows.win_powershell:
