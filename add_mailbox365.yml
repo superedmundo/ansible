@@ -101,15 +101,15 @@
           lastName: "{{ lastName }}" 
           displayName:  "{{ displayName }}" 
           microsoftOnlineServicesID: "{{ microsoftOnlineServicesID }}" 
-          password: "{{ password }}" 
-          resetPasswordOnNextLogon: "{{ resetPasswordOnNextLogon }}" 
+          #password: "{{ password }}" 
+          #resetPasswordOnNextLogon: "{{ resetPasswordOnNextLogon }}" 
           mailboxPlan: "{{ mailboxPlan }}" 
 
           # NOTIFICACIONES
           # Email
           notification_email: "{{ notification_email }}"
 
-  # Conexión y Creación del usuario
+  # Conexión
 
     - name: Connecting to Exchange Online via Certificate based authentication (CBA) 
       when: 
@@ -142,6 +142,8 @@
           when: something_wrong == true
           ansible.builtin.set_fact:
             result_process: "Ocurrió un error al tratar de hacer la conexión con Exchange Online" 
+
+  # Creación del mailbox
 
     - name: Creating MailBox {{ microsoftOnlineServicesID }}
       when: something_wrong == false
@@ -182,7 +184,7 @@
     - name: Crear mensaje notificación exitosa
       when: something_wrong == false
       ansible.builtin.set_fact:
-        result_process: "Se modificó de manera exitosa la cuenta: {{ sAMAccountName }}"
+        result_process: "Se creó el buzón de manera correcta: {{ result_create }}"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true and result_process is not defined
