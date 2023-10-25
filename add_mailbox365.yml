@@ -127,33 +127,13 @@
               $Organization = "ditramx0.onmicrosoft.com"
               Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
               New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String "{{generated_password}}" -AsPlainText -Force) -ResetPasswordOnNextLogon $true
-          register: result_create
-
-        - name: result_create
-          ansible.builtin.debug:
-            msg: 
-              result_create: "{{ result_create }}" 
-
-        - name: Tls2-Import_Module-Connect-EXOMailbox-Disconnect
-          ansible.windows.win_powershell:
-            script: |
-              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-              Import-Module ExchangeOnlineManagement  
-              Get-EXOMailbox -Identity {{nombre}}
-          register: result_create
-
-        - name: result_create
-          ansible.builtin.debug:
-            msg: 
-              result_create: "{{ result_create }}" 
-
-        - name: Tls2-Import_Module-Connect-EXOMailbox-Disconnect
-          ansible.windows.win_powershell:
-            script: |
-              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-              Import-Module ExchangeOnlineManagement  
               Disconnect-ExchangeOnline -Confirm:$false
           register: result_create
+
+        - name: result_create
+          ansible.builtin.debug:
+            msg: 
+              result_create: "{{ result_create }}" 
 
       rescue:         
 
