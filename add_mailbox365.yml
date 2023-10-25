@@ -126,7 +126,7 @@
               $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
               $Organization = "ditramx0.onmicrosoft.com"
               Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
-              New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String {{generated_password}} -AsPlainText -Force) -ResetPasswordOnNextLogon $true
+              New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String "{{generated_password}}" -AsPlainText -Force) -ResetPasswordOnNextLogon $true
               Get-MailUser -Identity {{nombre}} | Format-List Name,Alias,DisplayName,ExternalEmailAddress
               Disconnect-ExchangeOnline -Confirm:$false
           register: result_create
