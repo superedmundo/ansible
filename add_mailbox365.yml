@@ -127,7 +127,7 @@
               $Organization = "ditramx0.onmicrosoft.com"
               Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
               New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String "{{generated_password}}" -AsPlainText -Force) -ResetPasswordOnNextLogon $true
-              Get-MailUser -Identity {{nombre}} | Format-List Name,Alias,DisplayName,ExternalEmailAddress
+              Get-EXOMailbox -Identity {{nombre}}
               Disconnect-ExchangeOnline -Confirm:$false
           register: result_create
 
