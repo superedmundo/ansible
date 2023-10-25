@@ -122,6 +122,17 @@
             script: |
               [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+        - name: revisar la conexión
+          ansible.windows.win_powershell:
+            script: |
+              [Net.ServicePointManager]::SecurityProtocol
+          register: result_SecurityProtocol
+
+        - name: Desplegando las variables que llegaron.
+          ansible.builtin.debug:
+            msg: 
+              result_SecurityProtocol: "{{ result_SecurityProtocol }}" 
+
         - name: importing module exchangeonlinemanagement
           ansible.windows.win_powershell:
             script: |
