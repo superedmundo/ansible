@@ -168,6 +168,7 @@
         subject: La creación del buzón fue exitosa
         body: |
           Todo bien
+          {{result_process}}
 
         to_email: "{{ notification_email }}"
         alert: true
