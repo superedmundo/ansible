@@ -182,12 +182,12 @@
     - name: Crear mensaje notificación exitosa
       when: something_wrong == false
       ansible.builtin.set_fact:
-        result_process: "Se creó el buzón de manera correcta: {{ result_create }}"
+        result_process: "Se creó el buzón de manera correcta: {{ result_create | to_json(indent=2) }}"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true and result_process is not defined
       ansible.builtin.set_fact:
-        result_process: "Ocurrió un error desconocido."
+        result_process: "Ocurrió un error desconocido: {{ result_create | to_json(indent=2) }}"
 
     - name: Send notification_email
       when: notification_email is defined and something_wrong == false
