@@ -139,7 +139,7 @@
         - name: Crear mensaje notificación fallida
           when: something_wrong == true
           ansible.builtin.set_fact:
-            result_create: "Ya existe el buzón dado de alta"
+            result_create: { "msg": "Ya existe el buzón dado de alta" }
 
         # - name: result_check
         #   when: result_check.output[0].Alias is defined 
