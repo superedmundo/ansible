@@ -125,6 +125,7 @@
         - name: revisar la conexión
           ansible.windows.win_powershell:
             script: |
+              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
               [Net.ServicePointManager]::SecurityProtocol
           register: result_SecurityProtocol
 
