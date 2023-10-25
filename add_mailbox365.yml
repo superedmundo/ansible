@@ -133,25 +133,25 @@
         - name: result_check
           ansible.builtin.debug:
             msg: 
-              result_check: "{{ result_check }}" 
+              result_check: "{{ result_check.output[0] }}" 
 
-        - name: Tls2-Import_Module-Connect-Get_MailUser-Disconnect
-          ansible.windows.win_powershell:
-            script: |
-              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-              Import-Module ExchangeOnlineManagement  
-              $AppId = "d8f14294-5e13-4d85-9e95-e491958c95cf"
-              $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
-              $Organization = "ditramx0.onmicrosoft.com"
-              Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
-              New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String "{{generated_password}}" -AsPlainText -Force) -ResetPasswordOnNextLogon $true
-              Disconnect-ExchangeOnline -Confirm:$false
-          register: result_create
+        # - name: Tls2-Import_Module-Connect-Get_MailUser-Disconnect
+        #   ansible.windows.win_powershell:
+        #     script: |
+        #       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        #       Import-Module ExchangeOnlineManagement  
+        #       $AppId = "d8f14294-5e13-4d85-9e95-e491958c95cf"
+        #       $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
+        #       $Organization = "ditramx0.onmicrosoft.com"
+        #       Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
+        #       New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String "{{generated_password}}" -AsPlainText -Force) -ResetPasswordOnNextLogon $true
+        #       Disconnect-ExchangeOnline -Confirm:$false
+        #   register: result_create
 
-        - name: result_create
-          ansible.builtin.debug:
-            msg: 
-              result_create: "{{ result_create }}" 
+        # - name: result_create
+        #   ansible.builtin.debug:
+        #     msg: 
+        #       result_create: "{{ result_create }}" 
 
       rescue:         
 
