@@ -125,7 +125,7 @@
         - name: importing module exchangeonlinemanagement
           ansible.windows.win_powershell:
             script: |
-              import-module exchangeonlinemanagement             
+              Import-Module ExchangeOnlineManagement           
 
         - name: connecting
           ansible.windows.win_powershell:
