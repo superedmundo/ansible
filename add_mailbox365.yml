@@ -96,7 +96,7 @@
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
         msg: 
-          name: "{{ name }}" 
+          nombre: "{{ nombre }}" 
           firstName: "{{ firstName }}" 
           lastName: "{{ lastName }}" 
           displayName:  "{{ displayName }}" 
