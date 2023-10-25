@@ -121,16 +121,18 @@
           ansible.windows.win_powershell:
             script: |
               [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+              Import-Module ExchangeOnlineManagement 
+              Connect-ExchangeOnline -AppId "{{AppId}}" -CertificateThumbprint "{{CertificateThumbprint}}" -Organization "{{Organization}}" -ShowBanner:$false  
 
-        - name: Importing Module ExchangeOnlineManagement
-          ansible.windows.win_powershell:
-            script: |
-              Import-Module ExchangeOnlineManagement             
+        # - name: Importing Module ExchangeOnlineManagement
+        #   ansible.windows.win_powershell:
+        #     script: |
+        #       Import-Module ExchangeOnlineManagement             
 
-        - name: Connecting
-          ansible.windows.win_powershell:
-            script: |
-              Connect-ExchangeOnline -AppId {{AppId}} -CertificateThumbprint {{CertificateThumbprint}} -Organization {{Organization}} -ShowBanner:$false  
+        # - name: Connecting
+        #   ansible.windows.win_powershell:
+        #     script: |
+        #       Connect-ExchangeOnline -AppId "{{AppId}}" -CertificateThumbprint "{{CertificateThumbprint}}" -Organization "{{Organization}}" -ShowBanner:$false  
 
       rescue:         
 
