@@ -119,7 +119,7 @@
           notification_email:    "{{ notification_email }}"
           notification_email_send_user_credentials: "{{ notification_email_send_user_credentials }}"
 
-  # Revisando si ya existe o no el ususario en el AD
+  # Revisando si ya existe o no el ususario fuente en el AD
 
     - name: Queryng "{{ sAMAccountName_source }}" 
       block:

@@ -1,0 +1,248 @@
+---
+- name: Add Mailbox 365
+  # Posibles parámetros:
+  # https://learn.microsoft.com/en-us/powershell/module/exchange/new-mailuser?view=exchange-ps
+  hosts: 10.100.1.116
+  gather_facts: no 
+  vars_files:
+    - "./oscarc_otobo_password"
+  collections:
+    - ditra.cisco
+
+  vars:
+
+    name: null
+    firstName: present
+    lastName: null
+    displayName: null
+    microsoftOnlineServicesID: null
+    #password: null
+    #resetPasswordOnNextLogon: null
+    mailboxPlan: null
+
+    generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
+
+    # Variables de conexión ddel certificado
+    AppId: "d8f14294-5e13-4d85-9e95-e491958c95cf"
+    CertificateThumbprint: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
+    Organization: "ditramx0.onmicrosoft.com"
+
+    # NOTIFICACIONES
+    # Sms 
+    notification_sms: null
+
+    # Email
+    notification_email: null
+
+    # Variables internas de control de flujo
+    something_wrong: false
+    result_process: null
+
+    # vars for otobo changes
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+    TicketID: null
+
+  tasks:
+
+  # tasks to update status in oboto
+    - name: Otobo login, get session id
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.login }}"
+        method: POST
+        body_format: json
+        body:
+          UserLogin: "{{ otobo_user }}"
+          Password: "{{ otobo_password }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get SessionID from login response
+      ansible.builtin.set_fact:
+        session_id: "{{ r.SessionID }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+      delegate_to: localhost
+    
+    - name: Set auto process ticket as processing status
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          DynamicField:
+           - Name: AutoStatus
+             Value: processing
+
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
+
+    - name: Desplegando las variables que llegaron.
+      ansible.builtin.debug:
+        msg: 
+          name: "{{ name }}" 
+          firstName: "{{ firstName }}" 
+          lastName: "{{ lastName }}" 
+          displayName:  "{{ displayName }}" 
+          microsoftOnlineServicesID: "{{ microsoftOnlineServicesID }}" 
+          password: "{{ password }}" 
+          resetPasswordOnNextLogon: "{{ resetPasswordOnNextLogon }}" 
+          mailboxPlan: "{{ mailboxPlan }}" 
+
+          # NOTIFICACIONES
+          # Email
+          notification_email: "{{ notification_email }}"
+
+  # Conexión y Creación del usuario
+
+    - name: Connecting to Exchange Online via Certificate based authentication (CBA) 
+      when: 
+        - AppId is defined 
+        - CertificateThumbprint is defined 
+        - Organization is defined 
+      block:
+        - name: Asegurar la conexión con el protocolo Tls12
+          ansible.windows.win_powershell:
+            script: |
+              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+        - name: Importing Module ExchangeOnlineManagement
+          ansible.windows.win_powershell:
+            script: |
+              Import-Module ExchangeOnlineManagement             
+
+        - name: Connecting
+          ansible.windows.win_powershell:
+            script: |
+              Connect-ExchangeOnline -AppId {{AppId}} -CertificateThumbprint {{CertificateThumbprint}} -Organization {{Organization}} -ShowBanner:$false  
+
+      rescue:         
+
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+
+        - name: Crear mensaje notificación fallida
+          when: something_wrong == true
+          ansible.builtin.set_fact:
+            result_process: "Ocurrió un error al tratar de hacer la conexión con Exchange Online" 
+
+    - name: Creating MailBox {{ microsoftOnlineServicesID }}
+      when: something_wrong == false
+      block:
+        - name: Creating Mailbox
+          when: true
+          ansible.windows.win_powershell:
+            script: |
+              New-Mailbox -Name {{name}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String {{generated_password}} -AsPlainText -Force) -ResetPasswordOnNextLogon $true
+
+        - name: Confirmando
+          ansible.windows.win_powershell:
+            script: |
+              Get-MailUser -Identity {{microsoftOnlineServicesID}} | Format-List Name,Alias,DisplayName,ExternalEmailAddress
+          register: result_create 
+
+        - name: Establecer el valor de result_create como result
+          ansible.builtin.set_fact:
+            result: "{{ result_create }}"   
+
+        - name: Disconnecting
+          ansible.windows.win_powershell:
+            script: |
+              Disconnect-ExchangeOnline -Confirm:$false
+
+      rescue: 
+        - name: Establecer el valor de algo Erroneo
+          ansible.builtin.set_fact:
+            something_wrong: true
+
+        - name: Crear mensaje notificación fallida
+          when: something_wrong == true
+          ansible.builtin.set_fact:
+            result_process: "Ocurrió un error al tratar de crear el Mailbox"        
+
+  # NOTIFICACIONES
+  # Crear mensaje para Notificación
+    - name: Crear mensaje notificación exitosa
+      when: something_wrong == false
+      ansible.builtin.set_fact:
+        result_process: "Se modificó de manera exitosa la cuenta: {{ sAMAccountName }}"
+
+    - name: Crear mensaje notificación fallida
+      when: something_wrong == true and result_process is not defined
+      ansible.builtin.set_fact:
+        result_process: "Ocurrió un error desconocido."
+
+    - name: Send notification_email
+      when: notification_email is defined and something_wrong == false
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: La creación del buzón fue exitosa
+        body: |
+          Todo bien
+
+        to_email: "{{ notification_email }}"
+        alert: true
+        
+    - name: Send notification_email_on_fail
+      when: 
+        - notification_email is defined 
+        - something_wrong == true 
+        - result_process is defined
+      ansible.builtin.include_role:
+        name: ditra.cisco.send_email
+        apply:
+          delegate_to: localhost
+      vars:
+        subject: Ocurrió un error al tratar de crear el buzón 
+        body: |
+          Algo salió mal, revisa la bitácora
+          {{result_process}}
+
+        to_email: "{{ notification_email }}"
+        alert: true
+        
+  # Actualización del Ticket de Otobo
+    - name: Post report to ticket on otobo
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          Article:
+            CommunicationChannel: Internal
+            IsVisibleForCustomer: 1
+            Subject: Reporte ansible
+            Body: "{{ result_process }}"
+            ContentType: text/plain; charset=utf-8
+          DynamicField:
+           - Name: AutoStatus
+             Value: completed
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
