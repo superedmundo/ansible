@@ -11,7 +11,7 @@
 
   vars:
 
-    name: null
+    nombre: null
     firstName: present
     lastName: null
     displayName: null
@@ -132,6 +132,9 @@
               $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
               $Organization = "ditramx0.onmicrosoft.com"
               Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
+              New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String {{generated_password}} -AsPlainText -Force) -ResetPasswordOnNextLogon $true
+              Get-MailUser -Identity {{microsoftOnlineServicesID}} | Format-List Name,Alias,DisplayName,ExternalEmailAddress
+              Disconnect-ExchangeOnline -Confirm:$false
           register: result_SecurityProtocol
 
         - name: result_SecurityProtocol
@@ -164,41 +167,41 @@
           ansible.builtin.set_fact:
             result_process: "Ocurrió un error al tratar de hacer la conexión con Exchange Online" 
 
-  # Creación del mailbox
+  # # Creación del mailbox
 
-    - name: Creating MailBox {{ microsoftOnlineServicesID }}
-      when: something_wrong == false
-      block:
-        - name: Creating Mailbox
-          when: true
-          ansible.windows.win_powershell:
-            script: |
-              New-Mailbox -Name {{name}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String {{generated_password}} -AsPlainText -Force) -ResetPasswordOnNextLogon $true
+  #   - name: Creating MailBox {{ microsoftOnlineServicesID }}
+  #     when: something_wrong == false
+  #     block:
+  #       - name: Creating Mailbox
+  #         when: true
+  #         ansible.windows.win_powershell:
+  #           script: |
+  #             New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String {{generated_password}} -AsPlainText -Force) -ResetPasswordOnNextLogon $true
 
-        - name: Confirmando
-          ansible.windows.win_powershell:
-            script: |
-              Get-MailUser -Identity {{microsoftOnlineServicesID}} | Format-List Name,Alias,DisplayName,ExternalEmailAddress
-          register: result_create 
+  #       - name: Confirmando
+  #         ansible.windows.win_powershell:
+  #           script: |
+  #             Get-MailUser -Identity {{microsoftOnlineServicesID}} | Format-List Name,Alias,DisplayName,ExternalEmailAddress
+  #         register: result_create 
 
-        - name: Establecer el valor de result_create como result
-          ansible.builtin.set_fact:
-            result: "{{ result_create }}"   
+  #       - name: Establecer el valor de result_create como result
+  #         ansible.builtin.set_fact:
+  #           result: "{{ result_create }}"   
 
-        - name: Disconnecting
-          ansible.windows.win_powershell:
-            script: |
-              Disconnect-ExchangeOnline -Confirm:$false
+  #       - name: Disconnecting
+  #         ansible.windows.win_powershell:
+  #           script: |
+  #             Disconnect-ExchangeOnline -Confirm:$false
 
-      rescue: 
-        - name: Establecer el valor de algo Erroneo
-          ansible.builtin.set_fact:
-            something_wrong: true
+  #     rescue: 
+  #       - name: Establecer el valor de algo Erroneo
+  #         ansible.builtin.set_fact:
+  #           something_wrong: true
 
-        - name: Crear mensaje notificación fallida
-          when: something_wrong == true
-          ansible.builtin.set_fact:
-            result_process: "Ocurrió un error al tratar de crear el Mailbox"        
+  #       - name: Crear mensaje notificación fallida
+  #         when: something_wrong == true
+  #         ansible.builtin.set_fact:
+  #           result_process: "Ocurrió un error al tratar de crear el Mailbox"        
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
