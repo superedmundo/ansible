@@ -117,6 +117,24 @@
         - CertificateThumbprint is defined 
         - Organization is defined 
       block:
+        - name: Check existing MailBox
+          ansible.windows.win_powershell:
+            script: |
+              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+              Import-Module ExchangeOnlineManagement  
+              $AppId = "d8f14294-5e13-4d85-9e95-e491958c95cf"
+              $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
+              $Organization = "ditramx0.onmicrosoft.com"
+              Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
+              Get-EXOMailbox -Identity {{nombre}}
+              Disconnect-ExchangeOnline -Confirm:$false
+          register: result_check
+
+        - name: result_check
+          ansible.builtin.debug:
+            msg: 
+              result_check: "{{ result_check }}" 
+
         - name: Tls2-Import_Module-Connect-Get_MailUser-Disconnect
           ansible.windows.win_powershell:
             script: |
