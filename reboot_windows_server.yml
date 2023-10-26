@@ -1,6 +1,6 @@
 ---
 - name: Reboot Windows Server if Necesary
-  hosts: 10.100.1.116
+  hosts: "{{ target_host | default('all') }} "
   gather_facts: no 
   vars_files:
     - "./oscarc_otobo_password"
@@ -9,7 +9,7 @@
 
   vars:
 
-    ipServer: null
+    target_host: 10.100.1.116
     forceReboot: false
     sinceDays: -7
     eventId: 22
@@ -95,12 +95,13 @@
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
         msg: 
-          ipServer: "{{ ipServer }}" 
+          target_host: "{{ target_host }}" 
           forceReboot: "{{ forceReboot }}" 
           sinceDays: "{{ sinceDays }}" 
           eventId: "{{ eventId }}" 
           rebootTimeout: "{{ rebootTimeout }}" 
           postReboot_delay: "{{ postReboot_delay }}" 
+          inventory_hostname: "{{ inventory_hostname }}"
 
           # NOTIFICACIONES
           # Email
@@ -113,6 +114,7 @@
         - ipServer is defined 
         - sinceDays is defined 
         - eventId is defined
+        - inventory_hostname == 'asdfasdfadf'
       block:
         - name: Check existing Event
           ansible.windows.win_powershell:
