@@ -114,7 +114,7 @@
         - ipServer is defined 
         - sinceDays is defined 
         - eventId is defined
-        - inventory_hostname == 'asdfasdfadf'
+        - inventory_hostname == target_host
       block:
         - name: Check existing Event
           ansible.windows.win_powershell:
