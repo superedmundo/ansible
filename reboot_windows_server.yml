@@ -140,19 +140,10 @@
           ansible.windows.win_reboot:
             reboot_timeout: "{{rebootTimeout}}"
             post_reboot_delay: "{{postReboot_delay}}"
+            test_command: 'exit (Get-Service -Name Netlogon).Status -ne "Running"'
           register: result_reboot
 
         - name: result_reboot
-          ansible.builtin.debug:
-            msg: 
-              result_reboot: "{{ result_reboot }}" 
-
-        # Or you can make win_reboot validate exactly what you need to work before running the next task
-        - name: Validate that the netlogon service has started, before running the next task
-          ansible.windows.win_reboot:
-            test_command: 'exit (Get-Service -Name Netlogon).Status -ne "Running"'
-
-        - name: Validated!
           ansible.builtin.debug:
             msg: 
               result_reboot: "{{ result_reboot }}" 
