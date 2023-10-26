@@ -98,6 +98,7 @@
       when: 
         - ipServer is defined 
         - sinceDays is defined 
+        - eventId is defined
       block:
         - name: Check existing Event
           ansible.windows.win_powershell:
@@ -117,10 +118,20 @@
         #     result_create: "Ya existe el buzón dado de alta"
 
         - name: result_check
-          when: (result_check.output is defined and result_check.output | length > 0) or forceReboot == true
           ansible.builtin.debug:
             msg: 
               result_check: "{{ result_check }}" 
+
+        - name: Reboot the machine with all defaults
+          ansible.windows.win_reboot:
+            reboot_timeout: 60
+            post_reboot_delay: 240
+          register: result_reboot
+
+        - name: result_reboot
+          ansible.builtin.debug:
+            msg: 
+              result_reboot: "{{ result_reboot }}" 
 
       rescue:         
 
