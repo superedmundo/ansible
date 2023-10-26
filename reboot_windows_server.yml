@@ -115,6 +115,7 @@
         #     result_create: "Ya existe el buzón dado de alta"
 
         - name: result_check
+          when: (result_check.output is defined and result_check.output | length > 0) or forceReboot == true
           ansible.builtin.debug:
             msg: 
               result_check: "{{ result_check }}" 
