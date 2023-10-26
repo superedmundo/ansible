@@ -99,6 +99,8 @@
           forceReboot: "{{ forceReboot }}" 
           sinceDays: "{{ sinceDays }}" 
           eventId: "{{ eventId }}" 
+          rebootTimeout: "{{ rebootTimeout }}" 
+          postReboot_delay: "{{ postReboot_delay }}" 
 
           # NOTIFICACIONES
           # Email
