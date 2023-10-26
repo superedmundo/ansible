@@ -111,7 +111,7 @@
 
     - name: Blocke
       when: 
-        - ipServer is defined 
+        - target_host is defined 
         - sinceDays is defined 
         - eventId is defined
         - inventory_hostname == target_host
