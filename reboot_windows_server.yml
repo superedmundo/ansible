@@ -1,7 +1,5 @@
 ---
-- name: Add Mailbox 365
-  # Posibles parámetros:
-  # https://learn.microsoft.com/en-us/powershell/module/exchange/new-mailuser?view=exchange-ps
+- name: Reboot Windows Server if Necesary
   hosts: 10.100.1.116
   gather_facts: no 
   vars_files:
@@ -11,21 +9,9 @@
 
   vars:
 
-    nombre: null
-    firstName: present
-    lastName: null
-    displayName: null
-    microsoftOnlineServicesID: null
-    #password: null
-    #resetPasswordOnNextLogon: null
-    mailboxPlan: null
-
-    generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
-
-    # Variables de conexión ddel certificado
-    AppId: "d8f14294-5e13-4d85-9e95-e491958c95cf"
-    CertificateThumbprint: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
-    Organization: "ditramx0.onmicrosoft.com"
+    ipServer: null
+    forceReboot: false
+    sinceDays: -7
 
     # NOTIFICACIONES
     # Sms 
@@ -37,7 +23,6 @@
     # Variables internas de control de flujo
     something_wrong: false
     result_process: null
-    result_create: null
 
     # vars for otobo changes
     validate_certs: false
@@ -97,14 +82,9 @@
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
         msg: 
-          nombre: "{{ nombre }}" 
-          firstName: "{{ firstName }}" 
-          lastName: "{{ lastName }}" 
-          displayName:  "{{ displayName }}" 
-          microsoftOnlineServicesID: "{{ microsoftOnlineServicesID }}" 
-          #password: "{{ password }}" 
-          #resetPasswordOnNextLogon: "{{ resetPasswordOnNextLogon }}" 
-          mailboxPlan: "{{ mailboxPlan }}" 
+          ipServer: "{{ ipServer }}" 
+          forceReboot: "{{ forceReboot }}" 
+          sinceDays: "{{ sinceDays }}" 
 
           # NOTIFICACIONES
           # Email
@@ -112,59 +92,31 @@
 
   # Conexión
 
-    - name: Connecting to Exchange Online via Certificate based authentication (CBA) 
+    - name: Blocke
       when: 
-        - AppId is defined 
-        - CertificateThumbprint is defined 
-        - Organization is defined 
+        - ipServer is defined 
+        - sinceDays is defined 
       block:
-        - name: Check existing MailBox
+        - name: Check existing Event
           ansible.windows.win_powershell:
             script: |
-              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-              Import-Module ExchangeOnlineManagement  
-              $AppId = "d8f14294-5e13-4d85-9e95-e491958c95cf"
-              $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
-              $Organization = "ditramx0.onmicrosoft.com"
-              Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
-              Get-EXOMailbox -Identity {{nombre}}
-              Disconnect-ExchangeOnline -Confirm:$false
+              Get-WinEvent -FilterHashtable @{logname='System';id=22;StartTime=(get-date).AddDays({{sinceDays}});}|ft TimeCreated,Id,Message
           register: result_check
 
-        - name: Establecer el valor de algo Erroneo si ya esta dada de alta
-          when: result_check.output[0].Alias is defined 
-          ansible.builtin.set_fact:
-            something_wrong: true
-
-        - name: Crear mensaje notificación fallida
-          when: something_wrong == true
-          ansible.builtin.set_fact:
-            result_create: "Ya existe el buzón dado de alta"
-
-        # - name: result_check
+        # - name: Establecer el valor de algo Erroneo si ya esta dada de alta
         #   when: result_check.output[0].Alias is defined 
-        #   ansible.builtin.debug:
-        #     msg: 
-        #       result_check: "{{ result_check.output[0] }}" 
+        #   ansible.builtin.set_fact:
+        #     something_wrong: true
 
-        - name: Tls2-Import_Module-Connect-Get_MailUser-Disconnect
-          when: something_wrong == false
-          ansible.windows.win_powershell:
-            script: |
-              [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-              Import-Module ExchangeOnlineManagement  
-              $AppId = "d8f14294-5e13-4d85-9e95-e491958c95cf"
-              $CertificateThumbprint = "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
-              $Organization = "ditramx0.onmicrosoft.com"
-              Connect-ExchangeOnline -AppId $AppId -CertificateThumbprint $CertificateThumbprint -Organization $Organization -ShowBanner:$false
-              New-Mailbox -Name {{nombre}} -FirstName {{firstName}} -LastName {{lastName}} -DisplayName "{{firstName}} {{lastName}}" -MicrosoftOnlineServicesID {{microsoftOnlineServicesID}} -Password (ConvertTo-SecureString -String "{{generated_password}}" -AsPlainText -Force) -ResetPasswordOnNextLogon $true
-              Disconnect-ExchangeOnline -Confirm:$false
-          register: result_create
+        # - name: Crear mensaje notificación fallida
+        #   when: something_wrong == true
+        #   ansible.builtin.set_fact:
+        #     result_create: "Ya existe el buzón dado de alta"
 
-        - name: result_create
+        - name: result_check
           ansible.builtin.debug:
             msg: 
-              result_create: "{{ result_create }}" 
+              result_check: "{{ result_check }}" 
 
       rescue:         
 
@@ -172,22 +124,22 @@
           ansible.builtin.set_fact:
             something_wrong: true
 
-        - name: Crear mensaje notificación fallida
-          when: something_wrong == true
-          ansible.builtin.set_fact:
-            result_process: "Ocurrió un error al tratar de crear el buzón"    
+        # - name: Crear mensaje notificación fallida
+        #   when: something_wrong == true
+        #   ansible.builtin.set_fact:
+        #     result_process: "Ocurrió un error al tratar de crear el buzón"    
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
     - name: Crear mensaje notificación exitosa
       when: something_wrong == false
       ansible.builtin.set_fact:
-        result_process: "Se creó el buzón de manera correcta: {{ result_create | to_json(indent=2) }}"
+        result_process: "Se reinició el server: {{ ipServer }}"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true and result_process is not defined
       ansible.builtin.set_fact:
-        result_process: "Ocurrió un error: {{ result_create }}"
+        result_process: "Ocurrió un error"
 
     - name: Send notification_email
       when: notification_email is defined and something_wrong == false
@@ -196,7 +148,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: La creación del buzón fue exitosa
+        subject: El reinicio del server fue exitoso
         body: |
           Todo bien
           {{result_process}}
@@ -214,7 +166,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: Ocurrió un error al tratar de crear el buzón 
+        subject: Ocurrió un error al tratar de reiniciar el servidor
         body: |
           Algo salió mal, revisa la bitácora {{result_process}}
 
