@@ -12,6 +12,7 @@
     ipServer: null
     forceReboot: false
     sinceDays: -7
+    eventId: 22
 
     # NOTIFICACIONES
     # Sms 
@@ -100,7 +101,7 @@
         - name: Check existing Event
           ansible.windows.win_powershell:
             script: |
-              Get-WinEvent -FilterHashtable @{logname='System';id=22;StartTime=(get-date).AddDays(-7);}
+              Get-WinEvent -FilterHashtable @{logname='System';id={{eventId}};StartTime=(get-date).AddDays({{sinceDays}});}
           register: result_check
 
         # |ft TimeCreated,Id,Message
