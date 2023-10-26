@@ -53,6 +53,7 @@
 
   # tasks to update status in oboto
     - name: Otobo login, get session id
+      when: inventory_hostname == target_host
       delegate_to: localhost
       ansible.builtin.uri:
         url: "{{ path.login }}"
@@ -66,6 +67,7 @@
       register: response
 
     - name: Get SessionID from login response
+      when: inventory_hostname == target_host
       ansible.builtin.set_fact:
         session_id: "{{ r.SessionID }}"
       vars:
@@ -90,7 +92,7 @@
       register: response
       failed_when: "response.status != 200"
       run_once: true
-      when: TicketID is not none and session_id is defined
+      when: TicketID is not none and session_id is defined and inventory_hostname == target_host
 
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
@@ -153,17 +155,17 @@
   # NOTIFICACIONES
   # Crear mensaje para Notificación
     - name: Crear mensaje notificación exitosa
-      when: something_wrong == false
+      when: something_wrong == false and inventory_hostname == target_host
       ansible.builtin.set_fact:
         result_process: "Se reinició el server: {{ target_host }}"
 
     - name: Crear mensaje notificación fallida
-      when: something_wrong == true and result_process is not defined
+      when: something_wrong == true and result_process is not defined  and inventory_hostname == target_host 
       ansible.builtin.set_fact:
         result_process: "Ocurrió un error"
 
     - name: Send notification_email
-      when: notification_email is defined and something_wrong == false
+      when: notification_email is defined and something_wrong == false and inventory_hostname == target_host
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
@@ -182,6 +184,7 @@
         - notification_email is defined 
         - something_wrong == true 
         - result_process is defined
+        - inventory_hostname == target_host
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
@@ -218,4 +221,4 @@
       register: response
       failed_when: "response.status != 200"
       run_once: true
-      when: TicketID is not none and session_id is defined
+      when: TicketID is not none and session_id is defined and inventory_hostname == target_host
