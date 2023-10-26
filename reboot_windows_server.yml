@@ -86,6 +86,7 @@
           ipServer: "{{ ipServer }}" 
           forceReboot: "{{ forceReboot }}" 
           sinceDays: "{{ sinceDays }}" 
+          eventId: "{{ eventId }}" 
 
           # NOTIFICACIONES
           # Email
