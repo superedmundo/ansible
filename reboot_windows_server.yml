@@ -155,7 +155,7 @@
     - name: Crear mensaje notificación exitosa
       when: something_wrong == false
       ansible.builtin.set_fact:
-        result_process: "Se reinició el server: {{ ipServer }}"
+        result_process: "Se reinició el server: {{ target_host }}"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true and result_process is not defined
