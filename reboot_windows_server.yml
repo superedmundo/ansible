@@ -100,9 +100,10 @@
         - name: Check existing Event
           ansible.windows.win_powershell:
             script: |
-              Get-WinEvent -FilterHashtable @{logname='System';id=22;StartTime=(get-date).AddDays({{sinceDays}});}|ft TimeCreated,Id,Message
+              Get-WinEvent -FilterHashtable @{logname='System';id=22;StartTime=(get-date).AddDays(-7);}
           register: result_check
 
+        # |ft TimeCreated,Id,Message
         # - name: Establecer el valor de algo Erroneo si ya esta dada de alta
         #   when: result_check.output[0].Alias is defined 
         #   ansible.builtin.set_fact:
