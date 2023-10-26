@@ -120,23 +120,12 @@
               Get-WinEvent -FilterHashtable @{logname='System';id={{eventId}};StartTime=(get-date).AddDays({{sinceDays}});}
           register: result_check
 
-        # |ft TimeCreated,Id,Message
-        # - name: Establecer el valor de algo Erroneo si ya esta dada de alta
-        #   when: result_check.output[0].Alias is defined 
-        #   ansible.builtin.set_fact:
-        #     something_wrong: true
-
-        # - name: Crear mensaje notificación fallida
-        #   when: something_wrong == true
-        #   ansible.builtin.set_fact:
-        #     result_create: "Ya existe el buzón dado de alta"
-
         - name: result_check
           ansible.builtin.debug:
             msg: 
               result_check: "{{ result_check }}" 
 
-        - name: Reboot the machine with all defaults
+        - name: Reboot the machine
           ansible.windows.win_reboot:
             reboot_timeout: "{{rebootTimeout}}"
             post_reboot_delay: "{{postReboot_delay}}"
