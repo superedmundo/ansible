@@ -14,6 +14,18 @@
     sinceDays: -7
     eventId: 22
 
+    # reboot_timeout 
+    # Maximum seconds to wait for machine to re-appear on the network and respond to a test command.
+    # This timeout is evaluated separately for both reboot verification and test command success so maximum clock time is actually twice this value.
+    # Default: 600.0
+    rebootTimeout: 600
+
+    # post_reboot_delay  
+    # Seconds to wait after the reboot command was successful before attempting to validate the system rebooted successfully.
+    # This is useful if you want wait for something to settle despite your connection already working.
+    # Default: 0.0
+    postReboot_delay: 0
+
     # NOTIFICACIONES
     # Sms 
     notification_sms: null
@@ -124,8 +136,8 @@
 
         - name: Reboot the machine with all defaults
           ansible.windows.win_reboot:
-            reboot_timeout: 60
-            post_reboot_delay: 240
+            reboot_timeout: {{rebootTimeout}}
+            post_reboot_delay: {{postReboot_delay}}
           register: result_reboot
 
         - name: result_reboot
