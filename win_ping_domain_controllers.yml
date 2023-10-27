@@ -1,6 +1,6 @@
 ---
 - name: Ejemplo de playbook para hacer ping a una máquina Windows
-  hosts: domain_controllers
+  hosts: all
   gather_facts: no  # We don't need facts gathering.
 
   tasks:
