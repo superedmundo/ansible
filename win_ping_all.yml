@@ -1,0 +1,13 @@
+---
+- name: Ejemplo de playbook para hacer ping a una máquina Windows
+  hosts: all
+  gather_facts: no  # We don't need facts gathering.
+
+  tasks:
+    - name: Verificar conectividad con la máquina Windows
+      win_ping:
+      register: resultado_ping
+
+    - name: Mostrar el resultado del ping
+      debug:
+        var: resultado_ping
