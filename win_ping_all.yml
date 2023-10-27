@@ -4,6 +4,12 @@
   gather_facts: no  # We don't need facts gathering.
 
   tasks:
+  
+    - name: Desplegando las variables que llegaron.
+      ansible.builtin.debug:
+        msg: 
+          inventory_hostname: "{{ inventory_hostname }}"
+          
     - name: Verificar conectividad con la máquina Windows
       win_ping:
       register: resultado_ping
