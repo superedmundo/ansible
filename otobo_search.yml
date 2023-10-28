@@ -165,7 +165,7 @@
     - name: Facting 1 withOUT_items
       delegate_to: localhost
       ansible.builtin.set_fact:
-        registros: "{{ item.content | from_json | default([]) }}"
+        registros: "{{ registros | from_json | default([]) | combine({item.content}) }}"
       vars:
         tmp: "{{ response.results }}"
       loop: "{{ tmp }}"
