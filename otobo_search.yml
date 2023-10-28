@@ -130,9 +130,13 @@
     - name: Facting Dicctionary
       delegate_to: localhost
       ansible.builtin.set_fact:
-        registros: "{{ rc.ConfigItem | default([]) }}"
+        registros: "{{ rc.content.ConfigItem | default([]) }}"
       vars:
-        rc: "{{ response.content | from_json }}"
+        rc: "{{ response.results | from_json }}"
+
+    - name: Desplegando registros despues de Facting Dicctionary.
+      ansible.builtin.debug:
+        var: registros    
 
     - name: Desplegando registros con loop.
       ansible.builtin.debug:
