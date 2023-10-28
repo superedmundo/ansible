@@ -1,5 +1,5 @@
 ---
-- name: Audit software on windows machines
+- name: Search Items in CMDB
   hosts: all
   become: false
   gather_facts: false
@@ -71,21 +71,26 @@
         msg: 
           response: "{{ response }}" 
 
-    # - name: Get ConfigGroup config_group id
-    #   delegate_to: localhost
-    #   ansible.builtin.set_fact:
-    #     group_control_id: "{{ r.ConfigItemIDs[0] | default(false) }}"
-    #   vars:
-    #     r: "{{ response.content | from_json }}"
+    - name: Get ConfigGroup config_group id
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        group_control_id: "{{ r.ConfigItemIDs[0] | default(false) }}"
+      vars:
+        r: "{{ response.content | from_json }}"
 
-    # - name: Get group control
-    #   delegate_to: localhost
-    #   ansible.builtin.uri:
-    #     url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ group_control_id }}"
-    #     method: GET
-    #     validate_certs: "{{ validate_certs }}"
-    #     return_content: true
-    #   register: response
+    - name: Get group control
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ group_control_id }}"
+        method: GET
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Desplegando response.
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response }}" 
 
     # - name: Set programs list on db
     #   ansible.builtin.set_fact:
