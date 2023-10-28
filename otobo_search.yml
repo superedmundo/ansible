@@ -64,7 +64,7 @@
             Class: "{{ config_item_class }}"
             #Name: "{{ config_item_name }}"
             CIXMLData: 
-              - Note: "Reboot"
+              Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
