@@ -103,20 +103,20 @@
         msg: 
           id: "{{ item }}" 
 
-    # - name: Get group control
-    #   delegate_to: localhost
-    #   ansible.builtin.uri:
-    #     url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ item }}"
-    #     method: GET
-    #     validate_certs: "{{ validate_certs }}"
-    #     return_content: true
-    #   with_items: r.ConfigItemIDs
-    #   register: response
+    - name: Get ConfigItemID
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ item }}"
+        method: GET
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      with_items: "{{ ids }}"
+      register: response
 
-    # - name: Desplegando response.
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response: "{{ response }}" 
+    - name: Desplegando response.
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response }}" 
 
     # - name: Set programs list on db
     #   ansible.builtin.set_fact:
