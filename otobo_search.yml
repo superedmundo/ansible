@@ -166,7 +166,7 @@
       delegate_to: localhost
       ansible.builtin.set_fact:
         #registros: "{{ registros | default([]) | combine({item.content | from_json | community.general.unicode_normalize('NFKC'): item}) }}"
-        registros: "{{ registros | default([]) | combine({item.json.ConfigItem[0].CreateBy  | community.general.unicode_normalize('NFKC'): item}) }}"
+        registros: "{{ registros | default({}) | combine({item.json.ConfigItem[0].CreateBy  | community.general.unicode_normalize('NFKC'): item}) }}"
       vars:
         tmp: "{{ response.results }}"
       loop: "{{ tmp }}"
