@@ -130,15 +130,19 @@
     - name: Facting Dicctionary
       delegate_to: localhost
       ansible.builtin.set_fact:
-        Diccionario: "{{ Diccionario | combine({item.CIXMLData.NIC.IPAddress }) }}"
+        registros: "{{ response.json.ConfigItem }}"     
+
+    - name: Facting Dicctionary
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        Diccionario: "{{ Diccionario + [item.CIXMLData.NIC.IPAddress] | combine(item.HoraReboot) }}"
       vars:
-        registros: "{{ response.json.ConfigItem }}"
-        loop: "{{ registros }}"
+        Diccionario: []
+      loop: "{{ registros }}"
 
     - name: Desplegando Diccionario.
       ansible.builtin.debug:
-        msg: 
-          Diccionario: "{{ Diccionario }}" 
+        msg: "{{ Diccionario }}" 
 
     # - name: Ejecutar script de PowerShell para obtener programas
     #   ansible.windows.win_shell: |
