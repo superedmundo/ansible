@@ -145,31 +145,31 @@
           ConfigItems: "{{ ConfigItems }}" 
      
 
-    - name: Desplegando itemasd.
-      with_items: "{{ response.results }}"
-      ansible.builtin.debug:
-        msg:  
-          itemasd: "{{ item }}" 
+    # - name: Desplegando itemasd.
+    #   with_items: "{{ response.results }}"
+    #   ansible.builtin.debug:
+    #     msg:  
+    #       itemasd: "{{ item }}" 
 
-    - name: Facting 1
+    - name: Facting 1 with_items
       delegate_to: localhost
       with_items: "{{ response.results }}"
       ansible.builtin.set_fact:
         registros: "{{ item.content | from_json | default([]) }}"
 
-    - name: Desplegando Facting 1
+    - name: Desplegando Facting 1 with_items
       ansible.builtin.debug:
         msg: 
           registros: "{{ registros }}" 
 
-    - name: Facting 1
+    - name: Facting 1 withOUT_items
       delegate_to: localhost
       ansible.builtin.set_fact:
-        registros: "{{ item.content | from_json | default([]) }}"
+        registros: "{{ rc.content | from_json | default([]) }}"
       vars:
         rc: "{{ response.results }}"
 
-    - name: Desplegando Facting 1
+    - name: Desplegando Facting 1 withOUT_items
       ansible.builtin.debug:
         msg: 
           registros: "{{ registros }}" 
