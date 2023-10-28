@@ -173,8 +173,12 @@
 
     - name: Display all cluster names
       ansible.builtin.debug:
-        var: item
-      loop: "{{ response.results | community.general.json_query('json.ConfigItem[*].CurDeplState') }}"
+        msg: 
+          registros: "{{ item }}" 
+        vars:
+          tmp: "{{ response.results | community.general.json_query('json.ConfigItem[*].CurDeplState')}}"
+      loop: "{{ tmp }}"
+      #loop: "{{ response.results | community.general.json_query('json.ConfigItem[*].CurDeplState') }}"
 
     # - name: Facting 1 withOUT_items
     #   delegate_to: localhost
