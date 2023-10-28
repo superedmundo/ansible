@@ -130,7 +130,11 @@
     - name: Facting Dicctionary
       delegate_to: localhost
       ansible.builtin.set_fact:
-        registros: "{{ response.json.ConfigItem }}"     
+        registros: "{{ response.results }}"  
+
+    - name: Desplegando registros.
+      ansible.builtin.debug:
+        registros: "{{ registros }}"    
 
     - name: Facting Dicctionary
       delegate_to: localhost
