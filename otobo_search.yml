@@ -130,7 +130,7 @@
     - name: Facting Dicctionary
       delegate_to: localhost
       ansible.builtin.set_fact:
-        Diccionario: "{{ combine({item.CIXMLData.NIC.IPAddress }) }},{{ combine({item.CIXMLData.HoraReboot }) }}"
+        Diccionario: "{{ combine({item.CIXMLData.NIC.IPAddress }) }}"
       vars:
         registros: "{{ response.json.ConfigItem }}"
         loop: "{{ registros }}"
