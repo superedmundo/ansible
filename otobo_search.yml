@@ -98,7 +98,7 @@
           id: "{{ item }}" 
 
     - name: Desplegando ConfigItemIDS
-      with_items: ids
+      with_items: "{{ ids }}"
       ansible.builtin.debug:
         msg: 
           id: "{{ item }}" 
