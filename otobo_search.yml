@@ -1,0 +1,228 @@
+---
+- name: Audit software on windows machines
+  hosts: all
+  become: false
+  gather_facts: false
+  vars_files:
+    - ./oscarc_otobo_password
+  collections:
+    - community.general
+  vars:
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    config_item_class: Computer
+    config_item_name: ActiveDirectory2012R2
+    email: baltadlakd@gmail.com
+    cell: 3321097551
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+      cmdb:
+        retrieve: "{{ base_url }}{{ module.cmdb }}"
+        create: "{{ base_url }}{{ module.cmdb }}"
+        patch: "{{ base_url }}{{ module.cmdb }}/update"
+        delete: "{{ base_url }}{{ module.cmdb }}/delete"
+        search: "{{ base_url }}{{ module.cmdb }}/search"
+    TicketID: null
+    counter: 0
+
+  tasks:
+    - name: Otobo login, get session id
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.login }}"
+        method: POST
+        body_format: json
+        body:
+          UserLogin: "{{ otobo_user }}"
+          Password: "{{ otobo_password }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get SessionID from login response
+      ansible.builtin.set_fact:
+        session_id: "{{ r.SessionID }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+      delegate_to: localhost
+
+    - name: Search config item for computer
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.search }}"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          ConfigItem:
+            Class: "{{ config_item_class }}"
+            Name: "{{ config_item_name }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Desplegando response.
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response }}" 
+
+    # - name: Get ConfigGroup config_group id
+    #   delegate_to: localhost
+    #   ansible.builtin.set_fact:
+    #     group_control_id: "{{ r.ConfigItemIDs[0] | default(false) }}"
+    #   vars:
+    #     r: "{{ response.content | from_json }}"
+
+    # - name: Get group control
+    #   delegate_to: localhost
+    #   ansible.builtin.uri:
+    #     url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ group_control_id }}"
+    #     method: GET
+    #     validate_certs: "{{ validate_certs }}"
+    #     return_content: true
+    #   register: response
+
+    # - name: Set programs list on db
+    #   ansible.builtin.set_fact:
+    #     programs_on_cmdb: "{{ programs_on_cmdb | default({}) | combine({item.software | community.general.unicode_normalize('NFKC'): item}) }}"
+    #   vars:
+    #     tmp: "{{ response.json.ConfigItem[0].CIXMLData.software }}"
+    #   loop: "{{ tmp }}"
+    #   delegate_to: localhost
+
+    # - name: Ejecutar script de PowerShell para obtener programas
+    #   ansible.windows.win_shell: |
+    #     $comp = $env:COMPUTERNAME
+    #     $keys = '','\Wow6432Node'
+    #     $programs = @()
+    #     foreach ($key in $keys) {
+    #         try {
+    #             $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $comp)
+    #             $apps = $reg.OpenSubKey("SOFTWARE$key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
+    #         } catch {
+    #             continue
+    #         }
+    #         foreach ($app in $apps) {
+    #             $program = $reg.OpenSubKey("SOFTWARE$key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
+    #             $name = $program.GetValue('DisplayName')
+    #             if ($name) {
+    #                 $valuesNames = $program.GetValueNames()
+    #                 $customObject = [pscustomobject]@{
+    #                     ComputerName = $comp
+    #                     Bits = $(if ($key -eq '\Wow6432Node') {'64'} else {'32'})
+    #                     Path = $program.name
+    #                 }
+    #                 foreach ($valueName in $valuesNames) {
+    #                     $value = $program.GetValue($valueName)
+    #                     if ($value -ne $null -and $value -ne ''){
+    #                       $customObject | Add-Member -MemberType NoteProperty -Name $valueName -Value $value
+    #                     }
+    #                 }
+    #                 $programs += $customObject
+    #             }
+    #         }
+    #     }
+    #     $programs | ConvertTo-JSON -Compress
+    #   register: programs
+
+    # - name: Set programs list from pc
+    #   ansible.builtin.set_fact:
+    #     programs_on_host: "{{ programs_on_host | default({}) |
+    #       combine({item.DisplayName: item}) }}"
+    #   vars:
+    #     poh: "{{ programs.stdout | from_json }}"
+    #   loop: "{{ poh }}"
+    #   when: "'DisplayName' in item"
+    #   no_log: true
+
+    # - name: Audit software
+    #   ansible.builtin.set_fact:
+    #     installed_not_planned: "{{ installed | difference(planned) }}"
+    #     planned_not_installed: "{{ planned | difference(installed) }}"
+    #   vars:
+    #     planned: "{{ programs_on_cmdb.keys() | list }}"
+    #     installed: "{{ programs_on_host.keys() | list }}"
+
+
+    # - name: Report builder
+    #   ansible.builtin.set_fact:
+    #     counter: "{{ counter | default(0) + 1 }}"
+    #     message: |
+    #       {{ message | default(initial_message) }}
+
+    #       {{ item }}:
+
+    #         Instalado no planeado
+    #         {% for program in hostvars[item]['installed_not_planned'] %}
+    #           - {{ program }}
+    #         {% endfor %}
+    #       Planeado no instalado
+    #         {% for program in hostvars[item]['planned_not_installed'] %}
+    #           - {{ program }}
+    #         {% endfor %}
+    #   delegate_to: localhost
+    #   loop: "{{ ansible_play_hosts }}"
+    #   when: hostvars[item]["installed_not_planned"] | length > 0 or hostvars[item]["planned_not_installed"] | length > 0
+    #   run_once: true
+    #   vars:
+    #     initial_message: |
+    #       {{ ansible_play_hosts | length }} computadoras auditadas dentro para el grupo {{ config_item_name }}
+
+    #       El resumen donde hubo incidencias es el siguiente:
+
+    # - name: Post report to ticket on otobo
+    #   delegate_to: localhost
+    #   ansible.builtin.uri:
+    #     url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+    #     method: POST
+    #     body_format: json
+    #     body:
+    #       SessionID: "{{ session_id }}"
+    #       TicketID: "{{ TicketID }}"
+    #       Article:
+    #         CommunicationChannel: Internal
+    #         IsVisibleForCustomer: 1
+    #         Subject: Reporte ansible
+    #         Body: "{{ message if counter else 'Sin incidencias' }}"
+    #         ContentType: text/plain; charset=utf-8
+    #       DynamicField:
+    #         - Name: CMDBGroupControlStep
+    #           Value: processing
+
+    #     validate_certs: "{{ validate_certs }}"
+    #     return_content: true
+    #   register: response
+    #   failed_when: "response.status != 200"
+    #   run_once: true
+    #   when: TicketID is defined
+
+    # - name: Send email
+    #   ansible.builtin.include_role:
+    #     name: ditra.cisco.send_email
+    #     apply:
+    #       delegate_to: localhost
+    #   vars:
+    #     subject: Auditoria de software
+    #     body: "{{ message }}"
+    #     to_email: "{{ email }}"
+    #     alert: true
+    #   when: counter
+    #   run_once: true
+
+    # - name: Send SMS
+    #   ansible.builtin.include_role:
+    #     name: ditra.cisco.send_sms
+    #     apply:
+    #       delegate_to: localhost
+    #   vars:
+    #     message: Se auditaron {{ ansible_play_hosts | length }} hosts y se encontraron {{ counter }} incidencias.
+    #     number: "{{ cell }}"
+    #     alert: true
+    #     urlencode_sms: true
+    #   when: counter
+    #   run_once: true
