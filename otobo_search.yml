@@ -77,15 +77,15 @@
     - name: Get ConfigGroup config_group id
       delegate_to: localhost
       ansible.builtin.set_fact:
-        ConfigItemIDS: "{{ r.ConfigItemIDs[] | default(false) }}"
+        ConfigItemIDS: "{{ r.ConfigItemIDs | default(false) }}"
       vars:
         r: "{{ response.content.json | from_json }}"
 
     - name: Desplegando ConfigItemIDS.
-      with_items: ConfigItemIDS
+      with_items: "{{ConfigItemIDS}}"
       ansible.builtin.debug:
         msg: 
-          response: "{{ item }}" 
+          ConfigItemIDS_X: "{{ item }}" 
 
     # - name: Get group control
     #   delegate_to: localhost
