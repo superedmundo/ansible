@@ -63,7 +63,7 @@
           ConfigItem:
             Class: "{{ config_item_class }}"
             #Name: "{{ config_item_name }}"
-            Note: "{{ config_item_name }}"
+            Note: "{{ config_item_note }}"
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
