@@ -135,7 +135,7 @@
     - name: Desplegando response.results.
       with_items: "{{ response.results }}"
       ansible.builtin.debug:
-        item: "{{ item }}" 
+        msg: "{{ item }}" 
 
     - name: Facting 1
       delegate_to: localhost
