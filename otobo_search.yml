@@ -77,23 +77,30 @@
     - name: Get ConfigGroup config_group id
       delegate_to: localhost
       ansible.builtin.set_fact:
-        group_control_id: "{{ r.ConfigItemIDs[0] | default(false) }}"
+        ConfigItemIDS: "{{ r.ConfigItemIDs | default(false) }}"
       vars:
         r: "{{ response.content | from_json }}"
 
-    - name: Get group control
-      delegate_to: localhost
-      ansible.builtin.uri:
-        url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ group_control_id }}"
-        method: GET
-        validate_certs: "{{ validate_certs }}"
-        return_content: true
-      register: response
-
     - name: Desplegando response.
+      with_items: ConfigItemIDS
       ansible.builtin.debug:
         msg: 
-          response: "{{ response }}" 
+          response: "{{ item }}" 
+
+    # - name: Get group control
+    #   delegate_to: localhost
+    #   ansible.builtin.uri:
+    #     url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ item }}"
+    #     method: GET
+    #     validate_certs: "{{ validate_certs }}"
+    #     return_content: true
+    #   with_items: r.ConfigItemIDs
+    #   register: response
+
+    # - name: Desplegando response.
+    #   ansible.builtin.debug:
+    #     msg: 
+    #       response: "{{ response }}" 
 
     # - name: Set programs list on db
     #   ansible.builtin.set_fact:
