@@ -77,36 +77,31 @@
     - name: Desplegando response.content | from_json
       ansible.builtin.debug:
         msg: 
-          response: "{{ response.content | from_json }}"  
-
-    - name: Desplegando response.content | from_json
-      ansible.builtin.debug:
-        msg: 
-          response: "{{ response.content.ConfigItemIDs | from_json }}"  
+          response_content_from_json: "{{ response.content | from_json }}"  
 
     - name: set_fact ConfigItemIDS
       delegate_to: localhost
       ansible.builtin.set_fact:
-        ConfigItemIDS: "{{ r.ConfigItemIDs | default([]) }}"
+        ids: "{{ r.ConfigItemIDs | default([]) }}"
       vars:
         r: "{{ response.content | from_json }}"
 
-    # - name: Desplegando response.content | from_json
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response: "{{ response.content | from_json }}"
+    - name: Desplegando ids
+      ansible.builtin.debug:
+        msg: 
+          ids: "{{ ids }}" 
 
     - name: Desplegando 7,8,9.
       with_items: [7,8,9]
       ansible.builtin.debug:
         msg: 
-          ConfigItemIDS_X: "{{ item }}" 
+          id: "{{ item }}" 
 
     - name: Desplegando ConfigItemIDS
-      with_items: ConfigItemIDS
+      with_items: ids
       ansible.builtin.debug:
         msg: 
-          ConfigItemIDS_X: "{{ item }}" 
+          id: "{{ item }}" 
 
     # - name: Get group control
     #   delegate_to: localhost
