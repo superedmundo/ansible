@@ -171,10 +171,10 @@
     #     tmp: "{{ response.results }}"
     #   loop: "{{ tmp }}"
 
-    - name: Display all cluster item
-      ansible.builtin.debug:
-        var: item
-      loop: "{{ response.results | community.general.json_query('[*]') }}"
+    # - name: Display all cluster item
+    #   ansible.builtin.debug:
+    #     var: item
+    #   loop: "{{ response.results | community.general.json_query('[*]') }}"
 
     - name: Display all cluster HoraReboot
       ansible.builtin.debug:
