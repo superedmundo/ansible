@@ -171,19 +171,24 @@
     #     tmp: "{{ response.results }}"
     #   loop: "{{ tmp }}"
 
-    - name: Facting 1 withOUT_items
-      delegate_to: localhost
-      ansible.builtin.set_fact:
-        #registros: "{{ registros | default([]) | combine({item.content | from_json | community.general.unicode_normalize('NFKC'): item}) }}"
-        registros: "{{ registros | default({0}) | combine({item.json.ConfigItem[0].CreateBy  | community.general.unicode_normalize('NFKC'): item}) }}"
-      vars:
-        tmp: "{{ response.results }}"
-      loop: "{{ tmp }}"
-
-    - name: Desplegando Facting 1 withOUT_items
+    - name: Display all cluster names
       ansible.builtin.debug:
-        msg: 
-          registros: "{{ registros }}" 
+        var: item
+      loop: "{{ response.results | community.general.json_query('json.ConfigItem[*].CurDeplState') }}"
+
+    # - name: Facting 1 withOUT_items
+    #   delegate_to: localhost
+    #   ansible.builtin.set_fact:
+    #     #registros: "{{ registros | default([]) | combine({item.content | from_json | community.general.unicode_normalize('NFKC'): item}) }}"
+    #     registros: "{{ registros | default({0}) | combine({item.json.ConfigItem[0].CreateBy  | community.general.unicode_normalize('NFKC'): item}) }}"
+    #   vars:
+    #     tmp: "{{ response.results }}"
+    #   loop: "{{ tmp }}"
+
+    # - name: Desplegando Facting 1 withOUT_items
+    #   ansible.builtin.debug:
+    #     msg: 
+    #       registros: "{{ registros }}" 
      
 
     # - name: Facting Dicctionary
