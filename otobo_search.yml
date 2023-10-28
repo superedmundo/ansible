@@ -79,6 +79,11 @@
         msg: 
           response: "{{ response.content | from_json }}"  
 
+    - name: Desplegando response.content | from_json
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response.content.ConfigItemIDs | from_json }}"  
+
     - name: set_fact ConfigItemIDS
       delegate_to: localhost
       ansible.builtin.set_fact:
