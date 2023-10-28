@@ -165,7 +165,7 @@
     - name: Facting 1 withOUT_items
       delegate_to: localhost
       ansible.builtin.set_fact:
-        registros: "{{ registros | default([]) | combine({item.content | community.general.unicode_normalize('NFKC'): item}) }}"
+        registros: "{{ registros | default([]) | combine({item.json.ConfigItem[0] | from_json | community.general.unicode_normalize('NFKC'): item}) }}"
       vars:
         tmp: "{{ response.results }}"
       loop: "{{ tmp }}"
@@ -176,38 +176,38 @@
           registros: "{{ registros }}" 
      
 
-    - name: Facting Dicctionary
-      delegate_to: localhost
-      ansible.builtin.set_fact:
-        registros: "{{ rc.json.ConfigItem | from_json | default([]) }}"
-      vars:
-        rc: "{{ response.results }}"
+    # - name: Facting Dicctionary
+    #   delegate_to: localhost
+    #   ansible.builtin.set_fact:
+    #     registros: "{{ rc.json.ConfigItem | from_json | default([]) }}"
+    #   vars:
+    #     rc: "{{ response.results }}"
 
-    - name: Desplegando registros despues de Facting Dicctionary.
-      ansible.builtin.debug:
-        var: registros    
+    # - name: Desplegando registros despues de Facting Dicctionary.
+    #   ansible.builtin.debug:
+    #     var: registros    
 
-    - name: Desplegando registros con loop.
-      ansible.builtin.debug:
-        IPAddress: "{{ item.CIXMLData.NIC.IPAddress }}"
-        HoraReboot: "{{ item.CIXMLData.HoraReboot }}"
-      loop: "{{ registros }}"
+    # - name: Desplegando registros con loop.
+    #   ansible.builtin.debug:
+    #     IPAddress: "{{ item.CIXMLData.NIC.IPAddress }}"
+    #     HoraReboot: "{{ item.CIXMLData.HoraReboot }}"
+    #   loop: "{{ registros }}"
 
-    - name: Desplegando registros.
-      ansible.builtin.debug:
-        var: registros    
+    # - name: Desplegando registros.
+    #   ansible.builtin.debug:
+    #     var: registros    
 
-    - name: Facting Dicctionary again
-      delegate_to: localhost
-      ansible.builtin.set_fact:
-        Diccionario: "{{ Diccionario + [item.CIXMLData.NIC.IPAddress] | combine(item.CIXMLData.HoraReboot) }}"
-      vars:
-        Diccionario: []
-      loop: "{{ registros }}"
+    # - name: Facting Dicctionary again
+    #   delegate_to: localhost
+    #   ansible.builtin.set_fact:
+    #     Diccionario: "{{ Diccionario + [item.CIXMLData.NIC.IPAddress] | combine(item.CIXMLData.HoraReboot) }}"
+    #   vars:
+    #     Diccionario: []
+    #   loop: "{{ registros }}"
 
-    - name: Desplegando Diccionario.
-      ansible.builtin.debug:
-        msg: "{{ Diccionario }}" 
+    # - name: Desplegando Diccionario.
+    #   ansible.builtin.debug:
+    #     msg: "{{ Diccionario }}" 
 
     # - name: Ejecutar script de PowerShell para obtener programas
     #   ansible.windows.win_shell: |
