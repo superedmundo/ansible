@@ -82,7 +82,7 @@
     - name: set_fact ConfigItemIDS
       delegate_to: localhost
       ansible.builtin.set_fact:
-        ConfigItemIDS: "{{ r.ConfigItemIDs | default(false) }}"
+        ConfigItemIDS: "{{ r.ConfigItemIDs | default([]) }}"
       vars:
         r: "{{ response.content | from_json }}"
 
