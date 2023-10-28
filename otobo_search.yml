@@ -13,6 +13,7 @@
     base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
     config_item_class: Computer
     config_item_name: ActiveDirectory2012R2
+    config_item_note: Reboot
     email: baltadlakd@gmail.com
     cell: 3321097551
     module:
@@ -61,7 +62,8 @@
           SessionID: "{{ session_id }}"
           ConfigItem:
             Class: "{{ config_item_class }}"
-            Name: "{{ config_item_name }}"
+            #Name: "{{ config_item_name }}"
+            Note: "{{ config_item_name }}"
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
