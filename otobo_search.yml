@@ -130,12 +130,14 @@
     - name: Facting Dicctionary
       delegate_to: localhost
       ansible.builtin.set_fact:
-        registros: "{{ response.results }}"  
+        registros: "{{ rc.ConfigItem | default([]) }}"
+      vars:
+        rc: "{{ response.content | from_json }}"
 
     - name: Desplegando registros con loop.
       ansible.builtin.debug:
-        IPAddress: "{{ item.json.ConfigItem[0].CIXMLData.NIC.IPAddress }}"
-        HoraReboot: "{{ item.json.ConfigItem[0].CIXMLData.HoraReboot }}"
+        IPAddress: "{{ item.CIXMLData.NIC.IPAddress }}"
+        HoraReboot: "{{ item.CIXMLData.HoraReboot }}"
       loop: "{{ registros }}"
 
     - name: Desplegando registros.
@@ -145,7 +147,7 @@
     - name: Facting Dicctionary again
       delegate_to: localhost
       ansible.builtin.set_fact:
-        Diccionario: "{{ Diccionario + [item.ConfigItem[0].CIXMLData.NIC.IPAddress] | combine(item.ConfigItem[0].CIXMLData.HoraReboot) }}"
+        Diccionario: "{{ Diccionario + [item.CIXMLData.NIC.IPAddress] | combine(item.CIXMLData.HoraReboot) }}"
       vars:
         Diccionario: []
       loop: "{{ registros }}"
