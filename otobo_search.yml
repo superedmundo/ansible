@@ -61,9 +61,9 @@
         body:
           SessionID: "{{ session_id }}"
           ConfigItem:
-            Class: "{{ config_item_class }}"
+            #Class: "{{ config_item_class }}"
             #Name: "{{ config_item_name }}"
-            Note: "{{ config_item_note }}"
+            Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
