@@ -127,6 +127,10 @@
     #   delegate_to: localhost
      
 
+    - name: Desplegando response.results.
+      ansible.builtin.debug:
+        msg: "{{ response.results }}" 
+
     - name: Facting 1
       delegate_to: localhost
       ansible.builtin.set_fact:
