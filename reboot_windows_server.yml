@@ -9,7 +9,7 @@
 
   vars:
 
-    target_host: 10.100.1.116
+    target_host: null
     forceReboot: false
     sinceDays: -7
     eventId: 22
