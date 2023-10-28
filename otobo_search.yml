@@ -132,19 +132,20 @@
       ansible.builtin.set_fact:
         registros: "{{ response.results }}"  
 
-    - name: Desplegando registros.
+    - name: Desplegando registros con loop.
       ansible.builtin.debug:
-        item: "{{item}}"
+        IPAddress: "{{ item.json.ConfigItem[0].CIXMLData.NIC.IPAddress }}"
+        HoraReboot: "{{ item.json.ConfigItem[0].CIXMLData.HoraReboot }}"
       loop: "{{ registros }}"
 
     - name: Desplegando registros.
       ansible.builtin.debug:
         var: registros    
 
-    - name: Facting Dicctionary
+    - name: Facting Dicctionary again
       delegate_to: localhost
       ansible.builtin.set_fact:
-        Diccionario: "{{ Diccionario + [item.CIXMLData.NIC.IPAddress] | combine(item.CIXMLData.HoraReboot) }}"
+        Diccionario: "{{ Diccionario + [item.ConfigItem[0].CIXMLData.NIC.IPAddress] | combine(item.ConfigItem[0].CIXMLData.HoraReboot) }}"
       vars:
         Diccionario: []
       loop: "{{ registros }}"
