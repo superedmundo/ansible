@@ -134,7 +134,12 @@
 
     - name: Desplegando registros.
       ansible.builtin.debug:
-        registros: "{{ registros }}"    
+        item: "{{item}}"
+      loop: "{{ registros }}"
+
+    - name: Desplegando registros.
+      ansible.builtin.debug:
+        var: registros    
 
     - name: Facting Dicctionary
       delegate_to: localhost
