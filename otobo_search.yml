@@ -62,8 +62,7 @@
           SessionID: "{{ session_id }}"
           ConfigItem:
             Class: "{{ config_item_class }}"
-            #Name: "{{ config_item_name }}"
-            Note: "Reboot"
+            Note: Reboot
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
