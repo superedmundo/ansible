@@ -86,16 +86,16 @@
       vars:
         r: "{{ response.content | from_json }}"
 
-    - name: Desplegando ids
-      ansible.builtin.debug:
-        msg: 
-          ids: "{{ ids }}" 
+    # - name: Desplegando ids
+    #   ansible.builtin.debug:
+    #     msg: 
+    #       ids: "{{ ids }}" 
 
-    - name: Desplegando 7,8,9.
-      with_items: [7,8,9]
-      ansible.builtin.debug:
-        msg: 
-          id: "{{ item }}" 
+    # - name: Desplegando 7,8,9.
+    #   with_items: [7,8,9]
+    #   ansible.builtin.debug:
+    #     msg: 
+    #       id: "{{ item }}" 
 
     - name: Desplegando ConfigItemIDS
       with_items: "{{ ids }}"
@@ -125,6 +125,20 @@
     #     tmp: "{{ response.json.ConfigItem[0].CIXMLData.software }}"
     #   loop: "{{ tmp }}"
     #   delegate_to: localhost
+     
+
+    - name: Facting Dicctionary
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        Diccionario: "{{ Diccionario | default({}) | combine({item.CIXMLData.NIC.IPAddress | community.general.unicode_normalize('NFKC'): item}) }},{{ Diccionario | default({}) | combine({item.CIXMLData.HoraReboot | community.general.unicode_normalize('NFKC'): item}) }}"
+      vars:
+        registros: "{{ response.json.ConfigItem }}"
+        loop: "{{ registros }}"
+
+    - name: Desplegando Diccionario.
+      ansible.builtin.debug:
+        msg: 
+          Diccionario: "{{ Diccionario }}" 
 
     # - name: Ejecutar script de PowerShell para obtener programas
     #   ansible.windows.win_shell: |
