@@ -62,7 +62,9 @@
           SessionID: "{{ session_id }}"
           ConfigItem:
             Class: "{{ config_item_class }}"
-            Note: Reboot
+            #Name: "{{ config_item_name }}"
+            CIXMLData: 
+              - Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
