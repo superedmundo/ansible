@@ -141,10 +141,9 @@
 
     - name: Facting 1
       delegate_to: localhost
+      with_items: "{{ response.results }}"
       ansible.builtin.set_fact:
-        registros: "{{ rr.json | from_json | default([]) }}"
-      vars:
-        rr: "{{ response.results }}"
+        registros: "{{ item.json | from_json | default([]) }}"
 
     - name: Desplegando Facting 1
       ansible.builtin.debug:
