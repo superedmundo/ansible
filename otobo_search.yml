@@ -127,6 +127,19 @@
     #   delegate_to: localhost
      
 
+    - name: Facting 1
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        registros: "{{ rr.json | from_json | default([]) }}"
+      vars:
+        rr: "{{ response.results }}"
+
+    - name: Desplegando Facting 1
+      ansible.builtin.debug:
+        msg: 
+          registros: "{{ registros }}" 
+     
+
     - name: Facting Dicctionary
       delegate_to: localhost
       ansible.builtin.set_fact:
