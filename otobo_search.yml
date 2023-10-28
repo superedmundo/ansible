@@ -79,15 +79,10 @@
         msg: 
           response: "{{ response.content | from_json }}"  
 
-    - name: Desplegando response.content.ConfigItemIDs
-      ansible.builtin.debug:
-        msg: 
-          ConfigItemIDS_X: "{{ response.content.ConfigItemIDs  }}" 
-
     - name: set_fact ConfigItemIDS
       delegate_to: localhost
       ansible.builtin.set_fact:
-        ConfigItemIDS: "{{ r.ConfigItemIDs | default(false) }}"
+        ConfigItemIDS[]: "{{ r.ConfigItemIDs | default(false) }}"
       vars:
         r: "{{ response.content | from_json }}"
 
@@ -96,8 +91,14 @@
     #     msg: 
     #       response: "{{ response.content | from_json }}"
 
-    - name: Desplegando ConfigItemIDSX.
-      with_items: r.ConfigItemIDs
+    - name: Desplegando ConfigItemIDS
+      with_items: ConfigItemIDS
+      ansible.builtin.debug:
+        msg: 
+          ConfigItemIDS_X: "{{ item }}" 
+
+    - name: Desplegando 7,8,9.
+      with_items: [7,8,9]
       ansible.builtin.debug:
         msg: 
           ConfigItemIDS_X: "{{ item }}" 
