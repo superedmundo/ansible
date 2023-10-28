@@ -133,7 +133,8 @@
           ansible.windows.win_reboot:
             reboot_timeout: "{{rebootTimeout}}"
             post_reboot_delay: "{{postReboot_delay}}"
-            test_command: 'exit (Get-Service -Name Netlogon).Status -ne "Running"'
+            #test_command: 'exit (Get-Service -Name Netlogon).Status -ne "Running"'
+            test_command: 'exit (Get-Service -Name Server).Status -ne "Running"'
           register: result_reboot
 
         - name: result_reboot
