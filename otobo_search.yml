@@ -184,7 +184,7 @@
     - name: Display all cluster IPAddress
       ansible.builtin.debug:
         var: item
-      loop: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.NIC.IPAddress') }}"
+      loop: "{{ response.results | community.general.json_query('json.ConfigItem[0].CIXMLData.NIC.IPAddress') }}"
 
     # - name: Facting 1 withOUT_items
     #   delegate_to: localhost
