@@ -174,12 +174,12 @@
     - name: Display all cluster item
       ansible.builtin.debug:
         var: item
-      loop: "{{ response.results | community.general.json_query('[0].item') }}"
+      loop: "{{ response.results | community.general.json_query('[*]') }}"
 
     - name: Display all cluster HoraReboot
       ansible.builtin.debug:
         var: item
-      loop: "{{ response.results | community.general.json_query('[0].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
+      loop: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
     - name: Display all cluster IPAddress
       ansible.builtin.debug:
