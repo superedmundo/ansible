@@ -157,10 +157,10 @@
       loop: "{{ host_schedule | dict2items }}"
       register: response
 
-    - name: Desplegando response.content | from_json
+    - name: Desplegando response.
       ansible.builtin.debug:
         msg: 
-          response_content_from_json: "{{ response.content | from_json }}"  
+          response: "{{ response }}"  
 
     # - name: set_fact ConfigItemIDS
     #   delegate_to: localhost
