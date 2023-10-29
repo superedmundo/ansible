@@ -138,35 +138,29 @@
         Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems | default({}) | combine({ item[0]: item[1] }) }}"
       loop: "{{ ComputerName | zip(ConfigItems) | list }}"
 
-    - name: Desplegando Dic_ComputerName_ConfigItems
+    - name: Update item
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.patch }}"
+        method: PUT
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          ConfigItem:
+            Class: "{{ config_item_class }}"
+            Name: "{{ item.key }}"
+            CIXMLData: 
+               Note: "Reboot"
+               HoraReboot: "000000"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      loop: "{{ host_schedule | dict2items }}"
+      register: response
+
+    - name: Desplegando response.content | from_json
       ansible.builtin.debug:
         msg: 
-          Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems }}" 
-
-
-
-    # - name: Update item
-    #   delegate_to: localhost
-    #   ansible.builtin.uri:
-    #     url: "{{ path.cmdb.patch }}"
-    #     method: PUT
-    #     body_format: json
-    #     body:
-    #       SessionID: "{{ session_id }}"
-    #       ConfigItem:
-    #         Class: "{{ config_item_class }}"
-    #         Name: "{{ item.key }}"
-    #         # CIXMLData: 
-    #         #   Note: "Reboot"
-    #     validate_certs: "{{ validate_certs }}"
-    #     return_content: true
-    #   loop: "{{ host_schedule | dict2items }}"
-    #   register: response
-
-    # - name: Desplegando response.content | from_json
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response_content_from_json: "{{ response.content | from_json }}"  
+          response_content_from_json: "{{ response.content | from_json }}"  
 
     # - name: set_fact ConfigItemIDS
     #   delegate_to: localhost
