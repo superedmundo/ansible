@@ -150,8 +150,8 @@
           SessionID: "{{ session_id }}"
           ConfigItemID: 7
           ConfigItem:
-            Class: "Computer"
-            Name: "ActiveDirectory2012R2"
+            Class: 'Computer'
+            Name: 'ActiveDirectory2012R2'
             DeplState: 'Production'
             InciState: 'Operational'
             CIXMLData: 
