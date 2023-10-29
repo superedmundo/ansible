@@ -145,16 +145,16 @@
         method: PATCH
         body_format: json
         body:
+          UserLogin: 'baltadlakd'
+          Password : 'baltadlakd'
           SessionID: "{{ session_id }}"
-          ConfigItemUpdate:
-            Class: "{{ config_item_class }}"
-            Name: "{{ item.key }}"
+          ConfigItemID: 7
+          ConfigItem:
             CIXMLData: 
                Note: "Reboot"
-               HoraReboot: "{{ item.value }}"
+               HoraReboot: "000000"
         validate_certs: "{{ validate_certs }}"
         return_content: true
-      loop: "{{ host_schedule | dict2items }}"
       register: response
 
     - name: Desplegando response update.
