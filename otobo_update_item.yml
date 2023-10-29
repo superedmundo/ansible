@@ -124,6 +124,12 @@
         ComputerName: "{{ response | community.general.json_query('results[*].json.ConfigItem[*].Name')  }}"
         CIXMLData: "{{ response | community.general.json_query('results[*].json.ConfigItem[*].CIXMLData')  }}"
 
+    - name: Desplegando facts ComputerName_CIXMLData
+      ansible.builtin.debug:
+        msg: 
+          ComputerName: "{{ ComputerName }}" 
+          CIXMLData: "{{ CIXMLData }}" 
+
     - name: set_fact Dic_ComputerName_CIXMLData
       delegate_to: localhost
       ansible.builtin.set_fact:
