@@ -156,8 +156,9 @@
             DeplState: "{{ item.value.DeplState }}"
             InciState: "{{ item.value.InciState }}"
             CIXMLData: 
-               Note: "{{ (item.value.CIXMLData.HoraReboot == '000000') | ternary('', 'Reboot') }}"
-               HoraReboot: "{{ item.value.CIXMLData.HoraReboot }}"
+               HoraReboot: "{{ host_schedule[item.key] }}"
+               #"{{ item.value.CIXMLData.HoraReboot }}"
+               Note: "{{ (item.value.CIXMLData.HoraReboot == '999999') | ternary('', 'Reboot') }}"
         validate_certs: "{{ validate_certs }}"
         return_content: true
       loop: "{{ Dic_ComputerName_ConfigItems | dict2items }}"
