@@ -64,7 +64,7 @@
     - name: Iterar sobre diccionario
       debug:
         msg: "Llave: {{ item.key }}, Valor: {{ item.value }}"
-      loop: "{{ mi_diccionario | dict2items }}"
+      loop: "{{ host_schedule | dict2items }}"
 
 
     # - name: Search config item for computer
