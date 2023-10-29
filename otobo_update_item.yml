@@ -146,7 +146,7 @@
         body_format: json
         body:
           SessionID: "{{ session_id }}"
-          ConfigItem:
+          ConfigItemUpdate:
             Class: "{{ config_item_class }}"
             Name: "{{ item.key }}"
             CIXMLData: 
@@ -157,7 +157,7 @@
       loop: "{{ host_schedule | dict2items }}"
       register: response
 
-    - name: Desplegando response.
+    - name: Desplegando response update.
       ansible.builtin.debug:
         msg: 
           response: "{{ response }}"  
