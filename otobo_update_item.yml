@@ -76,7 +76,7 @@
           SessionID: "{{ session_id }}"
           ConfigItem:
             Class: "{{ config_item_class }}"
-            Name: "{{ item.key }}"
+            Name: "ActiveDirectory2012R2,WindowsServer-Clon-01,WindowsServer-Clon-02"
             # CIXMLData: 
             #   Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
@@ -89,10 +89,10 @@
         msg: 
           response: "{{ response }}" 
 
-    - name: Desplegando response.content | from_json
-      ansible.builtin.debug:
-        msg: 
-          response_content_from_json: "{{ response.content | from_json }}"  
+    # - name: Desplegando response.content | from_json
+    #   ansible.builtin.debug:
+    #     msg: 
+    #       response_content_from_json: "{{ response.content | from_json }}"  
 
     # - name: set_fact ConfigItemIDS
     #   delegate_to: localhost
