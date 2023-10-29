@@ -142,7 +142,7 @@
       delegate_to: localhost
       ansible.builtin.uri:
         url: "{{ path.cmdb.patch }}"
-        method: PATCH
+        method: POST
         body_format: json
         body:
           UserLogin: 'baltadlakd'
@@ -150,6 +150,8 @@
           SessionID: "{{ session_id }}"
           ConfigItemID: 7
           ConfigItem:
+            Class: "Computer"
+            Name: "ActiveDirectory2012R2"
             CIXMLData: 
                Note: "Reboot"
                HoraReboot: "000000"
