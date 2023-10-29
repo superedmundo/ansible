@@ -194,7 +194,6 @@
       ansible.builtin.set_fact:
         HoraReboot: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot')  }}"
         IPAddress: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.NIC.IPAddress')  }}"
-        two_dict: {"{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.NIC.IPAddress')  }}": "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot')  }}"}
 
     - name: Desplegando HoraReboot
       ansible.builtin.debug:
@@ -202,10 +201,16 @@
           HoraReboot: "{{ HoraReboot }}" 
           IPAddress: "{{ IPAddress }}" 
 
+    - name: set_fact host_schedule
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        host_schedule: "{{ dict(IPAddress | zip(HoraReboot)) | 
+                               dict2items(interface = 'ip') }}"
+
     - name: Desplegando HoraReboot
       ansible.builtin.debug:
         msg: 
-          two_dict: "{{ two_dict }}" 
+          host_schedule: "{{ host_schedule }}" 
 
     # - name: Display all cluster results[*].HoraReboot
     #   ansible.builtin.debug:
