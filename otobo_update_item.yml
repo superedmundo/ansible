@@ -35,10 +35,10 @@
     counter: 0
 
     # Diccionario ComputerName: Schedule
-    host_schedule:
-      ActiveDirectory2012R2: "000500"
-      WindowsServer-Clon-01: "001500"
-      WindowsServer-Clon-02: "001500"
+    # host_schedule:
+    #   ActiveDirectory2012R2: "000500"
+    #   WindowsServer-Clon-01: "001500"
+    #   WindowsServer-Clon-02: "001500"
 
   tasks:
     - name: Otobo login, get session id
