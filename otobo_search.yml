@@ -181,9 +181,13 @@
         var: item
       loop: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
-    - name: Display all cluster HoraReboot
+    - name: Display all cluster msg_HoraReboot
       ansible.builtin.debug:
         msg: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
+
+    - name: Display all cluster results[*].HoraReboot
+      ansible.builtin.debug:
+        msg: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
     - name: Display all cluster IPAddress
       ansible.builtin.debug:
