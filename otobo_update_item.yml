@@ -81,7 +81,7 @@
             #   Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
         return_content: true
-      loop: "{{ host_schedule | dict2items }}"
+      #loop: "{{ host_schedule | dict2items }}"
       register: response
 
     - name: Desplegando response.
