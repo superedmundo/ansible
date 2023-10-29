@@ -120,28 +120,28 @@
           response_json: "{{ response.json }}" 
           response_json_Name: "{{ response.json | community.general.json_query('ConfigItem[*].Name')  }}"
 
-    - name: set_fact ComputerName_CIXMLData
+    - name: set_fact ComputerName_ConfigItems
       delegate_to: localhost
       ansible.builtin.set_fact:
         ComputerName: "{{ response.json | community.general.json_query('ConfigItem[*].Name')  }}"
-        CIXMLData:    "{{ response.json | community.general.json_query('ConfigItem[*].CIXMLData')  }}"
+        ConfigItems:    "{{ response.json | community.general.json_query('ConfigItem[*]')  }}"
 
-    - name: Desplegando facts ComputerName_CIXMLData
+    - name: Desplegando facts ComputerName_ConfigItems
       ansible.builtin.debug:
         msg: 
           ComputerName: "{{ ComputerName }}" 
-          CIXMLData: "{{ CIXMLData }}" 
+          ConfigItems: "{{ ConfigItems }}" 
 
-    - name: set_fact Dic_ComputerName_CIXMLData
+    - name: set_fact Dic_ComputerName_ConfigItems
       delegate_to: localhost
       ansible.builtin.set_fact:
-        Dic_ComputerName_CIXMLData: "{{ Dic_ComputerName_CIXMLData | default({}) | combine({ item[0]: item[1] }) }}"
-      loop: "{{ ComputerName | zip(CIXMLData) | list }}"
+        Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems | default({}) | combine({ item[0]: item[1] }) }}"
+      loop: "{{ ComputerName | zip(ConfigItems) | list }}"
 
-    - name: Desplegando Dic_ComputerName_CIXMLData
+    - name: Desplegando Dic_ComputerName_ConfigItems
       ansible.builtin.debug:
         msg: 
-          Dic_ComputerName_CIXMLData: "{{ Dic_ComputerName_CIXMLData }}" 
+          Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems }}" 
 
 
 
