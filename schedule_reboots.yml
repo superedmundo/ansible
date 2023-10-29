@@ -15,8 +15,8 @@
     target_host: awx
     schedule_name: "Programación automática para el host"
     unified_job_template_name: "Reboot Windows Server"
-    host_schedule:
-      fortigate: "000500"
+    host_schedule: []
+
     time_zone: "America/Mexico_City"
 
     # otobo vars
