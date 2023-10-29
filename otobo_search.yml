@@ -204,7 +204,7 @@
     - name: set_fact host_schedule
       delegate_to: localhost
       ansible.builtin.set_fact:
-        host_schedule: "{{ host_schedule | default({}) + [dict(item[0]: item[1])] }}"
+        host_schedule: "{{ host_schedule | default({}) | combine({ item[0]: item[1] }) }}"
       loop: "{{ IPAddress | zip(HoraReboot) | list }}"
 
     - name: Desplegando HoraReboot
