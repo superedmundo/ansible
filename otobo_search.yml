@@ -185,6 +185,10 @@
       ansible.builtin.debug:
         msg: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
+    - name: Display all cluster msg_response_HoraReboot
+      ansible.builtin.debug:
+        msg: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
+
     - name: set_fact laBuena
       delegate_to: localhost
       ansible.builtin.set_fact:
