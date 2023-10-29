@@ -181,10 +181,21 @@
         var: item
       loop: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
+    - name: Display all cluster HoraReboot
+      ansible.builtin.debug:
+        var: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
+
     - name: Display all cluster IPAddress
       ansible.builtin.debug:
         var: item.IPAddress
       loop: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.NIC') }}"
+
+    - name: Display all cluster IPAddress
+      ansible.builtin.debug:
+        var: item
+      loop: "{{ response.results | to_json | from_json | community.general.json_query(server_name_cluster1_query) }}"
+      vars:
+        server_name_cluster1_query: "[*].json.ConfigItem[0].CIXMLData.NIC.{IPAddress: IPAddress}"
 
     # - name: Facting 1 withOUT_items
     #   delegate_to: localhost
