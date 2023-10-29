@@ -145,8 +145,8 @@
         method: POST
         body_format: json
         body:
-          UserLogin: 'baltadlakd'
-          Password : 'baltadlakd'
+          # UserLogin: 'baltadlakd'
+          # Password : 'baltadlakd'
           SessionID: "{{ session_id }}"
           ConfigItemID: 7
           ConfigItem:
@@ -165,7 +165,7 @@
     - name: Desplegando response update.
       ansible.builtin.debug:
         msg: 
-          response: "{{ response }}"  
+          response: "{{ response.msg }}"  
 
     # - name: set_fact ConfigItemIDS
     #   delegate_to: localhost
