@@ -157,7 +157,7 @@
             CIXMLData: 
                Note: "Reboot"
                HoraReboot: "000000"
-            Attachment: []
+            #Attachment: null
         validate_certs: "{{ validate_certs }}"
         return_content: true
       register: response
