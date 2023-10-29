@@ -185,9 +185,21 @@
       ansible.builtin.debug:
         msg: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
-    - name: Display all cluster results[*].HoraReboot
+    - name: set_fact laBuena
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        ConfigItems: "{{ rr.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot | default([]) }}"
+      vars:
+        rr: "{{ response }}"
+
+    - name: Desplegando ConfigItems
       ansible.builtin.debug:
-        msg: "{{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.NIC.IPAddress') }}, {{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}}"
+        msg: 
+          ConfigItems: "{{ ConfigItems }}" 
+
+    # - name: Display all cluster results[*].HoraReboot
+    #   ansible.builtin.debug:
+    #     msg: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.NIC.IPAddress') }}, {{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
     - name: Display all cluster IPAddress
       ansible.builtin.debug:
