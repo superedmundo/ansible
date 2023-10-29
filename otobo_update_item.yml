@@ -156,7 +156,7 @@
             DeplState: "{{ item.value.DeplState }}"
             InciState: "{{ item.value.InciState }}"
             CIXMLData: 
-               Note: "{{ (item.value.CIXMLData.HoraReboot == '000000') | ternary(''', 'Reboot') }}"
+               Note: "{{ (item.value.CIXMLData.HoraReboot == '000000') | ternary('', 'Reboot') }}"
                HoraReboot: "{{ item.value.CIXMLData.HoraReboot }}"
         validate_certs: "{{ validate_certs }}"
         return_content: true
