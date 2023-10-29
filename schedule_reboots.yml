@@ -1,13 +1,25 @@
 ---
-- name: Search Items in CMDB
-  hosts: all
-  become: false
+- name: Agendar tareas
+  hosts: "{{ target_host | default('all') }} "
   gather_facts: false
-  vars_files:
-    - ./oscarc_otobo_password
   collections:
+    - awx.awx
     - community.general
-  vars:
+  vars_files:
+    - "../otobo/oscarc_otobo_password"
+  vars:    
+    # awx vars
+    awx_host: "awx.ditra"
+    awx_token: "TH07zVTCnFlmyO6IUU2ABf80ZPOuKY"
+
+    target_host: awx
+    schedule_name: "Programación automática para el host"
+    unified_job_template_name: "Reboot Windows Server"
+    host_schedule:
+      fortigate: "000500"
+    time_zone: "America/Mexico_City"
+
+    # otobo vars
     validate_certs: false
     otobo_user: baltadlakd
     base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
@@ -30,8 +42,9 @@
         search: "{{ base_url }}{{ module.cmdb }}/search"
     TicketID: null
     counter: 0
-
+  
   tasks:
+    # tareas para obtener la relacion de host : horario para reiniciar los servers
     - name: Otobo login, get session id
       delegate_to: localhost
       ansible.builtin.uri:
@@ -52,7 +65,7 @@
         r: "{{ response.content | from_json }}"
       delegate_to: localhost
 
-    - name: Search config item for computer
+    - name: Search computers from cmdb to reboot
       delegate_to: localhost
       ansible.builtin.uri:
         url: "{{ path.cmdb.search }}"
@@ -102,3 +115,33 @@
       ansible.builtin.debug:
         msg: 
           host_schedule: "{{ host_schedule }}" 
+
+    # tareas para agendar las ejecuciones
+    - name: "Obtener fecha actual en el formato '%Y%m%d'"
+      # shell: "date +'%Y%m%d'"
+      command: "date +%Y%m%d"
+      environment:
+        TZ: "{{ time_zone }}"
+      register: current_date
+
+    - name: Mostrar fecha generada
+      debug:
+        var: current_date.stdout
+
+    - name: Build a schedule for Demo Job Template
+      awx.awx.schedule:
+        name: "{{ schedule_name }} '{{ item.key }}'"
+        state: present
+        extra_data:
+          target_host: "{{ item.key }}"
+        controller_host: "{{ awx_host }}"
+        controller_oauthtoken: "{{ awx_token }}"
+        unified_job_template: "{{ unified_job_template_name }}"
+        validate_certs: "{{ validate_certs }}"
+        rrule: "DTSTART;TZID={{ time_zone }}:{{ current_date.stdout }}T{{ item.value }} RRULE:INTERVAL=1;COUNT=1;FREQ=MINUTELY"
+      loop: "{{ host_schedule | dict2items }}"
+      register: result
+
+    - name: Mostrar del ciclo
+      debug:
+        var: result
