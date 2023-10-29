@@ -118,6 +118,24 @@
         msg: 
           response: "{{ response }}" 
 
+    - name: set_fact ComputerName_CIXMLData
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        ComputerName: "{{ response | community.general.json_query('results[*].json.ConfigItem[*].Name')  }}"
+        CIXMLData: "{{ response | community.general.json_query('results[*].json.ConfigItem[*].CIXMLData')  }}"
+
+    - name: set_fact Dic_ComputerName_CIXMLData
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        Dic_ComputerName_CIXMLData: "{{ Dic_ComputerName_CIXMLData | default({}) | combine({ item[0]: item[1] }) }}"
+      loop: "{{ ComputerName | zip(CIXMLData) | list }}"
+
+    - name: Desplegando Dic_ComputerName_CIXMLData
+      ansible.builtin.debug:
+        msg: 
+          Dic_ComputerName_CIXMLData: "{{ Dic_ComputerName_CIXMLData }}" 
+
+
 
     # - name: Update item
     #   delegate_to: localhost
