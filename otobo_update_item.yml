@@ -76,12 +76,12 @@
           SessionID: "{{ session_id }}"
           ConfigItem:
             Class: "{{ config_item_class }}"
-            # Name: "{{ item.key }}"
+            Name: "{{ item.key }}"
             # CIXMLData: 
             #   Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
         return_content: true
-      #loop: "{{ host_schedule | dict2items }}"
+      loop: "{{ host_schedule | dict2items }}"
       register: response
 
     - name: Desplegando response Search config item for computer.
@@ -89,12 +89,10 @@
         msg: 
           response: "{{ response }}" 
 
-    - name: Get ConfigGroup Computer ids
+    - name: set_fact items_ids
       delegate_to: localhost
       ansible.builtin.set_fact:
-        items_ids: "{{ r.ConfigItemIDs | default(false) }}"
-      vars:
-        r: "{{ response.content | from_json }}"
+        items_ids: "{{ response | community.general.json_query('results[*].json.ConfigItemIDs[0]')  }}"
 
     - name: Desplegando ConfigGroup Computer ids
       ansible.builtin.debug:
