@@ -66,33 +66,33 @@
         msg: "Llave: {{ item.key }}, Valor: {{ item.value }}"
       loop: "{{ host_schedule | dict2items }}"
 
+    - name: Search config item for computer
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.search }}"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          ConfigItem:
+            Class: "{{ config_item_class }}"
+            Name: "{{ item.key }}"
+            # CIXMLData: 
+            #   Note: "Reboot"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      loop: "{{ host_schedule | dict2items }}"
+      register: response
 
-    # - name: Search config item for computer
-    #   delegate_to: localhost
-    #   ansible.builtin.uri:
-    #     url: "{{ path.cmdb.search }}"
-    #     method: POST
-    #     body_format: json
-    #     body:
-    #       SessionID: "{{ session_id }}"
-    #       ConfigItem:
-    #         Class: "{{ config_item_class }}"
-    #         #Name: "{{ config_item_name }}"
-    #         CIXMLData: 
-    #           Note: "Reboot"
-    #     validate_certs: "{{ validate_certs }}"
-    #     return_content: true
-    #   register: response
+    - name: Desplegando response.
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response }}" 
 
-    # - name: Desplegando response.
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response: "{{ response }}" 
-
-    # - name: Desplegando response.content | from_json
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response_content_from_json: "{{ response.content | from_json }}"  
+    - name: Desplegando response.content | from_json
+      ansible.builtin.debug:
+        msg: 
+          response_content_from_json: "{{ response.content | from_json }}"  
 
     # - name: set_fact ConfigItemIDS
     #   delegate_to: localhost
