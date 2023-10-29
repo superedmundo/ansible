@@ -66,77 +66,80 @@
         msg: "Llave: {{ item.key }}, Valor: {{ item.value }}"
       loop: "{{ host_schedule | dict2items }}"
 
-    # - name: Search config item for computer
-    #   delegate_to: localhost
-    #   ansible.builtin.uri:
-    #     url: "{{ path.cmdb.search }}"
-    #     method: POST
-    #     body_format: json
-    #     body:
-    #       SessionID: "{{ session_id }}"
-    #       ConfigItem:
-    #         Class: "{{ config_item_class }}"
-    #         Name: "{{ item.key }}"
-    #         # CIXMLData: 
-    #         #   Note: "Reboot"
-    #     validate_certs: "{{ validate_certs }}"
-    #     return_content: true
-    #   loop: "{{ host_schedule | dict2items }}"
-    #   register: response
+    - name: Search config item for computer
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.search }}"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          ConfigItem:
+            Class: "{{ config_item_class }}"
+            Name: "{{ item.key }}"
+            # CIXMLData: 
+            #   Note: "Reboot"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      loop: "{{ host_schedule | dict2items }}"
+      register: response
 
-    # - name: Desplegando response Search config item for computer.
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response: "{{ response }}" 
+    - name: Desplegando response Search config item for computer.
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response }}" 
 
-    # - name: set_fact items_ids
-    #   delegate_to: localhost
-    #   ansible.builtin.set_fact:
-    #     items_ids: "{{ response | community.general.json_query('results[*].json.ConfigItemIDs[0]')  }}"
+    - name: set_fact items_ids
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        items_ids: "{{ response | community.general.json_query('results[*].json.ConfigItemIDs[0]')  }}"
 
-    # - name: Desplegando ConfigGroup Computer ids
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       items_ids: "{{ items_ids }}" 
+    - name: Desplegando ConfigGroup Computer ids
+      ansible.builtin.debug:
+        msg: 
+          items_ids: "{{ items_ids }}" 
     
-    # - name: Convert ids list to ids string
-    #   delegate_to: localhost
-    #   ansible.builtin.set_fact:
-    #     string_items_ids: "{{ items_ids | join(',') }}"
+    - name: Convert ids list to ids string
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        string_items_ids: "{{ items_ids | join(',') }}"
 
-    # - name: Get Computer items
-    #   delegate_to: localhost
-    #   ansible.builtin.uri:
-    #     url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ string_items_ids }}"
-    #     method: GET
-    #     validate_certs: "{{ validate_certs }}"
-    #     return_content: true
-    #   register: response
+    - name: Get Computer items
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ string_items_ids }}"
+        method: GET
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
 
-    # - name: Desplegando response.
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       response: "{{ response }}" 
-    #       response_json: "{{ response.json }}" 
-    #       response_json_Name: "{{ response.json | community.general.json_query('ConfigItem[*].Name')  }}"
+    - name: Desplegando response.
+      ansible.builtin.debug:
+        msg: 
+          response: "{{ response }}" 
 
-    # - name: set_fact ComputerName_ConfigItems
-    #   delegate_to: localhost
-    #   ansible.builtin.set_fact:
-    #     ComputerName: "{{ response.json | community.general.json_query('ConfigItem[*].Name')  }}"
-    #     ConfigItems:    "{{ response.json | community.general.json_query('ConfigItem[*]')  }}"
+    - name: set_fact ComputerName_ConfigItems
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        ComputerName: "{{ response.json | community.general.json_query('ConfigItem[*].Name')  }}"
+        ConfigItems:    "{{ response.json | community.general.json_query('ConfigItem[*]')  }}"
 
-    # - name: Desplegando facts ComputerName_ConfigItems
-    #   ansible.builtin.debug:
-    #     msg: 
-    #       ComputerName: "{{ ComputerName }}" 
-    #       ConfigItems: "{{ ConfigItems }}" 
+    - name: Desplegando facts ComputerName_ConfigItems
+      ansible.builtin.debug:
+        msg: 
+          ComputerName: "{{ ComputerName }}" 
+          ConfigItems: "{{ ConfigItems }}" 
 
-    # - name: set_fact Dic_ComputerName_ConfigItems
-    #   delegate_to: localhost
-    #   ansible.builtin.set_fact:
-    #     Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems | default({}) | combine({ item[0]: item[1] }) }}"
-    #   loop: "{{ ComputerName | zip(ConfigItems) | list }}"
+    - name: set_fact Dic_ComputerName_ConfigItems
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems | default({}) | combine({ item[0]: item[1] }) }}"
+      loop: "{{ ComputerName | zip(ConfigItems) | list }}"
+
+    - name: Desplegando Dic_ComputerName_ConfigItems
+      ansible.builtin.debug:
+        msg: 
+          Dic_ComputerName_ConfigItems: "{{ Dic_ComputerName_ConfigItems }}"       
 
     - name: Update item
       delegate_to: localhost
