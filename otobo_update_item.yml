@@ -149,17 +149,18 @@
         body_format: json
         body:
           SessionID: "{{ session_id }}"
-          ConfigItemID: 7
+          ConfigItemID: "{{ item.value.ConfigItemID }}"
           ConfigItem:
-            Class: 'Computer'
-            Name: 'ActiveDirectory2012R2'
-            DeplState: 'Production'
-            InciState: 'Operational'
+            Class: "{{ item.value.Class }}"
+            Name: "{{ item.key }}"
+            DeplState: "{{ item.value.DeplState }}"
+            InciState: "{{ item.value.InciState }}"
             CIXMLData: 
-               Note: "Reboot"
-               HoraReboot: "000000"
+               Note: "{{ (item.value.CIXMLData.HoraReboot == '000000') | ternary(''', 'Reboot') }}"
+               HoraReboot: "{{ item.value.CIXMLData.HoraReboot }}"
         validate_certs: "{{ validate_certs }}"
         return_content: true
+      loop: "{{ Dic_ComputerName_ConfigItems | dict2items }}"
       register: response
 
     - name: Desplegando response update.
