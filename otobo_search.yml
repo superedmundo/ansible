@@ -183,7 +183,7 @@
 
     - name: Display all cluster HoraReboot
       ansible.builtin.debug:
-        var: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
+        msg: "{{ response.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot') }}"
 
     - name: Display all cluster IPAddress
       ansible.builtin.debug:
