@@ -188,9 +188,7 @@
     - name: set_fact laBuena
       delegate_to: localhost
       ansible.builtin.set_fact:
-        ConfigItems: "{{ rr.results | community.general.json_query('[*].json.ConfigItem[0].CIXMLData.HoraReboot | default([]) }}"
-      vars:
-        rr: "{{ response }}"
+        ConfigItems: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot | default([]) }}"
 
     - name: Desplegando ConfigItems
       ansible.builtin.debug:
