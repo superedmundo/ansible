@@ -9,7 +9,7 @@
     - ./oscarc_otobo_password
   vars:    
     # awx vars
-    awx_host: "awx.ditra"
+    awx_host: "10.100.1.120"
     awx_token: "TH07zVTCnFlmyO6IUU2ABf80ZPOuKY"
 
     target_host: awx
