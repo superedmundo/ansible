@@ -192,12 +192,14 @@
     - name: set_fact laBuena
       delegate_to: localhost
       ansible.builtin.set_fact:
-        ConfigItems: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot')  }}"
+        HoraReboot: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.HoraReboot')  }}"
+        IPAddress: "{{ response | community.general.json_query('results[*].json.ConfigItem[0].CIXMLData.NIC.IPAddress')  }}"
 
-    - name: Desplegando ConfigItems
+    - name: Desplegando HoraReboot
       ansible.builtin.debug:
         msg: 
-          ConfigItems: "{{ ConfigItems }}" 
+          HoraReboot: "{{ HoraReboot }}" 
+          IPAddress: "{{ IPAddress }}" 
 
     # - name: Display all cluster results[*].HoraReboot
     #   ansible.builtin.debug:
