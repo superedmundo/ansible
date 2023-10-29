@@ -9,10 +9,10 @@
     - ./oscarc_otobo_password
   vars:    
     # awx vars
-    awx_host: "10.100.1.120" 
+    awx_host: "awx.ditra"
     awx_token: "TH07zVTCnFlmyO6IUU2ABf80ZPOuKY"
 
-    target_host: "10.100.1.120"
+    target_host: localhost
     schedule_name: "Programación automática para el host"
     unified_job_template_name: "Reboot Windows Server"
     host_schedule: []
