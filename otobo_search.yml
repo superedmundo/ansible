@@ -205,7 +205,7 @@
       delegate_to: localhost
       ansible.builtin.set_fact:
         host_schedule: "{{ dict(IPAddress | zip(HoraReboot)) | 
-                               dict2items(interface = 'ip') }}"
+                               dict2items(IPAddress = 'HoraReboot') }}"
 
     - name: Desplegando HoraReboot
       ansible.builtin.debug:
