@@ -6,7 +6,7 @@
     - awx.awx
     - community.general
   vars_files:
-    - "../otobo/oscarc_otobo_password"
+    - ./oscarc_otobo_password
   vars:    
     # awx vars
     awx_host: "awx.ditra"
