@@ -76,18 +76,58 @@
           SessionID: "{{ session_id }}"
           ConfigItem:
             Class: "{{ config_item_class }}"
-            Name: "ActiveDirectory2012R2,WindowsServer-Clon-01,WindowsServer-Clon-02"
+            Name: "{{ item.key }}"
             # CIXMLData: 
             #   Note: "Reboot"
         validate_certs: "{{ validate_certs }}"
         return_content: true
-      #loop: "{{ host_schedule | dict2items }}"
+      loop: "{{ host_schedule | dict2items }}"
+      register: response
+
+    - name: Get ConfigGroup Computer ids
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        items_ids: "{{ r.ConfigItemIDs | default(false) }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+    
+    - name: Convert ids list to ids string
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        string_items_ids: "{{ items_ids | join(',') }}"
+
+    - name: Get Computer items
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ string_items_ids }}"
+        method: GET
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
       register: response
 
     - name: Desplegando response.
       ansible.builtin.debug:
         msg: 
           response: "{{ response }}" 
+
+
+    # - name: Update item
+    #   delegate_to: localhost
+    #   ansible.builtin.uri:
+    #     url: "{{ path.cmdb.patch }}"
+    #     method: PUT
+    #     body_format: json
+    #     body:
+    #       SessionID: "{{ session_id }}"
+    #       ConfigItem:
+    #         Class: "{{ config_item_class }}"
+    #         Name: "{{ item.key }}"
+    #         # CIXMLData: 
+    #         #   Note: "Reboot"
+    #     validate_certs: "{{ validate_certs }}"
+    #     return_content: true
+    #   loop: "{{ host_schedule | dict2items }}"
+    #   register: response
 
     # - name: Desplegando response.content | from_json
     #   ansible.builtin.debug:
