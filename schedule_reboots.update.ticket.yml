@@ -1,0 +1,200 @@
+---
+- name: Agendar tareas
+  hosts: "{{ target_host | default('all') }} "
+  gather_facts: false
+  collections:
+    - awx.awx
+  vars_files:
+    - ./oscarc_otobo_password
+  vars:
+    validate_certs: false
+    # awx vars
+    awx_host: "awx.ditra"
+    awx_token: ""
+    schedule_name: "Programación automática para el host"
+    unified_job_template_name: "Test de hosts"
+    host_schedule: {}
+      # fortigate: "000500"
+      # localhost: "001500"
+    time_zone: "America/Mexico_City"
+    # otobo vars
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+      cmdb:
+        retrieve: "{{ base_url }}{{ module.cmdb }}"
+        search: "{{ base_url }}{{ module.cmdb }}/search"
+    config_item_class: Computer
+    config_item_group_computers: Reboot
+    TicketID: null
+    notification_email: null
+  
+  tasks:
+    - name: Iterar sobre diccionario
+      debug:
+        msg: "Llave: {{ item.key }}, Valor: {{ item.value }}"
+      loop: "{{ mi_diccionario | dict2items }}"
+  
+  tasks:
+    # tareas para obtener la relacion de host : horario para reiniciar los servers
+    - name: Otobo login, get session id
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.login }}"
+        method: POST
+        body_format: json
+        body:
+          UserLogin: "{{ otobo_user }}"
+          Password: "{{ otobo_password }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get SessionID from login response
+      ansible.builtin.set_fact:
+        session_id: "{{ r.SessionID }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+      delegate_to: localhost
+        
+    - name: Set auto process ticket as processing status
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          DynamicField:
+           - Name: AutoStatus
+             Value: processing
+
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
+
+    - name: Search config item for group control Computer
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.search }}"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          ConfigItem:
+            Class: "{{ config_item_class }}"
+            CIXMLData: 
+              Note: "{{ config_item_group_computers }}"
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+
+    - name: Get ConfigGroup Computer ids
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        items_ids: "{{ r.ConfigItemIDs | default(false) }}"
+      vars:
+        r: "{{ response.content | from_json }}"
+    
+    - name: Convert ids list to ids string
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        string_items_ids: "{{ items_ids | join(',') }}"
+
+    - name: Get Computer items
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.cmdb.retrieve }}?SessionID={{ session_id }}&ConfigItemID={{ string_items_ids }}"
+        method: GET
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+ 
+    - name: Mostrar diccionario original
+      debug:
+        var: host_schedule
+
+    - name: Inicializar diccionario
+      set_fact:
+        final_host_schedule: "{{ host_schedule }}"
+
+    - name: Mostrar response
+      debug:
+        var: response
+
+    - name: "Crear diccionacion con la relacion de los server:hora"
+      set_fact:
+        final_host_schedule: "{{ final_host_schedule | combine({item.CIXMLData.NIC.IPAddress | string: item.CIXMLData.HoraReboot | replace(':', '') }, recursive=False) }}"
+      loop: "{{ response.json.ConfigItem }}"
+
+    - name: Mostrar diccionario resultante
+      debug:
+        var: final_host_schedule
+
+    # tareas para agendar las ejecuciones
+    - name: "Obtener fecha actual en el formato '%Y%m%d'"
+      # shell: "date +'%Y%m%d'"
+      command: "date +%Y%m%d"
+      environment:
+        TZ: "{{ time_zone }}"
+      register: current_date
+
+    - name: Mostrar fecha generada
+      debug:
+        var: current_date.stdout
+
+    - name: Build a schedule for Demo Job Template
+      awx.awx.schedule:
+        name: "{{ schedule_name }} '{{ item.key }}'"
+        state: present
+        extra_data:
+          TicketID: "{{ TicketID }}"
+          notification_email: "{{ notification_email }}"
+          target_host: "{{ item.key }}"
+        controller_host: "{{ awx_host }}"
+        controller_oauthtoken: "{{ awx_token }}"
+        unified_job_template: "{{ unified_job_template_name }}"
+        validate_certs: "{{ validate_certs }}"
+        rrule: "DTSTART;TZID={{ time_zone }}:{{ current_date.stdout }}T{{ item.value }} RRULE:INTERVAL=1;COUNT=1;FREQ=MINUTELY"
+      loop: "{{ final_host_schedule | dict2items }}"
+      register: result
+
+    - name: Mostrar del ciclo
+      debug:
+        var: result
+
+    # tasks to update status in oboto
+    - name: Post report to ticket on otobo
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ path.Ticket }}/{{ TicketID }}/Update"
+        method: POST
+        body_format: json
+        body:
+          SessionID: "{{ session_id }}"
+          TicketID: "{{ TicketID }}"
+          Article:
+            CommunicationChannel: Internal
+            IsVisibleForCustomer: 1
+            Subject: Reporte ansible
+            Body: |
+              Se han programado las validaciones de reinicio para:
+              {% for host, schedule in final_host_schedule.items() %}
+                {{ host }} a las {{ schedule[:2] }}:{{ schedule[2:4] }}:{{ schedule[4:6] }}
+              {% endfor %}
+            ContentType: text/plain; charset=utf-8
+        validate_certs: "{{ validate_certs }}"
+        return_content: true
+      register: response
+      failed_when: "response.status != 200"
+      run_once: true
+      when: TicketID is not none and session_id is defined
