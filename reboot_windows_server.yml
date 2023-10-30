@@ -104,6 +104,7 @@
           rebootTimeout: "{{ rebootTimeout }}" 
           postReboot_delay: "{{ postReboot_delay }}" 
           inventory_hostname: "{{ inventory_hostname }}"
+          TicketID: "{{ TicketID }}"
 
           # NOTIFICACIONES
           # Email
