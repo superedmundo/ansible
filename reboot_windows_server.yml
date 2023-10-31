@@ -159,7 +159,7 @@
     - name: Crear mensaje notificación exitosa
       when: something_wrong == false and inventory_hostname == target_host
       ansible.builtin.set_fact:
-        result_process: "Se reinició el server: {{ target_host }}"
+        result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true and result_process is not defined  and inventory_hostname == target_host 
