@@ -1,6 +1,6 @@
 ---
 - name: Reboot Windows Server if Necesary
-  hosts: all
+  hosts: "{{ target_host | default('all') }} "
   gather_facts: no 
   vars_files:
     - "./oscarc_otobo_password"
