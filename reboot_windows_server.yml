@@ -168,12 +168,12 @@
     - name: Crear mensaje notificación exitosa
       when: 
         - something_wrong == false 
-        - result_check.error | length = 0
+        - result_check.error | length == 0
       ansible.builtin.set_fact:
         result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running; {{ result_check.output }}"
 
     - name: Crear mensaje notificación fallida
-      when: something_wrong == true and result_process is not defined  and inventory_hostname == target_host 
+      when: something_wrong == true 
       ansible.builtin.set_fact:
         result_process: "Ocurrió un error"
 
@@ -196,14 +196,12 @@
       when: 
         - notification_email is defined 
         - something_wrong == true 
-        - result_process is defined
-        - inventory_hostname == target_host
       ansible.builtin.include_role:
         name: ditra.cisco.send_email
         apply:
           delegate_to: localhost
       vars:
-        subject: Ocurrió un error al tratar de reiniciar el servidor
+        subject: Ocurrió un error en el proceso de reiniciar el servidor
         body: |
           Algo salió mal, revisa la bitácora {{result_process}}
 
