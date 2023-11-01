@@ -36,6 +36,7 @@
     # Variables internas de control de flujo
     something_wrong: false
     result_process: null
+    events: null
 
     # vars for otobo changes
     validate_certs: false
@@ -129,6 +130,12 @@
           ansible.builtin.debug:
             msg: 
               result_check: "{{ result_check }}" 
+    
+        - name: set_fact Events
+          when: result_check.output | length > 0
+          delegate_to: localhost
+          ansible.builtin.set_fact:
+            events: "{{ result_check | community.general.json_query('output[*].Message')  }}"
 
         - name: BloqueReboot
           when: result_check.output | length > 0
@@ -170,7 +177,7 @@
         - something_wrong == false 
         - result_check.error | length == 0
       ansible.builtin.set_fact:
-        result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running; {{ result_check.output }}"
+        result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running; {{ events }}"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true 
