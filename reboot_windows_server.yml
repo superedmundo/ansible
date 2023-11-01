@@ -168,7 +168,6 @@
     - name: Crear mensaje notificación exitosa
       when: 
         - something_wrong == false 
-        - inventory_hostname == target_host 
         - result_process is not defined
       ansible.builtin.set_fact:
         result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running; {{ result_check.output }}"
@@ -185,7 +184,7 @@
         apply:
           delegate_to: localhost
       vars:
-        subject: El reinicio del server fue exitoso
+        subject: El proceso de reinicio de server fue exitoso
         body: |
           Todo bien
           {{result_process}}
