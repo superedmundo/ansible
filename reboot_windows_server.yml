@@ -168,7 +168,7 @@
     - name: Crear mensaje notificación exitosa
       when: 
         - something_wrong == false 
-        - result_process is not defined
+        - result_check.error | length = 0
       ansible.builtin.set_fact:
         result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running; {{ result_check.output }}"
 
