@@ -130,18 +130,26 @@
             msg: 
               result_check: "{{ result_check }}" 
 
-        - name: Reboot the machine
-          ansible.windows.win_reboot:
-            reboot_timeout: "{{rebootTimeout}}"
-            post_reboot_delay: "{{postReboot_delay}}"
-            #test_command: 'exit (Get-Service -Name Netlogon).Status -ne "Running"'
-            test_command: 'exit (Get-Service -Name Server).Status -ne "Running"'
-          register: result_reboot
+        - name: BloqueReboot
+          when: result_check.output | length > 0
+          block:
+          - name: Reboot the machine
+            ansible.windows.win_reboot:
+              reboot_timeout: "{{rebootTimeout}}"
+              post_reboot_delay: "{{postReboot_delay}}"
+              #test_command: 'exit (Get-Service -Name Netlogon).Status -ne "Running"'
+              test_command: 'exit (Get-Service -Name Server).Status -ne "Running"'
+            register: result_reboot
 
-        - name: result_reboot
-          ansible.builtin.debug:
-            msg: 
-              result_reboot: "{{ result_reboot }}" 
+          - name: result_reboot
+            ansible.builtin.debug:
+              msg: 
+                result_reboot: "{{ result_reboot }}" 
+
+        - name: BloqueReboot
+          when: result_check.error | length > 0
+          ansible.builtin.set_fact:
+            result_process: "El server: {{ target_host }} no tiene actualizaciones críticas. No es necesario reiniciar."
 
       rescue:         
 
@@ -156,10 +164,14 @@
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
+
     - name: Crear mensaje notificación exitosa
-      when: something_wrong == false and inventory_hostname == target_host
+      when: 
+        - something_wrong == false 
+        - inventory_hostname == target_host 
+        - result_process is not defined
       ansible.builtin.set_fact:
-        result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running"
+        result_process: "Se reinició el server: {{ target_host }} y el servicio Server esta Running; {{ result_check.output }}"
 
     - name: Crear mensaje notificación fallida
       when: something_wrong == true and result_process is not defined  and inventory_hostname == target_host 
