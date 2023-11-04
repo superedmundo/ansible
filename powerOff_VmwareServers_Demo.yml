@@ -4,18 +4,18 @@
   gather_facts: no 
   vars_files:
   - "./oscarc_otobo_password"
-  vars:
-    hostname: "10.57.23.142"
-    username: "root"
-    password: "Ditra.Poc2021"
-    vm_ids: 
-      - ActiveDirectory2012R2: 63
-      - ubuntu_k_test: 66
-      - OTOBO_demo: 67
-      - devtest: 68
-      - znuny: 69
-      - WindowsServer-Clon-01: 70
-      - WindowsServer-Clon-02: 71
+  # vars:
+  #   hostname: "10.57.23.142"
+  #   username: "root"
+  #   password: "Ditra.Poc2021"
+  #   vm_ids: 
+  #     - ActiveDirectory2012R2: 63
+  #     - ubuntu_k_test: 66
+  #     - OTOBO_demo: 67
+  #     - devtest: 68
+  #     - znuny: 69
+  #     - WindowsServer-Clon-01: 70
+  #     - WindowsServer-Clon-02: 71
 
   tasks:
     - name: Conectar a ESXi
@@ -26,8 +26,8 @@
         insecure: yes  # Esto permite conexiones no seguras (ajusta según sea necesario)
         validate_certs: no  # Esto desactiva la validación de certificados SSL (ajusta según sea necesario)
         timeout: 60
-        cmd: "vim-cmd vmsvc/power.shutdown 70"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
-      delegate_to: localhost
+        cmd: "/bin/vim-cmd vmsvc/power.shutdown 70"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
+      #delegate_to: localhost
       #loop: vm_ids
       register: result
 
