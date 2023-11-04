@@ -10,15 +10,19 @@
     password: "Ditra.Poc2021"
     vm_ids: 
       - ActiveDirectory2012R2: 63
+      - ubuntu_k_test: 66
+      - OTOBO_demo: 67
+      - devtest: 68
+      - znuny: 69
       - WindowsServer-Clon-01: 70
       - WindowsServer-Clon-02: 71
 
   tasks:
     - name: Conectar a ESXi
       vmware_vm_shell:
-        hostname: "{{ hostname }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        hostname: "10.57.23.142"
+        username: "root"
+        password: "Ditra.Poc2021"
         insecure: yes  # Esto permite conexiones no seguras (ajusta según sea necesario)
         validate_certs: no  # Esto desactiva la validación de certificados SSL (ajusta según sea necesario)
         timeout: 60
