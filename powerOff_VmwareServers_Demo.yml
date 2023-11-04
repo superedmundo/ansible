@@ -5,16 +5,20 @@
   vars_files:
   - "./oscarc_otobo_password"
   vars:
+    hostname: "10.57.23.142"
+    username: "root"
+    password: "Ditra.Poc2021"
     vm_ids: 
-      - 69
-      - 70
+      - ActiveDirectory2012R2: 63
+      - WindowsServer-Clon-01: 70
+      - WindowsServer-Clon-02: 71
 
   tasks:
     - name: Conectar a ESXi
       vmware_vm_shell:
-        hostname: "{{ 10.57.23.142 }}"  # Cambia "{{ esxi_hostname }}" por la dirección IP o nombre de tu servidor ESXi
-        username: "{{ root }}"  # Cambia "{{ esxi_username }}" por tu nombre de usuario de ESXi
-        password: "{{ Ditra.Poc2021 }}"  # Cambia "{{ esxi_password }}" por tu contraseña de ESXi
+        hostname: "{{ hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
         insecure: yes  # Esto permite conexiones no seguras (ajusta según sea necesario)
         validate_certs: no  # Esto desactiva la validación de certificados SSL (ajusta según sea necesario)
         timeout: 60
