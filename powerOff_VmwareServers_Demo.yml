@@ -5,19 +5,22 @@
   vars_files:
   - "./oscarc_otobo_password"
   vars:
-    vm_ids: 70
+    vm_ids: 
+      - 69
+      - 70
 
   tasks:
     - name: Conectar a ESXi
       vmware_vm_shell:
         hostname: "{{ 10.57.23.142 }}"  # Cambia "{{ esxi_hostname }}" por la dirección IP o nombre de tu servidor ESXi
         username: "{{ root }}"  # Cambia "{{ esxi_username }}" por tu nombre de usuario de ESXi
-        password: "{{ 10.57.23.142 }}"  # Cambia "{{ esxi_password }}" por tu contraseña de ESXi
+        password: "{{ Ditra.Poc2021 }}"  # Cambia "{{ esxi_password }}" por tu contraseña de ESXi
         insecure: yes  # Esto permite conexiones no seguras (ajusta según sea necesario)
         validate_certs: no  # Esto desactiva la validación de certificados SSL (ajusta según sea necesario)
         timeout: 60
-        cmd: "vim-cmd vmsvc/power.off {{ vm_ids }}"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
+        cmd: "vim-cmd vmsvc/power.shutdown {{ 70 }}"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
       delegate_to: localhost
+      #loop: vm_ids
       register: result
 
     - name: Verificar el resultado
