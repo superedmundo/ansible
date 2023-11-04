@@ -1,9 +1,12 @@
 ---
 - name: Conectar a ESXi y apagar una máquina virtual
   hosts: 10.57.23.142  # Cambia 'esxi_server' por el nombre de tu servidor ESXi o su dirección IP
-  gather_facts: no
+  gather_facts: no 
+  vars_files:
+  - "./oscarc_otobo_password"
   vars:
     vm_ids: 70
+
   tasks:
     - name: Conectar a ESXi
       vmware_vm_shell:
