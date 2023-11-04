@@ -23,6 +23,9 @@
         hostname: "10.57.23.142"
         username: "root"
         password: "Ditra.Poc2021"
+        insecure: yes
+        validate_certs: no
+        timeout: 60
       register: host_facts
       delegate_to: localhost
   
