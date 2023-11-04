@@ -135,8 +135,8 @@
           when: result_check.output | length > 0
           delegate_to: localhost
           ansible.builtin.set_fact:
-            events: "{{ result_check.output |  to_json(indent=2) }}"
-            #events: "{{ result_check | community.general.json_query('output[*].Message')  }}"
+            #events: "{{ result_check.output |  to_json(indent=2) }}"
+            events: "{{ result_check | community.general.json_query('output[*].Message')  }}"
 
         - name: BloqueReboot
           when: result_check.output | length > 0
