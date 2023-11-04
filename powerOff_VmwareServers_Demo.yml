@@ -18,20 +18,28 @@
   #     - WindowsServer-Clon-02: 71
 
   tasks:
-    - name: Conectar a ESXi
-      vmware_vm_shell:
+    - name: Gather vmware host facts
+      community.vmware.vmware_host_facts:
         hostname: "10.57.23.142"
         username: "root"
         password: "Ditra.Poc2021"
-        insecure: yes  # Esto permite conexiones no seguras (ajusta según sea necesario)
-        validate_certs: no  # Esto desactiva la validación de certificados SSL (ajusta según sea necesario)
-        timeout: 60
-        #cmd: "/bin/vim-cmd vmsvc/power.shutdown 70"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
-        cmd: "/bin/vim-cmd vmsvc/getallvms"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
-      #delegate_to: localhost
-      #loop: vm_ids
-      register: result
+      register: host_facts
+      delegate_to: localhost
+  
+    # - name: Conectar a ESXi
+    #   vmware_vm_shell:
+    #     hostname: "10.57.23.142"
+    #     username: "root"
+    #     password: "Ditra.Poc2021"
+    #     insecure: yes  # Esto permite conexiones no seguras (ajusta según sea necesario)
+    #     validate_certs: no  # Esto desactiva la validación de certificados SSL (ajusta según sea necesario)
+    #     timeout: 60
+    #     #cmd: "/bin/vim-cmd vmsvc/power.shutdown 70"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
+    #     cmd: "/bin/vim-cmd vmsvc/getallvms"  # Cambia "{{ vm_id }}" por el ID de la máquina virtual que deseas apagar
+    #   #delegate_to: localhost
+    #   #loop: vm_ids
+    #   register: result
 
     - name: Verificar el resultado
       debug:
-        var: result.stdout_lines
+        var: host_facts
