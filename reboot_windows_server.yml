@@ -136,7 +136,7 @@
           delegate_to: localhost
           ansible.builtin.set_fact:
             #events: "{{ result_check.output |  to_json(indent=2) }}"
-            events: "{{ result_check | community.general.json_query('output[*].Message') | replace('Restart Required: To complete the installation of the following updates, the computer will be restarted within 15 minutes: \n-','')  }}"
+            events: "{{ result_check | community.general.json_query('output[*].Message') | replace('Restart Required: To complete the installation of the following updates, the computer will be restarted within 15 minutes:','')  }}"
 
         - name: BloqueReboot
           when: result_check.output | length > 0
