@@ -604,11 +604,25 @@
                 wWWHomePage: "{{ wWWHomePage }}"
 
 
-              
-
+  # Crear Facts para la creación del buzón de Office 365
+    - name: Establecer el valor de algo Erroneo
+      when: ADAddMailbox == true
+      ansible.builtin.set_fact:
+        # Variables para el mailbox
+        nombre365: "{{ nombre }}"
+        firstName365: "{{ firstName }}"
+        lastName365: "{{ lastName }}"
+        displayName365: null
+        microsoftOnlineServicesID365: null
+        mailboxPlan365: null
+        # Variable de notificación
+        notification_email365: "{{notification_email}}"
+        # Variables de conexión
+        AppId365: "d8f14294-5e13-4d85-9e95-e491958c95cf"
+        CertificateThumbprint365: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
+        Organization365: "ditramx0.onmicrosoft.com"
 
   # NOTIFICACIONES
-    
   # Crear mensaje para Notificación
     - name: Crear mensaje notificación exitosa
       when: something_wrong == false
@@ -696,17 +710,16 @@
   when: something_wrong == false
   ansible.builtin.import_playbook: add_mailbox365.yml
   vars:
-    service: httpd
-      # Variables para el mailbox
-    nombre: "{{ nombre}}"
-    firstName: "{{ firstName}}"
-    lastName: "{{ lastName}}"
+    # Variables para el mailbox
+    nombre: "{{ nombre365 }}"
+    firstName: "{{ firstName365 }}"
+    lastName: "{{ lastName365 }}"
     displayName: null
     microsoftOnlineServicesID: null
     mailboxPlan: null
-  
-  # Variable de notificación
-    notification_email: "{{notification_email}}"
+    # Variable de notificación
+    notification_email: "{{ notification_email365 }}"
+    # Variables de conexión
     AppId: "d8f14294-5e13-4d85-9e95-e491958c95cf"
     CertificateThumbprint: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
     Organization: "ditramx0.onmicrosoft.com"
