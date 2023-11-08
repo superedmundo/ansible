@@ -15,7 +15,7 @@
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
     dominio: Contoso.mx
     user_cannot_change_password: false
-    ADAddMailbox: false
+    AddMailbox: false
 
     # NOTIFICACIONES
     # Sms 
@@ -94,7 +94,7 @@
           sAMAccountName: "{{ sAMAccountName }}" 
           password: "{{ password }}"
           generated_password: "{{ generated_password }}"
-          ADAddMailbox: "{{ ADAddMailbox }}"
+          AddMailbox: "{{ AddMailbox }}"
 
           # NOTIFICACIONES
           # Email
@@ -606,7 +606,7 @@
 
   # Crear Facts para la creación del buzón de Office 365
     - name: Establecer el valor de algo Erroneo
-      when: ADAddMailbox == true
+      when: AddMailbox == true
       ansible.builtin.set_fact:
         # Variables para el mailbox
         nombre365: "{{ nombre }}"
@@ -707,7 +707,7 @@
       when: TicketID is not none and session_id is defined
 
 - name: Set variables on an imported playbook
-  when: something_wrong == false
+  when: AddMailbox == true And something_wrong == false
   ansible.builtin.import_playbook: add_mailbox365.yml
   vars:
     # Variables para el mailbox
