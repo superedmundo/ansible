@@ -1,0 +1,51 @@
+---
+- name: Incluir playbook basado en una variable  
+  hosts: 10.100.1.116
+  gather_facts: no 
+  vars_files:
+    - "./oscarc_otobo_password"
+  collections:
+    - ditra.cisco
+    - ansible.builtin.password
+
+  vars:
+    enabled: true
+    sAMAccountName: null
+    password: null
+    generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
+    dominio: Contoso.mx
+    user_cannot_change_password: false
+    ADAddMailbox: false
+
+    # NOTIFICACIONES
+    # Sms 
+    # On Success
+    notification_sms_on_success: null
+    notification_sms_send_user_credentials: null
+
+    # Email
+    # On Success
+    notification_email: null
+    notification_email_send_user_credentials: null
+
+    # Variables internas de control de flujo
+    something_wrong: false
+
+    # vars for otobo changes
+    validate_certs: false
+    otobo_user: baltadlakd
+    base_url: https://10.100.1.124/otobo/nph-genericinterface.pl/Webservice
+    module:
+      login: /care
+      cmdb: /CMDB/ConfigItem
+    path:
+      login: "{{ base_url }}{{ module.login }}/login"
+      Ticket: "{{ base_url }}{{ module.login }}/Ticket"
+    TicketID: null
+
+  tasks:
+
+    - name: Task_SUBmain
+      ansible.builtin.debug:
+        msg: 
+          result_check: "Task_SUBmain" 

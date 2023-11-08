@@ -603,6 +603,22 @@
               set:
                 wWWHomePage: "{{ wWWHomePage }}"
 
+  # Agregando al buzón usuario en Office 365
+    - name: Modify User because is presen
+      when: ADAddMailbox == true and something_wrong == false
+      block:
+        - name: Entrando al bloque de Modificación
+          ansible.builtin.debug:
+            msg: 
+              result.state: "{{ result.state }}" 
+              result_add_user: "{{ result_add_user }}"
+              result_add_user_is_defined: "{{ result_add_user is defined }}"
+              result_add_user.changed_is_defined: "{{ result_add_user.changed is defined }}"
+              result_add_user.failed_is_defined: "{{ result_add_user.failed is defined }}"
+              result_add_user.changed: "{{ result_add_user.changed }}"
+              
+
+
   # NOTIFICACIONES
     
   # Crear mensaje para Notificación
