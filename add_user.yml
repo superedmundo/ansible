@@ -604,20 +604,20 @@
                 wWWHomePage: "{{ wWWHomePage }}"
 
 
-  # # Crear Facts para la creación del buzón de Office 365
-  #   - name: Crear Facts para la creación del buzón de Office 365
-  #     when: AddMailbox == '1'
-  #     ansible.builtin.set_fact:
-  #       # Variables para el mailbox
-  #       displayName365: null
-  #       microsoftOnlineServicesID365: null
-  #       mailboxPlan365: null
-  #       # Variable de notificación
-  #       notification_email365: "{{notification_email}}"
-  #       # Variables de conexión
-  #       AppId365: "d8f14294-5e13-4d85-9e95-e491958c95cf"
-  #       CertificateThumbprint365: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
-  #       Organization365: "ditramx0.onmicrosoft.com"
+  # Crear Facts para la creación del buzón de Office 365
+    - name: Crear Facts para la creación del buzón de Office 365
+      when: AddMailbox == '1'
+      ansible.builtin.set_fact:
+        # Variables para el mailbox
+        displayName365: null
+        microsoftOnlineServicesID365: null
+        mailboxPlan365: null
+        # Variable de notificación
+        notification_email365: "{{notification_email}}"
+        # Variables de conexión
+        AppId365: "d8f14294-5e13-4d85-9e95-e491958c95cf"
+        CertificateThumbprint365: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
+        Organization365: "ditramx0.onmicrosoft.com"
 
   # NOTIFICACIONES
   # Crear mensaje para Notificación
@@ -715,7 +715,7 @@
     microsoftOnlineServicesID: null
     mailboxPlan: null
     # Variable de notificación
-    notification_email: "{{ notification_email }}"
+    notification_email: "{{ notification_email365 }}"
     # Variables de conexión
     AppId: "d8f14294-5e13-4d85-9e95-e491958c95cf"
     CertificateThumbprint: "8A27C95763FD75AA575E75DB556DFEC6B9F7A899"
