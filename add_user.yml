@@ -606,7 +606,7 @@
 
   # Crear Facts para la creación del buzón de Office 365
     - name: Crear Facts para la creación del buzón de Office 365
-      when: AddMailbox == "1"
+      when: AddMailbox == '1'
       ansible.builtin.set_fact:
         # Variables para el mailbox
         nombre365: "{{ nombre }}"
@@ -707,7 +707,7 @@
       when: TicketID is not none and session_id is defined
 
 - name: Set variables on an imported playbook
-  when: AddMailbox == "1" And something_wrong == false
+  when: AddMailbox == '1' And something_wrong == false
   ansible.builtin.import_playbook: add_mailbox365.yml
   vars:
     # Variables para el mailbox
