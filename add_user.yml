@@ -609,6 +609,7 @@
       when: AddMailbox == '1'
       ansible.builtin.set_fact:
         # Variables para el mailbox
+        AddMailbox365: "{{ AddMailbox == '1' | ternary(true, false) }}"
         displayName365: null
         microsoftOnlineServicesID365: null
         mailboxPlan365: null
@@ -704,7 +705,7 @@
       when: TicketID is not none and session_id is defined
 
 - name: Set variables on an imported playbook
-  when: something_wrong == false
+  when: something_wrong == false and AddMailbox365 == true
   ansible.builtin.import_playbook: add_mailbox365.yml
   vars:
     # Variables para el mailbox
