@@ -711,9 +711,9 @@
   ansible.builtin.import_playbook: add_mailbox365.yml
   vars:
     # Variables para el mailbox
-    nombre: "{{ nombre365 }}"
-    firstName: "{{ firstName365 }}"
-    lastName: "{{ lastName365 }}"
+    nombre: "{{ sAMAccountName }}"
+    firstName: "{{ givenName }}"
+    lastName: "{{ sn }}"
     displayName: null
     microsoftOnlineServicesID: null
     mailboxPlan: null
