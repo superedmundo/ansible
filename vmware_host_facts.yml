@@ -1,0 +1,24 @@
+---
+- name: Conseguir los facts de un sistema ESXi hostsystem
+  hosts: 10.57.23.142 
+  gather_facts: no 
+
+  vars:
+    esxi_server: "10.57.23.142"
+    esxi_username: "root"
+    esxi_password: "Ditra.Poc2021"
+    validate_certs: no
+
+  tasks:
+    - name: Gather vmware host facts
+      community.vmware.vmware_host_facts:
+        hostname: "{{ esxi_server }}"
+        username: "{{ esxi_username }}"
+        password: "{{ esxi_password }}"
+        validate_certs: no
+      register: host_facts
+      delegate_to: localhost
+
+    - name: Verificar el resultado
+      debug:
+        var: host_facts

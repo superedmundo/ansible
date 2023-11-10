@@ -24,7 +24,7 @@
         username: "root"
         password: "Ditra.Poc2021"
         # insecure: yes
-        # validate_certs: no
+        validate_certs: no
         # timeout: 60
       register: host_facts
       delegate_to: localhost
