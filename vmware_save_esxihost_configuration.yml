@@ -1,0 +1,39 @@
+---
+- name: Respaldar la configuracion de un sistema ESXi hostsystem
+  hosts: 10.57.23.142 
+  gather_facts: no 
+
+  vars:
+    esxi_server: "10.57.23.142"
+    esxi_username: "root"
+    esxi_password: "Ditra.Poc2021"
+    validate_certs: no
+
+  tasks:
+    - name: Gather vmware host facts
+      community.vmware.vmware_host_facts:
+        hostname: "{{ esxi_server }}"
+        username: "{{ esxi_username }}"
+        password: "{{ esxi_password }}"
+        validate_certs: no
+      register: host_facts
+      delegate_to: localhost
+
+    - name: Verificar el resultado
+      debug:
+        var: host_facts
+
+    - name: Save the ESXi configuration locally by authenticating directly against the ESXi host
+      community.vmware.vmware_cfg_backup:
+        hostname: "{{ esxi_server }}"
+        username: "{{ esxi_username }}"
+        password: "{{ esxi_password }}"
+        validate_certs: no
+        state: saved
+        dest: /tmp/
+      register: result_save_config
+      delegate_to: localhost   
+
+    - name: Verificar el resultado del respaldo
+      debug:
+        var: result_save_config     
