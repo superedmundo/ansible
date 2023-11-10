@@ -1,4 +1,8 @@
 ---
+# community.vmware.vmware_cfg_backup module – Backup / Restore / Reset ESXi host configuration
+# https://docs.ansible.com/ansible/latest/collections/community/vmware/vmware_cfg_backup_module.html#ansible-collections-community-vmware-vmware-cfg-backup-module
+# 
+# 
 - name: Respaldar la configuracion de un sistema ESXi hostsystem
   hosts: 10.57.23.142 
   gather_facts: no 
