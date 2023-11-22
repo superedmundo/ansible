@@ -182,6 +182,9 @@
         body:
           SessionID: "{{ session_id }}"
           TicketID: "{{ TicketID }}"
+          DynamicField:
+           - Name: AutoStatus
+             Value: completed
           Article:
             CommunicationChannel: Internal
             IsVisibleForCustomer: 1
