@@ -662,7 +662,7 @@
           identity: "{{ result.distinguished_name }}"
           
   
-        to_email: "{{ notification_email }}"
+        to_email: "{{ notification_email_send_user_credentials }}"
         alert: true
         
     - name: Send notification_email_on_fail
