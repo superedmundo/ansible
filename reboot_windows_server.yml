@@ -1,5 +1,5 @@
 ---
-- name: Reboot Windows Server if Necesary
+- name: Reboot Windows Server if Necesary.
   hosts: "{{ target_host | default('all') }} "
   gather_facts: no 
   vars_files:
