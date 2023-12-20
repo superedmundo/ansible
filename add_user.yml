@@ -10,6 +10,8 @@
 
   vars:
     enabled: true
+    password_never_expires: true
+    path: "CN=Users,DC=Contoso,DC=mx"
     sAMAccountName: null
     password: null
     generated_password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_letters', 'digits', 'punctuation'], length=12) }}"
@@ -117,6 +119,11 @@
         - name: Establecer el valor de result_query como result
           ansible.builtin.set_fact:
             result: "{{ result_query }}"   
+
+        - name: Desplegando las variables que llegaron.
+          ansible.builtin.debug:
+            msg: 
+              result: "{{ result }}" 
       
       rescue: 
         - name: Envio de correo failed
@@ -155,6 +162,7 @@
           microsoft.ad.user:
             name: "{{ sAMAccountName }}"
             password: "{{ (password) | ternary(password, generated_password) }}"
+            path: "{{ path  }}"
             state: present
             attributes:
               set:
@@ -233,6 +241,14 @@
           when: user_cannot_change_password is defined and result.user_cannot_change_password != user_cannot_change_password
           microsoft.ad.user:
             user_cannot_change_password: "{{ user_cannot_change_password }}"
+            name: "{{ result.name }}"
+            identity: "{{ result.distinguished_name }}"
+            state:  present
+
+        - name: Modify password_never_expires user in AD
+          when: password_never_expires is defined
+          microsoft.ad.user:
+            password_never_expires: "{{ password_never_expires }}"
             name: "{{ result.name }}"
             identity: "{{ result.distinguished_name }}"
             state:  present
