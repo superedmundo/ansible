@@ -90,6 +90,10 @@
           DynamicField:
            - Name: AutoStatus
              Value: processing
+           - Name: ADOu
+             Value: "{{ pathAD }}"
+           - Name: ADSAMAccount
+             Value: "{{ sAMAccountName }}"
 
         validate_certs: "{{ validate_certs }}"
         return_content: true
