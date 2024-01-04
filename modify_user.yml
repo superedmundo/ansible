@@ -68,6 +68,10 @@
           DynamicField:
            - Name: AutoStatus
              Value: processing
+           - Name: ADOu
+             Value: "{{ pathAD }}"
+           - Name: ADSAMAccount
+             Value: "{{ sAMAccountName }}"
 
         validate_certs: "{{ validate_certs }}"
         return_content: true
@@ -253,16 +257,6 @@
             attributes:
               set:
                 displayName: "{{ displayName }}"
-
-        - name: Modify displayName when not sent user in AD
-          when: displayName is undefined
-          microsoft.ad.user:
-            name:     "{{ result.name }}"
-            identity: "{{ result.distinguished_name }}"
-            state:    present
-            attributes:
-              set:
-                displayName: "{{ givenName }} {{ sn }}"
 
         - name: Modify division user in AD
           when: division is defined
