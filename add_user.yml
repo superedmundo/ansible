@@ -79,7 +79,7 @@
       delegate_to: localhost
       
     - name: Fact if DisplayName is null
-      when: displayName is not defined
+      when: displayName is not defined or displayName is none
       ansible.builtin.set_fact:
         displayName: "{{ givenName }} {{ sn }}"
     
