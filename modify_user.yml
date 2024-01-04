@@ -79,10 +79,21 @@
     - name: Desplegando las variables que llegaron.
       ansible.builtin.debug:
         msg: 
+          givenName: "{{ givenName }}"
+          sn: "{{ sn }}"
+          displayName: "{{ displayName }}"
           sAMAccountName: "{{ sAMAccountName }}" 
-
+          password: "{{ password }}"
+          generated_password: "{{ generated_password }}"
+          pathAD: "{{ pathAD }}"
+          neverExpired: "{{ neverExpired  }}"
+          enabled: "{{ enabled }}"
+          user_cannot_change_password: "{{ user_cannot_change_password }}"
+          state: "{{ state  }}"
+          
           # NOTIFICACIONES
           # Email
+          # On Success
           notification_email: "{{ notification_email }}"
 
   # Revisando si ya existe o no el ususario en el AD
